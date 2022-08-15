@@ -1,0 +1,86 @@
+/* Importing Bootstrap SCSS file. */
+@import '~bootstrap/scss/bootstrap';
+body{
+  font-size: 62.5%;
+}
+
+/* You can add global styles to this file, and also import other style files */
+.modal-holder {
+  animation-name: example;
+  animation-duration: 0.3s;
+}
+
+@keyframes example {
+  0% {
+    transform: scale(0.5)
+  }
+
+  100% {
+    transform: scale(1)
+  }
+}
+
+.carousel-item {
+  transition: opacity 0.7s ease !important;
+  position: absolute !important;
+  display: block !important;
+  opacity: 0;
+}
+
+.carousel-item.active {
+  position: relative !important;
+  opacity: 1;
+}
+
+.modal-rounded {
+  .modal-dialog{
+    .modal-content {
+      border-radius: 15px !important;
+      overflow: hidden !important;
+      border : none;
+    }
+  }
+
+}
+.authModal {
+  z-index:9999999999999 !important;
+  .modal-dialog{
+    .modal-content {
+      border-radius: 15px !important;
+      overflow: hidden !important;
+      border : none;
+      padding : 0;
+    }
+    .modal-body{
+      padding: 0;
+    }
+  }
+
+}
+@media screen and (max-width : 1200px) {
+  html{
+    font-size: 80%;
+  }
+
+}
+@media screen and (max-width : 1000px) {
+  html{
+    font-size: 70%;
+  }
+
+}
+@media screen and (max-width : 800px) {
+  html{
+    font-size: 65%;
+  }
+}
+
+@media screen and (max-width : 665px) {
+  html{
+    font-size: 60%;
+  }
+
+}
+
+
+

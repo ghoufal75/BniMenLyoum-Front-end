@@ -1,0 +1,9 @@
+{
+    "version": 3,
+    "mappings": "",
+    "sources": [
+        "imagecropper.component.scss"
+    ],
+    "names": [],
+    "file": "imagecropper.component.css"
+}

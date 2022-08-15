@@ -1,0 +1,17 @@
+.blog-card .nav {
+  -webkit-box-align: end;
+      -ms-flex-align: end;
+          align-items: end;
+  -webkit-box-pack: end;
+      -ms-flex-pack: end;
+          justify-content: flex-end;
+}
+
+.blog-card h5 {
+  top: 10px;
+}
+
+.blog-card .card-body {
+  padding: 1.25rem 0 0;
+}
+/*# sourceMappingURL=bloglist.component.css.map */

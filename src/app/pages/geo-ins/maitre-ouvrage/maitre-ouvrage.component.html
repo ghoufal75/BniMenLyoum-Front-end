@@ -1,0 +1,603 @@
+<app-map-loader *ngIf="isLoading"></app-map-loader>
+<div class="filreing&choosing d-flex justify-content-between">
+  <div class="search">
+    <div class="input-group mb-3">
+      <div class="input-group-prepend">
+        <div class="dropdown" ngbDropdown>
+          <button
+            class="btn btn-outline-secondary dropdown-toggle"
+            type="button"
+            id="dropdownMenuButton"
+            ngbDropdownToggle
+          >
+            <i class="bx bx-filter"></i>
+          </button>
+          <div class="dropdown-menu" ngbDropdownMenu *ngIf="maitreOuvrageType==='physique'">
+            <a class="dropdown-item" href="javascript: void(0);"(click)="fetchingCriteria='cin'"
+              ><span *ngIf="fetchingCriteria === 'cin'">&#10004;</span> CIN</a
+            >
+            <a class="dropdown-item" href="javascript: void(0);"(click)="fetchingCriteria='nom'"><span *ngIf="fetchingCriteria === 'nom'">&#10004;</span>Nom</a>
+            <a class="dropdown-item" href="javascript: void(0);"(click)="fetchingCriteria='prenom'"><span *ngIf="fetchingCriteria === 'prenom'">&#10004;</span>prenom</a>
+          </div>
+          <div class="dropdown-menu" ngbDropdownMenu *ngIf="maitreOuvrageType==='moral'">
+            <a class="dropdown-item" href="javascript: void(0);"(click)="fetchingCriteria='nom'"
+              ><span *ngIf="fetchingCriteria === 'nom'">&#10004;</span>Nom</a
+            >
+            <a class="dropdown-item" href="javascript: void(0);"(click)="fetchingCriteria='rc'"><span *ngIf="fetchingCriteria === 'rc'">&#10004;</span>RC</a>
+            <a class="dropdown-item" href="javascript: void(0);"(click)="fetchingCriteria='idRV'"><span *ngIf="fetchingCriteria === 'idRV'">&#10004;</span> IDRV</a>
+          </div>
+          <div class="dropdown-menu" ngbDropdownMenu *ngIf="maitreOuvrageType==='orgPublic'">
+            <a class="dropdown-item" href="javascript: void(0);"(click)="fetchingCriteria='nom'"
+              ><span *ngIf="fetchingCriteria === 'nom'">&#10004;</span>Nom</a
+            >
+            <a class="dropdown-item" href="javascript: void(0);"(click)="fetchingCriteria='idOrganisme'"
+              ><span *ngIf="fetchingCriteria === 'idOrganisme'">&#10004;</span> ID Organisme</a
+            >
+          </div>
+        </div>
+      </div>
+      <input
+        type="text"
+        class="form-control"
+        placeholder="Rechercher par critère"
+        aria-label="Rechercher par critère"
+        aria-describedby="basic-addon2"
+        (keyup)="onWritingName($event)"
+      />
+      <div class="input-group-append">
+        <button class="btn btn-primary" type="button">
+          <i class="fas fa-search"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="newOrchoosing d-flex">
+    <div class="dropdown" ngbDropdown>
+      <button
+        class="btn btn-primary dropdown-toggle"
+        type="button"
+        id="dropdownMenuButton"
+        ngbDropdownToggle
+      >
+        Select Maitre ouvrage Type <i class="mdi mdi-chevron-down"></i>
+      </button>
+      <div class="dropdown-menu" ngbDropdownMenu>
+        <a
+          class="dropdown-item"
+          href="javascript: void(0);"
+          (click)="fetchMaitrePhysique()"
+          >Maitre d'ouvrage physique</a
+        >
+        <a
+          class="dropdown-item"
+          href="javascript: void(0);"
+          (click)="fetchMaitreMoral()"
+          >Maitre d'ouvrage moral</a
+        >
+        <a
+          class="dropdown-item"
+          href="javascript: void(0);"
+          (click)="fetchOrganismePublic()"
+          >Organisme Public</a
+        >
+      </div>
+    </div>
+    <div>
+      <button
+        class="btn btn-outline-primary ms-3"
+        (click)="showModal(newMaitreOuvrage)" *ngIf="permited"
+      >
+        Nouveau Maitre d'ouvrage
+      </button>
+    </div>
+  </div>
+</div>
+<!-- <div class="noResult">
+  <h2>
+</div> -->
+<div class="arrays"*ngIf='!noResult'>
+  <div
+    class="maitreOuvragePhysiqueArray"
+    *ngIf="maitreOuvrageType === 'physique'"
+  >
+    <h2 class="projectTitle">Maitre d'ouvrage physique</h2>
+    <table class="table">
+      <thead class="table-dark">
+        <tr>
+          <th scope="col">CIN</th>
+          <th scope="col">Nom</th>
+          <th scope="col">Prénom</th>
+          <th scope="col">Email</th>
+          <th scope="col">Téléphone</th>
+          <th scope="col">Qualité</th>
+          <th scope="col" *ngIf='permited'>Actions</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let element of maitreOuvragePhysiqueArray">
+          <td>{{ element.cin }}</td>
+          <td>{{ element.nom }}</td>
+          <td>{{ element.prenom }}</td>
+          <td>{{ element.email }}</td>
+          <td>{{ element.numeroTelephone }}</td>
+          <td>{{ element.qualite }}</td>
+          <td class="d-flex" *ngIf='permited'>
+            <a class="action-btn action-btn--2"(click)='onUpdateItem(element,newMaitreOuvrage)'>
+              <p style="text-align:center">
+                <i class="bx  bx-edit-alt"></i>
+              </p>
+              </a>
+              <a class="action-btn action-btn--3" (click)='showAlert(element,deleteModal)'>
+                <p style="text-align:center">
+                  <i class="bx bx-trash-alt"></i>
+                </p>
+                </a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="maitreOuvrageMoralArray" *ngIf="maitreOuvrageType === 'moral'">
+    <h2 class="projectTitle">Maitre d'ouvrage moral</h2>
+    <table class="table">
+      <thead class="table-dark">
+        <tr>
+          <th scope="col">IDRV</th>
+          <th scope="col">RC</th>
+          <th scope="col">Nom</th>
+          <th scope="col">Email</th>
+          <th scope="col">Téléphone</th>
+          <th scope="col">Ville</th>
+          <th scope="col" *ngIf='permited'>Actions</th>
+
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let element of maitreOuvrageMoralArray">
+          <td>{{ element.idRV }}</td>
+          <td>{{ element.rc }}</td>
+          <td>{{ element.nom }}</td>
+          <td>{{ element.email }}</td>
+          <td>{{ element.numeroTelephone }}</td>
+          <td>{{ element.ville }}</td>
+          <td class="d-flex" *ngIf='permited'>
+            <a class="action-btn action-btn--2"(click)='onUpdateItem(element,newMaitreOuvrage)'>
+              <p style="text-align:center">
+                <i class="bx  bx-edit-alt"></i>
+              </p>
+              </a>
+              <a class="action-btn action-btn--3" (click)='showAlert(element,deleteModal)'>
+                <p style="text-align:center">
+                  <i class="bx bx-trash-alt"></i>
+                </p>
+                </a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="organismePublicArray" *ngIf="maitreOuvrageType === 'orgPublic'">
+    <h2 class="projectTitle">Organisme Public</h2>
+    <table class="table">
+      <thead class="table-dark">
+        <tr>
+          <th scope="col">ID Organisme</th>
+          <th scope="col">Nom</th>
+          <th scope="col">Email</th>
+          <th scope="col">Téléphone</th>
+          <th scope="col" *ngIf='permited'>Actions</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let element of organismePublicArray">
+          <td>{{ element.idOrganisme }}</td>
+          <td>{{ element.nom }}</td>
+          <td>{{ element.email }}</td>
+          <td>{{ element.numeroTelephone }}</td>
+          <td class="d-flex" *ngIf='permited'>
+            <a class="action-btn action-btn--2"(click)='onUpdateItem(element,newMaitreOuvrage)'>
+              <p style="text-align:center">
+                <i class="bx  bx-edit-alt"></i>
+              </p>
+              </a>
+              <a class="action-btn action-btn--3"  (click)='showAlert(element,deleteModal)'>
+                <p style="text-align:center">
+                  <i class="bx bx-trash-alt"></i>
+                </p>
+                </a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<div class="modal modalgeotiffModal">
+  <ng-template #newMaitreOuvrage let-modal>
+    <div class="modal-header">
+      <h5 class="modal-title mt-0">Ajouter un nouveau Maitre d'ouvrage</h5>
+      <button
+        type="button"
+        class="btn-close"
+        (click)="modal.dismiss('Cross click')"
+        aria-hidden="true"
+      ></button>
+    </div>
+    <div class="modal-body">
+      <div class="mb-3 row">
+        <label class="col-md-2 col-form-label">Type </label>
+        <div class="col-md-10">
+          <select class="form-select" [(ngModel)]="typeMaitreOuvrage">
+            <option value="physique" selected>Maitre d'ouvrage Physique</option>
+            <option value="moral">Maitre d'ouvrage Moral</option>
+            <option value="organismePublic">Organisme Public</option>
+          </select>
+        </div>
+      </div>
+      <form
+        [formGroup]="physiqueForm"
+        (ngSubmit)="submitMaitrePhysiqueForm()"
+        action=""
+        *ngIf="typeMaitreOuvrage === 'physique'"
+      >
+        <div class="mb-3 row">
+          <label for="cin" class="col-md-2 col-form-label">CIN</label>
+          <div class="col-md-10">
+            <input
+              class="form-control"
+              type="text"
+              [ngClass]="{ 'is-invalid': physiqueForm.get('cin').touched && physiqueForm.get('cin').errors?.required }"
+              formControlName="cin"
+              placeholder="Entrez le CIN"
+              required
+              id="cin"
+            />
+            <div
+              class="invalid-feedback"
+              *ngIf="physiqueForm.get('cin').touched && physiqueForm.get('cin').errors?.required"
+            >
+              Ce champs est requis
+            </div>
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label for="nom" class="col-md-2 col-form-label">Nom</label>
+          <div class="col-md-10">
+            <input
+              class="form-control"
+              type="text"
+              [ngClass]="{ 'is-invalid': physiqueForm.get('nom').touched && physiqueForm.get('nom').errors?.required }"
+              formControlName="nom"
+              placeholder="Entrez le nom"
+              required
+              id="nom"
+            />
+            <div
+              class="invalid-feedback"
+              *ngIf="physiqueForm.get('nom').touched && physiqueForm.get('nom').errors?.required"
+            >
+              Ce champs est requis
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-3 row">
+          <label for="prenom" class="col-md-2 col-form-label">Prénom</label>
+          <div class="col-md-10">
+            <input
+              class="form-control"
+              type="text"
+              [ngClass]="{
+                'is-invalid': physiqueForm.get('prenom').touched && physiqueForm.get('prenom').errors?.required
+              }"
+              formControlName="prenom"
+              placeholder="Entrez le nom"
+              required
+              id="prenom"
+            />
+            <div class="invalid-feedback">Ce champs est requis</div>
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label for="example-email-input" class="col-md-2 col-form-label"
+            >Email</label
+          >
+          <div class="col-md-10">
+            <input
+              class="form-control"
+              type="email"
+              [ngClass]="{
+                'is-invalid':
+                  physiqueForm.get('email').touched &&
+                  (physiqueForm.get('email').errors?.required || physiqueForm.get('email').errors?.email)
+              }"
+              formControlName="email"
+              placeholder="Entrez l'email"
+              required
+              id="example-email-input"
+            />
+            <div class="invalid-feedback">Ce champs est requis</div>
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label for="tel" class="col-md-2 col-form-label">Téléphone</label>
+          <div class="col-md-10">
+            <input
+              class="form-control"
+              type="number"
+              required
+              [ngClass]="{
+                'is-invalid': physiqueForm.get('telephone').touched && physiqueForm.get('telephone').errors?.required
+              }"
+              formControlName="telephone"
+              placeholder="Entrez le numéro de téléphone"
+              id="tel"
+            />
+            <div class="invalid-feedback">Ce champs est requis</div>
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label for="qualite" class="col-md-2 col-form-label">Qualité</label>
+          <div class="col-md-10">
+            <input
+              class="form-control"
+              type="text"
+              required
+              [ngClass]="{
+                'is-invalid': physiqueForm.get('qualite').touched && physiqueForm.get('qualite').errors?.required
+              }"
+              formControlName="qualite"
+              placeholder="Entrez la qualité"
+              id="qualite"
+            />
+            <div class="invalid-feedback">Ce champs est requis</div>
+          </div>
+        </div>
+        <button class="btn btn-primary" [disabled]="physiqueForm.invalid">
+          Submit
+        </button>
+      </form>
+      <form
+        [formGroup]="moralForm"
+        (ngSubmit)="submitMaitreMoralForm()"
+        action=""
+        *ngIf="typeMaitreOuvrage === 'moral'"
+      >
+        <div class="mb-3 row">
+          <label for="idrv" class="col-md-2 col-form-label">ID RV</label>
+          <div class="col-md-10">
+            <input
+              class="form-control"
+              type="text"
+              [ngClass]="{
+                'is-invalid': moralForm.get('idRV').touched && moralForm.get('idRV').errors?.required
+              }"
+              formControlName="idRV"
+              placeholder="Entrez l'IdRV'"
+              required
+              id="idrv"
+            />
+            <div
+              class="invalid-feedback"
+              *ngIf="moralForm.get('idRV').touched && moralForm.get('idRV').errors?.required"
+            >
+              Ce champs est requis
+            </div>
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label for="rc" class="col-md-2 col-form-label">RC</label>
+          <div class="col-md-10">
+            <input
+              class="form-control"
+              type="text"
+              [ngClass]="{ 'is-invalid': moralForm.get('rc').touched && moralForm.get('rc').errors?.required }"
+              formControlName="rc"
+              placeholder="Entrez le RC"
+              required
+              id="rc"
+            />
+            <div
+              class="invalid-feedback"
+              *ngIf="moralForm.get('rc').touched && moralForm.get('rc').errors?.required"
+            >
+              Ce champs est requis
+            </div>
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label for="nom" class="col-md-2 col-form-label">Nom</label>
+          <div class="col-md-10">
+            <input
+              class="form-control"
+              type="text"
+              [ngClass]="{ 'is-invalid': moralForm.get('nom').touched && moralForm.get('nom').errors?.required }"
+              formControlName="nom"
+              placeholder="Entrez le nom"
+              required
+              id="nom"
+            />
+            <div
+              class="invalid-feedback"
+              *ngIf="moralForm.get('nom').touched && moralForm.get('nom').errors?.required"
+            >
+              Ce champs est requis
+            </div>
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label for="example-email-input" class="col-md-2 col-form-label"
+            >Email</label
+          >
+          <div class="col-md-10">
+            <input
+              class="form-control"
+              type="email"
+              [ngClass]="{
+                'is-invalid':
+                  moralForm.get('email').touched &&
+                  (moralForm.get('email').errors?.required || moralForm.get('email').errors?.email)
+              }"
+              formControlName="email"
+              placeholder="Entrez l'email'"
+              required
+              id="example-email-input"
+            />
+            <div class="invalid-feedback">Ce champs est requis</div>
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label for="tel" class="col-md-2 col-form-label">Téléphone</label>
+          <div class="col-md-10">
+            <input
+              class="form-control"
+              type="number"
+              required
+              [ngClass]="{
+                'is-invalid': moralForm.get('telephone').touched && moralForm.get('telephone').errors?.required
+              }"
+              formControlName="telephone"
+              placeholder="Entrez le numéro de téléphone"
+              id="tel"
+            />
+            <div class="invalid-feedback">Ce champs est requis</div>
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label for="ville" class="col-md-2 col-form-label">Ville</label>
+          <div class="col-md-10">
+            <input
+              class="form-control"
+              type="text"
+              [ngClass]="{
+                'is-invalid': moralForm.get('ville').touched && moralForm.get('ville').errors?.required
+              }"
+              formControlName="ville"
+              placeholder="Entrez le nom de la ville"
+              id="ville"
+            />
+            <div class="invalid-feedback">Ce champs est requis</div>
+          </div>
+        </div>
+        <button class="btn btn-primary" [disabled]="moralForm.invalid">
+          Submit
+        </button>
+      </form>
+      <form
+        [formGroup]="orgForm"
+        (ngSubmit)="submitOrganismePublicForm()"
+        action=""
+        *ngIf="typeMaitreOuvrage === 'organismePublic'"
+      >
+        <div class="mb-3 row">
+          <label for="idOrg" class="col-md-2 col-form-label"
+            >ID Organisme</label
+          >
+          <div class="col-md-10">
+            <input
+              class="form-control"
+              type="text"
+
+              [ngClass]="{
+                'is-invalid':
+                  orgForm.get('idOrganisme').touched && orgForm.get('idOrganisme').errors?.required
+              }"
+              formControlName="idOrganisme"
+              placeholder="Entrez l'id d'organisme"
+              id="idOrg"
+            />
+            <div class="invalid-feedback">Ce champs est requis</div>
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label for="nom" class="col-md-2 col-form-label">Nom</label>
+          <div class="col-md-10">
+            <input
+              class="form-control"
+              type="text"
+              [ngClass]="{ 'is-invalid': orgForm.get('nom').touched && orgForm.get('nom').errors?.required }"
+              formControlName="nom"
+              placeholder="Entrez le nom"
+              required
+              id="nom"
+            />
+            <div
+              class="invalid-feedback"
+              *ngIf="orgForm.get('nom').touched && orgForm.get('nom').errors?.required"
+            >
+              Ce champs est requis
+            </div>
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label for="example-email-input" class="col-md-2 col-form-label"
+            >Email</label
+          >
+          <div class="col-md-10">
+            <input
+              class="form-control"
+              type="email"
+              [ngClass]="{
+                'is-invalid':
+                  orgForm.get('email').touched &&
+                  (orgForm.get('email').errors?.required || orgForm.get('email').errors?.email)
+              }"
+              formControlName="email"
+              placeholder="Entrez l'email'"
+              required
+              id="example-email-input"
+            />
+            <div class="invalid-feedback">Ce champs est requis</div>
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label for="tel" class="col-md-2 col-form-label">Téléphone</label>
+          <div class="col-md-10">
+            <input
+              class="form-control"
+              type="number"
+              [ngClass]="{
+                'is-invalid': orgForm.get('telephone').touched && orgForm.get('telephone').errors?.required
+              }"
+              formControlName="telephone"
+              placeholder="Entrez le numéro de téléphone"
+              id="tel"
+            />
+            <div class="invalid-feedback">Ce champs est requis</div>
+          </div>
+        </div>
+
+        <button class="btn btn-primary" [disabled]="orgForm.invalid">
+          Submit
+        </button>
+      </form>
+    </div>
+  </ng-template>
+</div>
+
+<div class="modal modalgeotiffModal">
+  <!-- Center Modal -->
+  <ng-template #deleteModal let-modal>
+    <div class="modal-header">
+      <h5 class="modal-title mt-0">Êtes vous sure ?</h5>
+      <button
+        type="button"
+        class="btn-close"
+        (click)="modal.dismiss('Cross click')"
+        aria-hidden="true"
+      ></button>
+    </div>
+    <div class="modal-body">
+      Cette action est irréversible, êtes vous sur de vouloir supprimer ce maitre d'ouvrage ?
+    </div>
+    <div class="modal-footer d-flex">
+      <button type="button" class="btn btn-secondary" (click)="modal.close('Save click')">Annuler</button>
+      <button type="button" class="btn btn-danger ms-2" (click)="deleteMaitreOuvrage()">Supprimer</button>
+    </div>
+
+  </ng-template>
+</div>
+
+

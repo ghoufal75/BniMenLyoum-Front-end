@@ -1,0 +1,216 @@
+<div class="exchange">
+  <div class="exchange__contacts">
+    <div class="searching">
+      <div class="search">
+       <ng2-completer autoMatch='true'  (selected)="selectContact($event)" inputClass="form-control" (keyup)="onWritingName($event)" [datasource]="newContactsNames" [minSearchLength]="0"></ng2-completer>
+      </div>
+      <h4>&#x2B;</h4>
+    </div>
+    <div class="accounts">
+      <ul class='accounts__list'>
+        <li class="account" *ngFor="let element of contacts" (click)="selectTheContact(element)">
+          <div class="onlineStatus  me-2">
+            <div class="onlineIcone " [ngClass]="{'bg-success' :  getOnlineStatus(element),'bg-danger': !getOnlineStatus(element)}"></div>
+          </div>
+          <div class="account__img" [ngStyle]="{'background':element?.imageUrl?'url('+element?.imageUrl+')':'black','backgroud-size':'cover','background-repeat':'not-repeat'}">
+            <div class="initials"*ngIf='!element?.imageUrl'>
+              {{element.lastName?element.lastName[0]:element.nom[0]}} {{element.firstName?element.firstName[0]:element.prenom[0]}}
+            </div>
+          </div>
+          <div class="account__name">
+            <h3>  {{element.lastName?element.lastName:element.nom}} {{element.firstName?element.firstName:element.prenom}}</h3>
+
+          </div>
+          <div class="badgeContainer"*ngIf='unreadMessages(element)!=0'>
+            <span _ngcontent-wlx-c130="" class="badge bg-danger float-end rounded-pill">{{unreadMessages(element)}}</span>
+          </div>
+
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="exchange__chatting">
+    <div *ngIf='actualConversation'>
+      <div class="convNav ">
+        <div class="filreing&choosing d-flex justify-content-between">
+          <div class="account account-conv"  *ngIf="actualReceiver">
+            <div class="account__img" [ngStyle]="{'background':actualReceiver?.imageUrl?'url('+actualReceiver?.imageUrl+')':'black','backgroud-size':'cover','background-repeat':'not-repeat'}">
+              <div class="initials"*ngIf='!actualReceiver?.imageUrl'>
+                {{actualReceiver.lastName?actualReceiver.lastName[0]:actualReceiver.nom[0]}} {{actualReceiver.firstName?actualReceiver.firstName[0]:actualReceiver.prenom[0]}}
+              </div>
+            </div>
+            <div class="account__name">
+              <h3>  {{actualReceiver.lastName?actualReceiver.lastName:actualReceiver.nom}} {{actualReceiver.firstName?actualReceiver.firstName:actualReceiver.prenom}}</h3>
+
+            </div>
+            <div class="badgeContainer"*ngIf='unreadMessages(actualReceiver)!=0'>
+              <span _ngcontent-wlx-c130="" class="badge bg-danger float-end rounded-pill">{{unreadMessages(actualReceiver)}}</span>
+            </div>
+
+          </div>
+          <div class="d-flex mt-3">
+            <div class="newOrchoosing me-2">
+                <button
+                  class="btn btn-outline-primary ms-3"
+                  (click)="showModal(newMaitreOuvrage)"
+                >
+                  Nouveau Message
+                </button>
+              </div>
+              <div class="search ">
+                <div class="input-group mb-3">
+                  <input
+                    type="text"
+                    class="form-control"
+                    placeholder="Rechercher par critère"
+                    aria-label="Rechercher par critère"
+                    aria-describedby="basic-addon2"
+                    (keyup)="onSearchingObjet($event)"
+                  />
+                  <div class="input-group-append">
+                    <button class="btn btn-primary" type="button">
+                      <i class="fas fa-search"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+          </div>
+
+
+        </div>
+      </div>
+      <div class="messagesContainer">
+        <div *ngFor='let element of pipedConversation'>
+          <div class="objetsConvs bg-primary">
+            <h4 class="objet">
+            <span style="font-weight : bold;">Objet : </span>{{keys(element)}}
+            </h4>
+            <a class="expandArrow"[ngStyle]="{'font-size':element.expand?'1.2rem':'1.5rem','margin-top':element.expand?'0rem':'-.9rem','font-weight': element.expand?'700':'bold'}"(click)="expandMessages(element)">
+              <span *ngIf="!element.expand"> &#8964; </span>
+              <span *ngIf="element.expand">^</span>
+            </a>
+          </div>
+          <div class="messagesList" *ngIf="element.expand">
+            <div class="convNav2 d-flex justify-content-end">
+              <button
+              class="btn btn-primary repondre   ps-3 pe-3 "
+              (click)="respondToObj(newMaitreOuvrage,keys(element))"
+            >
+            <span style='font-size : 1rem;padding-top: .5rem;'>&#x21B6;</span> Répondre
+            </button>
+
+            </div>
+            <div *ngFor="let message of reverseArray(element[keys(element)])">
+              <div class="messageItem clearfix" style="white-space:pre-line;text-align: justify;"[ngClass]="{'mymsg':message.dataType==='myMessage' || message.sender===sender,'lambdaMessage':message.dataType!='myMessage' && message.sender!=sender}" >
+
+              <p class="messageContent">{{message.message}}<br><span *ngIf="message.progress" [ngClass]="{'text-dark':message.dataType==='myMessage' || message.sender===sender,'text-light':message.dataType!='myMessage' && message.sender!=sender}">Progress : {{message.progress}} % </span><br>
+                <button
+
+                *ngIf="message.file || message.fileSrc"
+                [ngClass]="{'btn-primary' : message.dataType==='myMessage' || message.sender===sender,'btn-light':message.dataType!='myMessage' && message.sender!=sender }"
+                class="btn-primary rounded-circle download__button"
+                (click)='saveFile(message.file!=undefined?message.file:null,message.filename!=undefined?message.filename:null,message.fileSrc!=undefined && message.fileSrc!=null?message.fileSrc:null)'
+                [ngClass]="{'bg-primary':message.dataType==='myMessage' || message.sender===sender,'bg-light':message.dataType!='myMessage' && message.sender!=sender}
+                "><i class="bx bxs-download "[ngClass]="{'text-light':message.dataType==='myMessage' || message.sender===sender,'text-primary':message.dataType!='myMessage' && message.sender!=sender}"></i></button>
+                <span class="pl-2 ps-2 "[ngClass]="{'text-primary':message.dataType==='myMessage' || message.sender===sender,'text-light':message.dataType!='myMessage' && message.sender!=sender}">{{message.filename}}</span>
+               </p>
+              <a class='transfer'(click)='transferMessage(message,newMaitreOuvrage)'>&rarr;</a>
+              </div>
+              <div class="sentAt">
+                {{message.sentAt }}
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+
+
+      </div>
+
+      <!-- <div class="send_input ">
+        <input type="text" class='form-control object' [(ngModel)]="object" name="object" placeholder="Objet">
+        <input type="text"class='form-control messageInput'(keyup)='sendWithEnter($event)' [(ngModel)]="message" name='message'placeholder="Message">
+        <a class="sendButton"(click)='sendMessage()'>></a>
+      </div> -->
+    </div>
+    <div class="blank"*ngIf='!actualConversation'>
+      <div class="blank__absolute">
+        <img src="https://www.hotelbooqi.com/wp-content/uploads/2021/12/128-1280406_view-user-icon-png-user-circle-icon-png.png" class="blank__img">
+        <h4 class="blank__title">Choisissez une conversation</h4>
+      </div>
+
+    </div>
+  </div>
+</div>
+<div class="modal modalgeotiffModal">
+  <ng-template #newMaitreOuvrage let-modal>
+    <div class="modal-header">
+      <h5 class="modal-title mt-0">Envoyer un nouveau message</h5>
+      <button
+        type="button"
+        class="btn-close"
+        (click)="modal.dismiss('Cross click')"
+        aria-hidden="true"
+      ></button>
+    </div>
+    <div class="modal-body">
+      <div class="transmissionReceiver">
+        <div class="transmissionReceiver__contacts" *ngIf="isTransfering">
+          <div class="searching">
+            <div class="search">
+             <ng2-completer autoMatch='true'  (selected)="selectContact($event)" inputClass="form-control" (keyup)="onWritingName($event)" [datasource]="newContactsNames" [minSearchLength]="0"></ng2-completer>
+            </div>
+            <h4>&#x2B;</h4>
+          </div>
+          <div class="accounts">
+            <ul class='accounts__list'>
+              <li class="account" *ngFor="let element of contacts" (click)="selectTheContact(element)">
+                <div class="onlineStatus  me-2">
+                  <div class="onlineIcone " [ngClass]="{'bg-success' :  getOnlineStatus(element),'bg-danger': !getOnlineStatus(element)}"></div>
+                </div>
+                <div class="account__img" [ngStyle]="{'background':element?.imageUrl?'url('+element?.imageUrl+')':'black','backgroud-size':'cover','background-repeat':'not-repeat'}">
+                  <div class="initials"*ngIf='!element?.imageUrl'>
+                    {{element.lastName?element.lastName[0]:element.nom[0]}} {{element.firstName?element.firstName[0]:element.prenom[0]}}
+                  </div>
+                </div>
+                <div class="account__name">
+                  <h3>  {{element.lastName?element.lastName:element.nom}} {{element.firstName?element.firstName:element.prenom}}</h3>
+
+                </div>
+                <div class="badgeContainer"*ngIf='unreadMessages(element)!=0'>
+                  <span _ngcontent-wlx-c130="" class="badge bg-danger float-end rounded-pill">{{unreadMessages(element)}}</span>
+                </div>
+
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="newMessageForm"*ngIf='!isTransfering'>
+          <form>
+            <div class="mb-3">
+              <label for="objet" class="form-label">Objet</label>
+              <input type="text" class="form-control" id="objet"[(ngModel)]="object" name="object">
+            </div>
+            <div class="mb-3">
+              <label for="actualMessage" class="form-label"rows="30">Message</label>
+              <textarea style='height : 30vh;' #myMessage class="form-control" id="actualMessage" [(ngModel)]="message" name='message'></textarea>
+            </div>
+            <div class="mb-3 fileInput">
+              <input type="file" #fileInput (change)="onUploadFile($event)">
+            </div>
+            <div class="d-flex">
+              <button class="btn btn-outline-secondary me-3"(click)='fileInput.click()'>Attacher un fichier</button>
+              <button type="submit" class="btn btn-primary"[disabled]="object=='' || message==''"(click)='sendMessage()'>Envoyer</button>
+              <p class="filename ms-5 mt-3 text-primary"*ngIf='file'>{{file.name}}</p>
+              <p class='ms-2 mt-2 pt-1'*ngIf='file'> <span (click)="file=null" class="close__x" ><i class="bx bx-x text-dark "></i>  </span></p>
+            </div>
+
+
+          </form>
+      </div>
+    </div>
+
+  </ng-template>
+</div>

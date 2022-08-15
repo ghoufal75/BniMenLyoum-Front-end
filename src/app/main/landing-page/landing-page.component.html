@@ -1,0 +1,653 @@
+<app-map-loader *ngIf="isLoading"></app-map-loader>
+<div class="header">
+  <div class="navbar fixed-top" #navbar (scroll)="onWindowScroll()">
+    <div class="navbar__logo">
+      <img src="../../../assets/logos/logo-app.png" alt="" class="logo" />
+    </div>
+    <nav class="navbar__menu">
+      <ul>
+        <li><a class="menu__link">Qui sommes nous ?</a></li>
+        <li><a class="menu__link">Nos services</a></li>
+        <li><a class="menu__link">Géo-portail</a></li>
+        <li><a class="menu__link">Suivie de dossier</a></li>
+        <li><a class="menu__link">Réclamation</a></li>
+        <li>
+          <a
+            class="menu__link btn btn-primary rounded-pill"
+            style="
+              box-shadow: 0 0.6rem 1.2rem rgba(0, 0, 0, 0.205);
+              padding: 0.6rem 1rem !important;
+            "
+            *ngIf="!isAuthenticated"
+            (click)="showModal(auth)"
+            >S'authentifier</a
+          >
+        </li>
+        <li>
+          <a
+            class="menu__link btn btn-primary rounded-pill"
+            style="
+              box-shadow: 0 0.6rem 1.2rem rgba(0, 0, 0, 0.205);
+              padding: 0.6rem 1rem !important;
+            "
+            *ngIf="isAuthenticated"
+            (click)="onLogout()"
+            >Se déconnecter</a
+          >
+        </li>
+      </ul>
+    </nav>
+    <button class="navbar__button btn-lg btn btn-outline-primary"(click)='toggleNav()'>
+      <i class="bx bx-menu-alt-right"></i>
+    </button>
+  </div>
+  <div class="main">
+    <div class="main__content">
+      <h2 class="main__title">
+        Envie de concrétiser vos projets sur terrain ?
+      </h2>
+      <p class="main__paragraph">
+        Passez de l'abstrait au concret, en délimitant votre parcelle sur carte
+        contenant les projets dérogués en temps actuel.
+      </p>
+      <button class="button button-rounded">Commencer maintenant</button>
+    </div>
+    <div class="main__img">
+      <img src="../../../assets/images/landingPage-Pic.png" class="actualImg" />
+    </div>
+  </div>
+</div>
+<div class="phone__menu"*ngIf="navIsShown" [@showNav]>
+  <ul>
+    <li><a class="phone__menu__link">Qui sommes nous ?</a></li>
+    <li><a class="phone__menu__link">Nos services</a></li>
+    <li><a class="phone__menu__link">Géo-portail</a></li>
+    <li><a class="phone__menu__link">Suivie de dossier</a></li>
+    <li><a class="phone__menu__link">Réclamation</a></li>
+    <li>
+      <a
+        class="phone__menu__link btn btn-primary  rounded-pill"
+        style="
+          box-shadow: 0 0.6rem 1.2rem rgba(0, 0, 0, 0.205);
+          padding: 0.6rem 2.5rem !important;
+          font-size: 1.4;
+        "
+        *ngIf="!isAuthenticated"
+        (click)="showModal(auth)"
+        >S'authentifier</a
+      >
+    </li>
+    <li>
+      <a
+        class="menu__link btn btn-primary rounded-pill"
+        style="
+          box-shadow: 0 0.6rem 1.2rem rgba(0, 0, 0, 0.205);
+          padding: 0.6rem 1rem !important;
+        "
+        *ngIf="isAuthenticated"
+        (click)="onLogout()"
+        >Se déconnecter</a
+      >
+    </li>
+  </ul>
+</div>
+<section class="quisommesNous">
+  <div class="image">
+    <img
+      src="../../../assets/images/question.png"
+      alt=""
+      class="question-img"
+    />
+  </div>
+  <div class="content">
+    <h2 class="primary-title">Qui sommes nous ?</h2>
+    <p class="primary-paragraph">
+      Notre site vous fournis la possibilité de voir les projets en dérogations
+      actuelles sur terrain avec toute fois la possibilité de délimiter, votre
+      prorpre parcelle, afin de pouvoir télécharger une note indicative donnant
+      l'information sur son état, sa position, sa superficie ....<br />
+      Notre site donne aussi l'accées aux différents dossiers de constructions
+      afin de consulter leurs états d'approbation.<br />
+      Il vous suffit de filtrer et de consulter.
+    </p>
+  </div>
+</section>
+
+<div class="modal auth">
+  <!-- Center Modal -->
+  <ng-template #auth let-modal>
+    <div class="modal-body">
+      <div class="auth__container">
+        <div class="auth__img">
+          <img src="../../../assets/logos/logo-app.png" class="auth__logo" />
+          <div class="auth__divers">
+            <h2 class="auth__title">Authentifiez vous pour continuer</h2>
+            <p class="auth__motivation">
+              Construisez votre future avec nous, qu'avec des cliques.
+            </p>
+          </div>
+        </div>
+        <div class="auth__content">
+          <div *ngIf="!authSuccess && !authError">
+            <div class="switcher">
+              <a
+                class="switcher__signup"
+                [ngClass]="{ 'text-primary': isSignUp, 'text-dark': !isSignUp }"
+                (click)="switchToSignUp()"
+                >M'inscrire</a
+              >
+              <a
+                class="switcher__login"
+                [ngClass]="{ 'text-primary': !isSignUp, 'text-dark': isSignUp }"
+                (click)="switchToSignIn()"
+                >Me connecter</a
+              >
+            </div>
+            <div class="signup" *ngIf="isSignUp && !isAuthLoading" [@enterAnimation]>
+              <h2 class="auth__title--secondary">Inscrivez vous</h2>
+              <form
+                [formGroup]="signUpForm"
+                (ngSubmit)="onSignUp()"
+                class="signup__form"
+              >
+                <div class="mb-3">
+                  <label for="nom" class="form-label">Nom</label>
+                  <input
+                    type="text"
+                    formControlName="lastName"
+                    [ngClass]="{
+                      'is-invalid':
+                        signUpForm.get('lastName').touched &&
+                        signUpForm.get('lastName')?.errors?.required
+                    }"
+                    class="form-control"
+                    id="nom"
+                    aria-describedby="emailHelp"
+                  />
+                  <div class="invalid-feedback">Ce champs est requis.</div>
+                </div>
+                <div class="mb-3">
+                  <label for="nom" class="form-label">Prenom</label>
+                  <input
+                    type="text"
+                    formControlName="firstName"
+                    [ngClass]="{
+                      'is-invalid':
+                        signUpForm.get('firstName').touched &&
+                        signUpForm.get('firstName')?.errors?.required
+                    }"
+                    class="form-control"
+                    id="nom"
+                    aria-describedby="emailHelp"
+                  />
+                  <div class="invalid-feedback">Ce champs est requis.</div>
+                </div>
+                <div class="mb-3">
+                  <label for="email" class="form-label">Email</label>
+                  <input
+                    type="email"
+                    formControlName="email"
+                    [ngClass]="{
+                      'is-invalid':
+                        signUpForm.get('email').touched &&
+                        (signUpForm.get('email')?.errors?.required ||
+                          signUpForm.get('email')?.errors?.email)
+                    }"
+                    class="form-control"
+                    id="email"
+                    aria-describedby="emailHelp"
+                  />
+                  <div
+                    class="invalid-feedback"
+                    *ngIf="
+                      signUpForm.get('email').touched &&
+                      signUpForm.get('email')?.errors?.required
+                    "
+                  >
+                    Ce champs est requis.
+                  </div>
+                  <div
+                    class="invalid-feedback"
+                    *ngIf="
+                      signUpForm.get('email').touched &&
+                      signUpForm.get('email')?.errors?.email
+                    "
+                  >
+                    Cet email est invalid.
+                  </div>
+                </div>
+                <div class="mb-3">
+                  <label for="password" class="form-label">Password</label>
+                  <input
+                    type="password"
+                    formControlName="password"
+                    [ngClass]="{
+                      'is-invalid':
+                        signUpForm.get('password').touched &&
+                        (signUpForm.get('password')?.errors?.required ||
+                          signUpForm.get('password')?.errors?.minlength ||
+                          signUpForm.get('password')?.errors?.maxlength)
+                    }"
+                    class="form-control"
+                    id="password"
+                    aria-describedby="emailHelp"
+                  />
+                  <div
+                    class="invalid-feedback"
+                    *ngIf="
+                      signUpForm.get('password').touched &&
+                      signUpForm.get('password')?.errors?.required
+                    "
+                  >
+                    Ce champs est requis.
+                  </div>
+                  <div
+                    class="invalid-feedback"
+                    *ngIf="
+                      signUpForm.get('password').touched &&
+                      (signUpForm.get('password')?.errors?.minlength ||
+                        signUpForm.get('password')?.errors?.maxlength)
+                    "
+                  >
+                    Le mot de passe doit être d'une longueur de 8 caractères au
+                    minimum et de 20 au maximum.
+                  </div>
+                </div>
+                <div class="mb-3">
+                  <label for="confirmation" class="form-label"
+                    >Confirmation</label
+                  >
+                  <input
+                    type="password"
+                    formControlName="confirmation"
+                    [ngClass]="{
+                      'is-invalid':
+                        signUpForm.get('confirmation').touched &&
+                        (signUpForm.get('confirmation')?.errors?.required ||
+                          signUpForm.get('confirmation')?.errors?.notmatched)
+                    }"
+                    class="form-control"
+                    id="confirmation"
+                    aria-describedby="emailHelp"
+                  />
+                  <div
+                    class="invalid-feedback"
+                    *ngIf="
+                      signUpForm.get('confirmation').touched &&
+                      signUpForm.get('confirmation')?.errors?.required
+                    "
+                  >
+                    Ce champs est requis.
+                  </div>
+                  <div
+                    class="invalid-feedback"
+                    *ngIf="
+                      signUpForm.get('confirmation').touched &&
+                      signUpForm.get('confirmation')?.errors?.notmatched
+                    "
+                  >
+                    Les deux mots de passes doivent être identiques.
+                  </div>
+                </div>
+                <button
+                  type="submit"
+                  class="submit-btn btn btn-primary rounded-pill"
+                  [disabled]="signUpForm.invalid"
+                >
+                  M'inscrire
+                </button>
+              </form>
+            </div>
+            <div class="signin" *ngIf="!isSignUp && !isAuthLoading" [@enterAnimation]>
+              <h2 class="auth__title--secondary">Connectez vous</h2>
+              <form
+                [formGroup]="signInForm"
+                (ngSubmit)="onSignIn()"
+                class="signin__form"
+              >
+                <div class="mb-3">
+                  <label for="email" class="form-label">Email</label>
+                  <input
+                    type="email"
+                    formControlName="email"
+                    [ngClass]="{
+                      'is-invalid':
+                        signUpForm.get('email').touched &&
+                        (signUpForm.get('email')?.errors?.required ||
+                          signUpForm.get('email')?.errors?.email)
+                    }"
+                    class="form-control"
+                    id="email"
+                    aria-describedby="emailHelp"
+                  />
+                  <div
+                    class="invalid-feedback"
+                    *ngIf="
+                      signUpForm.get('email').touched &&
+                      signUpForm.get('email')?.errors?.required
+                    "
+                  >
+                    Ce champs est requis.
+                  </div>
+                  <div
+                    class="invalid-feedback"
+                    *ngIf="
+                      signUpForm.get('email').touched &&
+                      signUpForm.get('email')?.errors?.email
+                    "
+                  >
+                    Cet email est invalid.
+                  </div>
+                </div>
+                <div class="mb-3">
+                  <label for="password" class="form-label">Password</label>
+                  <input
+                    type="password"
+                    formControlName="password"
+                    [ngClass]="{
+                      'is-invalid':
+                        signUpForm.get('password').touched &&
+                        (signUpForm.get('password')?.errors?.required ||
+                          signUpForm.get('password')?.errors?.minlength ||
+                          signUpForm.get('password')?.errors?.maxlength)
+                    }"
+                    class="form-control"
+                    id="password"
+                    aria-describedby="emailHelp"
+                  />
+                  <div
+                    class="invalid-feedback"
+                    *ngIf="
+                      signUpForm.get('password').touched &&
+                      signUpForm.get('password')?.errors?.required
+                    "
+                  >
+                    Ce champs est requis.
+                  </div>
+                  <div
+                    class="invalid-feedback"
+                    *ngIf="
+                      signUpForm.get('password').touched &&
+                      (signUpForm.get('password')?.errors?.minlength ||
+                        signUpForm.get('password')?.errors?.maxlength)
+                    "
+                  >
+                    Le mot de passe doit être d'une longueur de 8 caractères au
+                    minimum et de 20 au maximum.
+                  </div>
+                </div>
+                <button
+                  type="submit"
+                  class="submit-btn btn btn-primary rounded-pill"
+                  [disabled]="signInForm.invalid"
+                >
+                  Me connecter
+                </button>
+              </form>
+            </div>
+            <div class="authLoading"*ngIf='isAuthLoading'>
+              <div class="lds-dual-ring"></div>
+            </div>
+          </div>
+          <div class="messages mt-5">
+            <div class="back" *ngIf="authSuccess || authError">
+              <a
+                class="back__btn"
+                (click)="authError = null; authSuccess = null"
+                >&#8592;</a
+              >
+            </div>
+            <div class="alert alert-success" role="alert" *ngIf="authSuccess">
+              {{ authSuccess }}
+            </div>
+            <div class="alert alert-danger" role="alert" *ngIf="authError">
+              {{ authError }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+</div>
+<div class="modal notAuthenticated">
+  <!-- Center Modal -->
+  <ng-template #notAuthenticated let-modal>
+    <div class="modal-body">
+      <div class="notConnected">
+        <h2>Vous devez vous connecter pour pouvoir continuer</h2>
+        <p>Cette action nécissite votre authentification.</p>
+        <a
+          class="authentifier btn btn-primary rounded-pill"
+          (click)="authNow(auth)"
+          >S'authentifier</a
+        >
+      </div>
+    </div>
+  </ng-template>
+</div>
+<section class="fonctionnalites">
+  <h2 class="primary-title__centred">Nos services</h2>
+  <div class="cartes">
+    <div class="carte first-row">
+      <div class="carte__header">
+        <i class="bx bx-briefcase-alt-2"></i>
+        <h4 class="carte__title">Consultez les Projets</h4>
+      </div>
+      <div class="carte__body">
+        <p class="carte_paragraph">
+          Consultez les projets en dérogation à temps réel en rentrant dans
+          notre géoportail et accéder au détails de chacun pour plus
+          d'informations.
+        </p>
+      </div>
+    </div>
+    <div class="carte first-row">
+      <div class="carte__header">
+        <i class="bx bxs-map-pin"></i>
+        <h4 class="carte__title">Délimitez votre parcelle</h4>
+      </div>
+      <div class="carte__body">
+        <p class="carte_paragraph">
+          Vous pouvez toute fois délimiter votre parcelle pour savoir si ça
+          interfère avec un projet étatique ou planifié pour le future.
+        </p>
+      </div>
+    </div>
+    <div class="carte second-row">
+      <div class="carte__header">
+        <i class="bx bxs-folder-open"></i>
+        <h4 class="carte__title">Suivez votre dossier</h4>
+      </div>
+      <div class="carte__body">
+        <p class="carte_paragraph">
+          Suivez l'état de votre dossier en rentrant les informations sur le
+          maitre d'ouvrage inscrit en son nom, et téléchragez les résultats en
+          cas de besoins.
+        </p>
+      </div>
+    </div>
+    <div class="carte second-row">
+      <div class="carte__header">
+        <i class="bx bx-error"></i>
+        <h4 class="carte__title">Faites votre réclamation</h4>
+      </div>
+      <div class="carte__body">
+        <p class="carte_paragraph">
+          Déposez votre réclamation sur notre site vis-à-vis les sociétés
+          concernées, on leurs transmet le message en grantissant leurs
+          réactions.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="geoportail">
+  <h2 class="primary-title pb-5" style="text-align: center">
+    Importez votre parcelle
+  </h2>
+  <app-user-geoportail
+    (notAuthenticated)="showNotAuthenticatedModal($event, notAuthenticated)"
+  ></app-user-geoportail>
+</section>
+<section class="suivieDossier">
+  <div class="content row">
+    <div class="col-md-6">
+      <h2 class="primary-title pb-5" style="color: rgb(0, 17, 100)">
+        Suivez votre dossier
+      </h2>
+      <form
+        [formGroup]="suivieDossierForm"
+        (ngSubmit)="onSubmitSuivieDossierForm(notAuthenticated)"
+      >
+        <div class="mb-5">
+          <label for="referenceFonciere" class="form-label"
+            >Référence foncière</label
+          >
+          <input
+            type="text"
+            formControlName="referenceFonciere"
+            class="form-control"
+            id="referenceFonciere"
+            aria-describedby="emailHelp"
+          />
+        </div>
+        <div class="mb-5">
+          <label for="maitreOuvrage" class="form-label">Maitre d'ouvrge</label>
+          <input
+            type="text"
+            formControlName="nom"
+            class="form-control"
+            id="maitreOuvrage"
+            aria-describedby="emailHelp"
+          />
+        </div>
+        <div class="mb-3">
+          <label for="topographe" class="form-label">Topographe</label>
+          <input
+            type="text"
+            formControlName="topographe"
+            class="form-control"
+            id="topographe"
+            aria-describedby="emailHelp"
+          />
+        </div>
+        <button class="btn btn-outline-dark rounded-pill mt-5 submit-btn">
+          Chercher
+        </button>
+      </form>
+    </div>
+    <div class="col-md-6">
+      <div class="dossierCarte">
+        <div class="overlay" *ngIf="dossierTrouve" [@enterAnimation]>
+          <a class="closebtn"></a>
+          <div>
+            <h2 class="title--secondary">
+              Dossier de référence : {{ dossierTrouve.referenceFonciere }}
+            </h2>
+            <ul class="dossierCarte__liste">
+              <li *ngFor="let key of keys" class="dossierCarte__item">
+                <span class="key">{{ key }} </span>:
+                {{
+                  key === "date_commission"
+                    ? (dossierTrouve[key] | date: "mediumDate")
+                    : dossierTrouve[key]
+                }}
+              </li>
+            </ul>
+            <p
+              class="avis border w-50 m-auto pt-2 pb-2 ps-3 pl-3 rounded-pill mt-5"
+              style="text-align: center"
+              [ngClass]="{
+                'text-success': avisProjet === 'Avis favorable',
+                'text-danger': avisProjet === 'Avis défavorable',
+                'text-light': avisProjet === 'Ajourné',
+                'text-info': avisProjet === null,
+                'border-success': avisProjet === 'Avis favorable',
+                'border-danger': avisProjet === 'Avis défavorable',
+                'border-light': avisProjet === 'Ajourné',
+                'border-info': avisProjet === null
+              }"
+            >
+              {{ avisProjet }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="reclamation">
+  <div class="content">
+    <div class="formulaire">
+      <h2 class="primary-title pb-3" style="font-size: 1.6rem">
+        Déposez votre réclamation
+      </h2>
+      <form
+        class="form"
+        [formGroup]="reclamationForm"
+        (ngSubmit)="onSubmitReclamation()"
+      >
+        <div class="mb-3">
+          <select
+            class="form-select"
+            aria-label="Default select example"
+            formControlName="type"
+            name="type"
+            (change)="setAutreInput($event)"
+            *ngIf="!isAutre"
+            aria-placeholder="Entrez le type"
+          >
+            <option selected>Choisissez le type de réclamation</option>
+            <option value="equ">Équipements et services publics</option>
+            <option value="urba">Urbanisme et construction</option>
+            <option value="budg">
+              Budget, affaires financières et programmation
+            </option>
+            <option value="coop">Coopération et partenariat</option>
+            <option value="autre">Autre</option>
+          </select>
+          <input *ngIf='isAutre'type="text" class="form-control" formControlName="type" name="type" id="type" aria-describedby="emailHelp" placeholder='Entrez le type'>
+        </div>
+
+        <div>
+          <label for="referenceFonciere" class="form-label">Réclamation</label>
+          <textarea
+            name="referenceFonciere"
+            id=""
+            cols="30"
+            class="form-control"
+            rows="10"
+            formControlName="message"
+            name="message"
+          ></textarea>
+        </div>
+        <button class="btn btn-primary mt-4 mb-3 rounded-pill">Envoyer</button>
+      </form>
+    </div>
+  </div>
+</section>
+<footer class="footer_content">
+  <img src="../../../assets/logos/logo-app-black.png" class="logo" />
+
+  <div class="links">
+    <ul>
+      <li><a class="menu__link">Qui sommes nous ?</a></li>
+      <li><a class="menu__link">Nos services</a></li>
+      <li><a class="menu__link">Géo-portail</a></li>
+      <li><a class="menu__link">Suivie de dossier</a></li>
+      <li><a class="menu__link">Réclamation</a></li>
+    </ul>
+  </div>
+  <div class="copyrights">
+    <p>&copy; Copyrights 2022 - Tout droit réservé.</p>
+  </div>
+</footer>
+<div *ngIf='alertShown' [@enterAnimation] class="alert alert-success succesfuly__auth alert-dismissible fade show" role="alert">
+  {{alertSuccessMessage}}
+  <button type="button" class="btn-close" (click)="closeAlert()"></button>
+</div>
+<div *ngIf='disconnectAlert' [@enterAnimation] class="alert alert-danger succesfuly__auth alert-dismissible fade show" role="alert">
+  {{alertUnsuccessMessage}}
+  <button type="button" class="btn-close" (click)="closeAlert()"></button>
+</div>

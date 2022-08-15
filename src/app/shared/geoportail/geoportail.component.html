@@ -1,0 +1,615 @@
+<div
+  id="map"
+  #map
+  [ngStyle]="{ 'margin-top': getMargin(), height: getHeight() }"
+  [ngClass]="{ geoins: isGeoIns, client: isClient }"
+>
+  <!-- <button class="bttn" (click)="removeLayer()">remove Layer</button> -->
+  <app-map-loader *ngIf="loading"></app-map-loader>
+  <!-- <button class="randomButton"(click)='onScreen()'>ClickMe</button> -->
+  <div
+    class="geometryProperties"
+    [@enterAnimation]
+    *ngIf="area != '' || distance != 0"
+  >
+    <div class="header clearfix">
+      <h6 style="text-align: center">Properties</h6>
+      <button
+        type="button"
+        class="btn-close"
+        (click)="closePopup()"
+        aria-hidden="true"
+        style="font-size: 0.6rem; padding: 0 !important; margin: 0 !important"
+      ></button>
+    </div>
+    <div class="content">
+      <h6>
+        {{
+          area != "" && distance == 0
+            ? "Area"
+            : area == "" && distance != 0
+            ? "Distance"
+            : "Area"
+        }}
+        :
+        {{ area != "" ? area : area == "" && distance != 0 ? distance : area }}
+        {{ area != "" ? "m²" : area == "" && distance != 0 ? "Km" : "m²" }}
+      </h6>
+    </div>
+  </div>
+  <div class="map__tiles-selector" [@appear] *ngIf="showTiles">
+    <ul>
+      <li *ngFor="let tile of tilesArray; let i = index">
+        <div class="form-check">
+          <input
+            class="form-check-input"
+            type="radio"
+            name="formRadios"
+            id="formRadios1"
+            checked
+            (click)="switchTile(i)"
+          />
+          <label class="form-check-label" for="formRadios1">
+            {{ tile.name }}
+          </label>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <div class="modal modalgeotiffModal">
+    <!-- Center Modal -->
+    <ng-template #geotiffModal let-modal>
+      <div class="modal-header">
+        <h5 class="modal-title mt-0">Remplissez le formulaires ci-dessous</h5>
+        <button
+          type="button"
+          class="btn-close"
+          (click)="modal.dismiss('Cross click')"
+          aria-hidden="true"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3 row">
+          <label class="col-md-2 col-form-label">Type </label>
+          <div class="col-md-10">
+            <select class="form-select" [(ngModel)]="typeTiff">
+              <option value="orhtophoto" selected>Ortho Photo</option>
+              <option value="restitution">Restitution</option>
+              <option value="ftopo">Feuille Topographique</option>
+            </select>
+          </div>
+        </div>
+        <div class="orthoPhotoForm" *ngIf="typeTiff === 'orhtophoto'">
+          <form [formGroup]="geotiff_form" (ngSubmit)="onSubmitGeoTiff()">
+            <div class="mb-3 row">
+              <label for="example-text-input" class="col-md-2 col-form-label"
+                >Nom</label
+              >
+              <div class="col-md-10">
+                <input
+                  class="form-control"
+                  type="text"
+                  placeholder="Entrez le nom du document"
+                  formControlName="nom"
+                  id="example-text-input"
+                />
+              </div>
+            </div>
+            <div class="mb-3 row">
+              <label for="example-text-input" class="col-md-2 col-form-label"
+                >Echelle de production</label
+              >
+              <div class="col-md-10">
+                <input
+                  formControlName="echelle"
+                  class="form-control"
+                  type="number"
+                  placeholder="Entrez l'echelle comme suit : 50000"
+                  id="example-text-input"
+                />
+              </div>
+            </div>
+            <div class="mb-3 row">
+              <label for="example-text-input" class="col-md-2 col-form-label"
+                >Date de prise de vue</label
+              >
+              <div class="col-md-10">
+                <input
+                  formControlName="date_de_prise_de_vue"
+                  class="form-control"
+                  type="datetime-local"
+                  value="2019-08-19T13:45:00"
+                  id="example-datetime-local-input"
+                />
+              </div>
+            </div>
+            <div class="mt-3">
+              <label for="formFile" class="form-label"
+                >Inclure le fichier</label
+              >
+              <input
+                class="form-control"
+                (change)="onUploadGeotiff($event)"
+                type="file"
+                id="formFile"
+              />
+            </div>
+            <div class="submit-button mt-4">
+              <button type="submit" class="btn btn-primary btn-outline">
+                Envoyer
+              </button>
+            </div>
+          </form>
+        </div>
+        <div class="feuilleTopoForm" *ngIf="typeTiff != 'orhtophoto'">
+          <form [formGroup]="geotiff_form" (ngSubmit)="onSubmitGeoTiff()">
+            <div class="mb-3 row">
+              <label for="example-text-input" class="col-md-2 col-form-label"
+                >Reference</label
+              >
+              <div class="col-md-10">
+                <input
+                  class="form-control"
+                  formControlName="reference"
+                  type="text"
+                  placeholder="Entrez le nom du document"
+                  id="example-text-input"
+                />
+              </div>
+            </div>
+            <div class="mb-3 row">
+              <label for="example-text-input" class="col-md-2 col-form-label"
+                >Nom</label
+              >
+              <div class="col-md-10">
+                <input
+                  formControlName="nom"
+                  class="form-control"
+                  type="text"
+                  placeholder="Entrez le nom du document"
+                  id="example-text-input"
+                />
+              </div>
+            </div>
+            <div class="mb-3 row">
+              <label for="example-text-input" class="col-md-2 col-form-label"
+                >Echelle de production</label
+              >
+              <div class="col-md-10">
+                <input
+                  formControlName="echelle"
+                  class="form-control"
+                  type="number"
+                  placeholder="Entrez l'echelle comme suit : 50000"
+                  id="example-text-input"
+                />
+              </div>
+            </div>
+            <div class="mb-3 row">
+              <label for="example-text-input" class="col-md-2 col-form-label"
+                >Date de prise de vue</label
+              >
+              <div class="col-md-10">
+                <input
+                  formControlName="date_de_prise_de_vue"
+                  class="form-control"
+                  type="datetime-local"
+                  value="2019-08-19T13:45:00"
+                  id="example-datetime-local-input"
+                />
+              </div>
+            </div>
+            <div class="mt-3">
+              <label for="formFile" class="form-label"
+                >Inclure le fichier</label
+              >
+              <input
+                class="form-control"
+                (change)="onUploadGeotiff($event)"
+                type="file"
+                id="formFile"
+              />
+            </div>
+            <div class="submit-button mt-4">
+              <button type="submit" class="btn btn-primary btn-outline">
+                Envoyer
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </ng-template>
+  </div>
+  <div class="modal shpModal">
+    <ng-template #shpModal let-modal>
+      <div class="modal-header">
+        <h5 class="modal-title mt-0">Remplissez le formulaires ci-dessous</h5>
+        <button
+          type="button"
+          class="btn-close"
+          (click)="modal.dismiss('Cross click')"
+          aria-hidden="true"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="urbanismeForm" (ngSubmit)="onSubmitShpForm()">
+          <div class="mb-3 row">
+            <label for="example-text-input" class="col-md-2 col-form-label"
+              >Nom</label
+            >
+            <div class="col-md-10">
+              <input
+                class="form-control"
+                type="text"
+                placeholder="Entrez le nom du document"
+                formControlName="nom"
+                id="example-text-input"
+              />
+            </div>
+          </div>
+          <div class="mb-3 row">
+            <label for="example-text-input" class="col-md-2 col-form-label"
+              >Référence d'Homologation</label
+            >
+            <div class="col-md-10">
+              <input
+                class="form-control"
+                type="text"
+                placeholder="Entrez la référence d'homologation s'elle existe"
+                id="example-text-input"
+                formControlName="referenceHomologation"
+              />
+            </div>
+          </div>
+          <div class="mb-3 row">
+            <label class="col-md-2 col-form-label">Type </label>
+            <div class="col-md-10">
+              <select class="form-select" formControlName="type">
+                <option value="orhtophoto">PA</option>
+                <option value="restitution">PDAR</option>
+                <option value="ftopo">PZ</option>
+                <option value="ftopo">PREST</option>
+                <option value="ftopo">PREDR</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="mb-3 row">
+            <label for="example-text-input" class="col-md-2 col-form-label"
+              >Localité</label
+            >
+            <div class="col-md-10">
+              <input
+                class="form-control"
+                type="text"
+                placeholder="Entrez la localité"
+                id="example-text-input"
+                formControlName="localite"
+              />
+            </div>
+          </div>
+          <div class="mb-3 row">
+            <label for="example-text-input" class="col-md-2 col-form-label"
+              >Surface</label
+            >
+            <div class="col-md-10">
+              <input
+                class="form-control"
+                type="text"
+                placeholder="Entrez la surface "
+                id="example-text-input"
+                formControlName="surface"
+              />
+            </div>
+          </div>
+          <div class="mt-3">
+            <label for="formFile" class="form-label">Inclure le fichier</label>
+            <input
+              class="form-control"
+              type="file"
+              id="formFile"
+              (change)="onFileSelected($event)"
+            />
+          </div>
+          <div class="submit-button mt-4">
+            <button type="submit" class="btn btn-primary btn-outline">
+              Envoyer
+            </button>
+          </div>
+        </form>
+      </div>
+    </ng-template>
+  </div>
+  <div class="modal logosModal">
+    <ng-template #logosModal let-modal>
+      <div class="modal-header">
+        <h5 class="modal-title mt-0">Importez les logos ci dessous</h5>
+        <button
+          type="button"
+          class="btn-close"
+          (click)="modal.dismiss('Cross click')"
+          aria-hidden="true"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="logosForm" (ngSubmit)="onSubmitLogosForm()">
+          <div class="mb-3">
+            <label for="exampleInputEmail1" class="form-label"
+              >Nom de la commune</label
+            >
+            <input
+              type="email"
+              class="form-control"
+              formControlName="communeName"
+              id="exampleInputEmail1"
+              aria-describedby="emailHelp"
+            />
+          </div>
+          <div class="mb-3">
+            <label for="formFile" class="form-label">Logo de la commune</label>
+            <input
+              class="form-control"
+              type="file"
+              id="formFile"
+              (change)="onUploadCommuneLogo($event)"
+            />
+          </div>
+          <div class="mb-3">
+            <label for="formFile" class="form-label"
+              >Logo du ministre de l'intérieur</label
+            >
+            <input
+              class="form-control"
+              type="file"
+              id="formFile"
+              (change)="onUploadMinistreLogo($event)"
+            />
+          </div>
+          <div class="submit-button mt-4">
+            <button type="submit" class="btn btn-primary btn-outline">
+              Envoyer
+            </button>
+          </div>
+        </form>
+      </div>
+    </ng-template>
+  </div>
+  <div class="layersButton">
+    <a class="action_btn layerButton" (click)="showLayerBox()"
+      ><i class="bx bx-layer"></i
+    ></a>
+  </div>
+  <div class="layersButton projectsButton">
+    <a class="action_btn layerButton" (click)="showProjectsBox()"
+      ><i class="bx bx-briefcase-alt-2 text-primary"></i
+    ></a>
+  </div>
+  <div class="tilesButtons">
+    <a class="action_btn layerButton" (click)="showTileLayers()"
+      ><i class="bx bx-map-alt tilesbx"></i
+    ></a>
+  </div>
+  <div class="globalViewButton">
+    <a class="action_btn layerButton " (click)="setGlobalView()"
+      ><i class="bx bx-globe text-primary"></i
+    ></a>
+  </div>
+  <div class="manualUploadButtons">
+    <a class="action_btn layerButton" (click)="showModal(manualCoords)"
+      ><i class="bx bx-upload tilesbx"></i
+    ></a>
+  </div>
+  <div
+    class="layerToggler"
+    [@appear]
+    *ngIf="layerArray.length != 0 && showLayers"
+  >
+    <div
+      class="form-check form-switch mb-4 d-flex"
+      style="padding: 0"
+      *ngFor="let elem of layerArray; let i = index"
+    >
+      <div class="arrow" (click)="toggleSubElements(i)">
+        <a
+          class="arrow_btn"
+          [ngStyle]="{ 'margin-top': getArrowMargin(elem) }"
+          >{{ elem.showSub ? "&#8963;" : "&#8964;" }}</a
+        >
+      </div>
+      <div class="toggleDiv">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          id="flexSwitchCheckDefault"
+          (click)="toggleLayer(elem.fileLayers)"
+          #toggler
+        />
+        <label class="form-check-label" for="flexSwitchCheckDefault">
+          {{
+            elem.filename.substring(
+              elem.filename.indexOf("/") + 1,
+              elem.filename.length
+            )
+          }}</label
+        >
+        <!-- <ng-template > -->
+        <div *ngIf="elem.showSub">
+          <div
+            class="subLayers"
+            *ngFor="let subelem of elem.fileLayers"
+            style="padding: 0.4rem 0"
+          >
+            <div
+              class="polyColor"
+              [ngStyle]="{ 'background-color': subelem.color }"
+            ></div>
+            <span class="className"> {{ subelem.className }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- </ng-template> -->
+    </div>
+  </div>
+
+  <div
+    class="layerToggler projectsToggler"
+    [@appear]
+    *ngIf="showProjects"
+
+  >
+    <div
+      class="form-check form-switch mb-4 d-flex"
+      style="padding: 0"
+      *ngFor="let elem of projects; let i = index"
+    >
+      <div class="toggleDiv">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          id="flexSwitchCheckDefault"
+          (click)="toggleProject(elem.layer)"
+          #toggler
+        />
+        <label class="form-check-label" for="flexSwitchCheckDefault">
+          {{
+            elem.reference
+          }}</label
+        >
+        <!-- <ng-template > -->
+        <div *ngIf="elem.showSub">
+          <div
+            class="subLayers"
+            *ngFor="let subelem of elem.fileLayers"
+            style="padding: 0.4rem 0"
+          >
+            <div
+              class="polyColor"
+              [ngStyle]="{ 'background-color': subelem.color }"
+            ></div>
+            <span class="className"> {{ subelem.className }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- </ng-template> -->
+    </div>
+  </div>
+
+
+
+  <div class="action-buttons" *ngIf="currentlyAdmin && permited">
+    <div class="btn-container btn-container1">
+      <button
+        type="button button2"
+        class="button btn-primary"
+        (click)="showModal(shpModal)"
+      >
+        <i class="bx bx-map-alt"></i>
+      </button>
+      <span class="btn-text btn-text1">Ajouter un document d'urbanisme</span>
+    </div>
+    <div class="btn-container btn-container2">
+      <button
+        type="button button2"
+        class="button btn-dark"
+        (click)="showModal(geotiffModal)"
+      >
+        <i class="bx bx-image-add"></i>
+      </button>
+      <span class="btn-text btn-text2">Ajouter des GeoTIFFS</span>
+    </div>
+    <div class="btn-container btn-container3">
+      <button
+        type="button button3"
+        class="button btn-danger"
+        (click)="showModal(logosModal)"
+      >
+        <i class="bx bxs-file-image"></i>
+      </button>
+      <span class="btn-text btn-text3"
+        >Ajouter les logos de communes et ministre</span
+      >
+    </div>
+  </div>
+</div>
+<div class="manuelCoords modal">
+  <ng-template #manualCoords let-modal>
+    <div class="modal-header">
+      <h5 class="modal-title mt-0">Ajouter vos coordonnées mannuelement</h5>
+      <button
+        type="button"
+        class="btn-close"
+        (click)="modal.dismiss('Cross click')"
+        aria-hidden="true"
+      ></button>
+    </div>
+    <div class="modal-body">
+      <form [formGroup]="coordsForm" (ngSubmit)="onSubmitLambertCoords()">
+        <div class="d-flex justify-content-end">
+          <div>
+            <button
+              class="btn btn-success"
+              type="button"
+              (click)="addLambertCoords()"
+            >
+              Ajouter une ligne
+            </button>
+          </div>
+        </div>
+        <div formArrayName="lambertCoords">
+          <div
+            class="row mt-4 mb-4"
+            *ngFor="let pair of lambertCoords().controls; let i = index"
+            [formGroupName]="i"
+          >
+            <div class="col-md-5 d-flex p-0 m-2">
+              <div><label for="X" class="form-label pt-2">X</label></div>
+              <div class="ms-2" style="width: 100% !important">
+                <input
+                  type="number"
+                  class="form-control"
+                  formControlName="X"
+                  name="X"
+                  style="width: 100% !important"
+                />
+              </div>
+            </div>
+            <div class="col-md-5 d-flex p-0 m-2">
+              <div><label for="Y" class="form-label pt-2">Y</label></div>
+              <div class="ms-2" style="width: 100% !important">
+                <input
+                  type="number"
+                  class="form-control"
+                  formControlName="Y"
+                  name="Y"
+                  style="width: 100% !important"
+                />
+              </div>
+            </div>
+            <div class="col-md-1 pt-2">
+              <button class="btn btn-danger" (click)="removeLambertCoords(i)">
+                <i class="bx bx-x"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+        <button class="btn btn-primary" type="submit">Submit</button>
+        <input
+          type="file"
+          (change)="addfile($event)"
+          class="inputFile"
+          #input
+        />
+        <button
+          type="button"
+          class="btn btn-secondary ms-2"
+          (click)="input.click()"
+        >
+          Importer un fichier Excel
+        </button>
+      </form>
+    </div>
+  </ng-template>
+</div>

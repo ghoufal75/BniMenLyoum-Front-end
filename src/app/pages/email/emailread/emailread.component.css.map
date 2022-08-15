@@ -1,0 +1,9 @@
+{
+    "version": 3,
+    "mappings": "",
+    "sources": [
+        "emailread.component.scss"
+    ],
+    "names": [],
+    "file": "emailread.component.css"
+}

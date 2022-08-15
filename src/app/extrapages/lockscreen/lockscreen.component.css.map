@@ -1,0 +1,9 @@
+{
+    "version": 3,
+    "mappings": "",
+    "sources": [
+        "lockscreen.component.scss"
+    ],
+    "names": [],
+    "file": "lockscreen.component.css"
+}

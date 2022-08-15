@@ -1,0 +1,156 @@
+.pageTitle{
+  padding-left: .7rem;
+  margin : 4% 0;
+  border-left: 4px solid #556ee6;
+
+  font-family: 'Raleway Light';
+  text-transform: uppercase;
+  color : #556ee6;
+  letter-spacing: .1rem;
+}
+.cardContainer{
+  height : 45vh;
+  border-radius: 12px;
+  box-shadow: 0 .7rem 2rem rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  .cardHeader{
+
+    .title{
+      text-align: center;
+      padding : .5rem 0;
+      padding-top: .8rem;
+      h2{
+        font-size: 1rem;
+        color : white;
+      }
+    }
+    .nav{
+      display: flex;
+      justify-content: space-between;
+      margin: .7rem .5rem;
+      margin-bottom: 0rem;
+    }
+  }
+  .cardBody{
+    padding : .3rem .4rem;
+    overflow-y: scroll;
+    &::-webkit-scrollbar {
+      width: 8px;
+      background-color: #f0f0f0;
+      border-radius: 15px;
+  }
+  &::-webkit-scrollbar-thumb{
+    background-color: #b9b9b9;
+    border-radius: 15px;
+
+  }
+    height : 35vh;
+    .accounts{
+      display: flex;
+      &:not(:last-child){
+        border-bottom: 1px solid rgb(198, 198, 198)
+      }
+      }
+      .nameDiv{
+        margin-left: .6rem;
+        font-size: .8rem;
+        color : rgb(35, 35, 35)
+      }
+    }
+  }
+  .roundedImg{
+    width : 3rem;
+    height : 3rem;
+    position : relative;
+    border-radius: 40px;
+
+    box-shadow: 0 .7rem .7rem rgba(0, 0, 0, 0.18);
+    .name{
+      font-family: .5rem;
+      font-size: .7rem;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%,-50%);
+      color : #ffff;
+      text-transform: uppercase;
+    }
+  }
+.svg{
+  width : 40%;
+}
+#ellipse{
+  background-color: red !important;
+}
+
+tbody{
+  tr{
+    transition: all .6s;
+    cursor: pointer;
+    &:hover{
+      background-color: #d5d4d4;
+    }
+  }
+}
+.account{
+  &__header{
+    position : relative;
+    height : 15vh;
+    border-bottom: 2px solid #ffff !important;
+    .roundedImg--account{
+      width : 5rem;
+      height : 5rem;
+      position : relative;
+      border-radius: 80px;
+      border: 1px solid white;
+      box-shadow: 0 .7rem .7rem rgba(0, 0, 0, 0.18);
+      .name{
+        font-family: .5rem;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%,-50%);
+        color : #ffff;
+      }
+    }
+  }
+}
+.avatar{
+  width : auto;
+  height : auto;
+  position: absolute;
+  top : 55%;
+  left : 50%;
+  transform: translateX(-50%);
+}
+
+.modal-header{
+  border : none !important;
+  }
+.modal-body{
+  border : none;
+}
+.credentials{
+  margin : 2.5rem 0;
+  &__name{
+    text-align: center;
+    font-size: 1rem;
+  }
+  &__list{
+    font-size: .8rem;
+    list-style: none;
+    li{
+      &:not(:last-child){
+        margin-bottom: 1rem;
+      }
+    }
+    .identifier{
+      font-weight: bold;
+    }
+    .credentialsData{
+
+    }
+  }
+}
+
+

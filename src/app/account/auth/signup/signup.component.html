@@ -1,0 +1,146 @@
+<div class="account-pages my-5 pt-sm-5">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-8 col-lg-6 col-xl-5">
+        <div class="card overflow-hidden">
+          <div class="bg-soft bg-primary">
+            <div class="row">
+              <div class="col-7">
+                <div class="text-primary p-4">
+                  <h5 class="text-primary">S'authentifier</h5>
+                  <p>Créer votre compte d'administrateur.</p>
+                </div>
+              </div>
+              <div class="col-5 align-self-end">
+                <img src="assets/images/profile-img.png" alt="" class="img-fluid">
+              </div>
+            </div>
+          </div>
+          <div class="card-body pt-0">
+            <div>
+              <a routerLink="/">
+                <div class="avatar-md profile-user-wid mb-4">
+                  <span class="avatar-title rounded-circle bg-light">
+                    <img src="assets/images/logo.svg" alt="" class="rounded-circle" height="34">
+                  </span>
+                </div>
+              </a>
+            </div>
+            <div class="p-2">
+
+              <form class="needs-validation" name="signupForm" [formGroup]="signupForm" (ngSubmit)="onSubmit()"
+                novalidate>
+
+                <ngb-alert type="success" *ngIf="successmsg" [dismissible]="false">Registeration successfull.
+                </ngb-alert>
+
+                <ngb-alert type="danger" *ngIf="error" [dismissible]="false">{{ error }}</ngb-alert>
+
+                <div class="mb-3">
+                  <label for="username" class="form-label">Nom d'utilisateur</label>
+
+                  <input type="text" formControlName="username" class="form-control"
+                    [ngClass]="{ 'is-invalid': f.username.touched && f.username.errors }" id="username"
+                    placeholder="Entrez le nom d'utilisateur" />
+
+                  <div *ngIf="f.username.errors" class="invalid-feedback">
+                    <div *ngIf="f.username.errors.required">Ce champs est requis.</div>
+                  </div>
+                </div>
+
+                <div class="mb-3">
+                  <label for="nom" class="form-label">Nom</label>
+
+                  <input type="text" formControlName="lastName" class="form-control"
+                    [ngClass]="{ 'is-invalid':f.lastName.touched && f.lastName.errors }" id="nom"
+                    placeholder="Entrez votre nom" />
+
+                  <div *ngIf="f.lastName.errors" class="invalid-feedback">
+                    <div *ngIf="f.lastName.errors.required">Ce champs est requis.</div>
+                  </div>
+                </div>
+
+                <div class="mb-3">
+                  <label for="firstName" class="form-label">Prenom</label>
+
+                  <input type="text" formControlName="firstName" class="form-control"
+                    [ngClass]="{ 'is-invalid': f.firstName.touched && f.firstName.errors }" id="firstName"
+                    placeholder="Entrez votre prenom" />
+
+                  <div *ngIf="f.lastName.errors" class="invalid-feedback">
+                    <div *ngIf="f.lastName.errors.required">Ce champs est requis.</div>
+                  </div>
+                </div>
+
+                <div class="mb-3">
+                  <label for="profile" class="form-label">Profile</label>
+
+                  <input type="text" formControlName="profile" class="form-control"
+                    [ngClass]="{ 'is-invalid': f.profile.touched && f.profile.errors }" id="profile"
+                    placeholder="Entrez votre profile" />
+
+                  <div *ngIf="f.profile.errors" class="invalid-feedback">
+                    <div *ngIf="f.profile.errors.required">Ce champs est requis.</div>
+                  </div>
+                </div>
+
+                <div class="mb-3">
+                  <label for="email" class="form-label">Email</label>
+
+                  <input type="email" formControlName="email" class="form-control"
+                    [ngClass]="{ 'is-invalid':f.email.touched && f.email.errors }" id="email" placeholder="Entrez votre email" />
+
+                  <div *ngIf=" f.email.errors" class="invalid-feedback">
+                    <div *ngIf="f.email.errors.required">Ce champs est requis.</div>
+                    <div *ngIf="f.email.errors.email">Entrez une adresse email valide.</div>
+                  </div>
+                </div>
+
+                <div class="mb-3">
+                  <label for="password" class="form-label">Password</label>
+
+                  <input type="password" formControlName="password" class="form-control"
+                    [ngClass]="{ 'is-invalid':f.password.touched &&  f.password.errors }" id="password" placeholder="Entrez votre mot de passe" />
+
+                  <div *ngIf="f.password.touched && f.password.errors" class="invalid-feedback">
+                    <div *ngIf="f.password.errors.required">Ce champs est requis.</div>
+                  </div>
+                  <div *ngIf="f.password.touched && f.password.errors" class="invalid-feedback">
+                    <div *ngIf="f.password.touched && (f.password.errors.minlength || f.password.errors.maxlength)">Le mot de passe doit contenir au minimum 16 caractères et au maximum  30.</div>
+                  </div>
+                </div>
+                <div class="mb-3">
+                  <label for="confirmation" class="form-label">Confirmation</label>
+
+                  <input type="password" formControlName="confirmation" class="form-control"
+                    [ngClass]="{ 'is-invalid': f.confirmation.touched && (f.confirmation.errors?.required || f.confirmation.errors?.['notMatched'])}" id="confirmation" placeholder="Confirmez votre mot de passe" />
+
+                  <div *ngIf=" f.confirmation.touched &&f.confirmation.errors" class="invalid-feedback">
+                    <div *ngIf="f.confirmation.errors.required">Ce champs est requis.</div>
+                  </div>
+                  <div *ngIf=" f.confirmation.touched && f.confirmation.errors?.['notMatched']" class="invalid-feedback">
+                    <div *ngIf="f.confirmation.errors?.['notMatched']">Les deux mots de passes doivent être les mêmes.</div>
+                  </div>
+                </div>
+
+                <div class="mt-4 d-grid">
+                  <button class="btn btn-primary" type="submit" [disabled]="signupForm.invalid">Minscrire</button>
+                </div>
+
+              </form>
+            </div>
+          </div>
+        </div>
+        <!-- end card -->
+
+        <div class="mt-5 text-center">
+          <p>Already have an account ? <a routerLink="/account/login" class="fw-medium text-primary"> Login</a>
+          </p>
+          <p>© {{year}} Skote. Crafted with <i class="mdi mdi-heart text-danger"></i> by Themesbrand</p>
+        </div>
+      </div> <!-- end col -->
+    </div>
+    <!-- end row -->
+  </div>
+  <!-- end container -->
+</div>

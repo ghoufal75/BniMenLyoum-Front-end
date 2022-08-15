@@ -1,0 +1,1177 @@
+<app-map-loader *ngIf="isLoading"></app-map-loader>
+<div *ngIf="!isEditing"[@enterAnimation]>
+  <div class="filreing&choosing d-flex justify-content-between"*ngIf="!isEditing"[@enterAnimation]>
+    <div class="search">
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <div class="dropdown" ngbDropdown>
+            <button
+              class="btn btn-outline-secondary dropdown-toggle"
+              type="button"
+              id="dropdownMenuButton"
+              ngbDropdownToggle
+            >
+              <i class="bx bx-filter"></i>
+            </button>
+            <div class="dropdown-menu" ngbDropdownMenu>
+              <a
+                class="dropdown-item"
+                href="javascript: void(0);"
+                (click)="fetchingCriteria = 'cin'"
+                ><span *ngIf="fetchingCriteria === 'cin'">&#10004;</span> CIN</a
+              >
+              <a
+                class="dropdown-item"
+                href="javascript: void(0);"
+                (click)="fetchingCriteria = 'rc'"
+                ><span *ngIf="fetchingCriteria === 'rc'">&#10004;</span> RC</a
+              >
+              <a
+                class="dropdown-item"
+                href="javascript: void(0);"
+                (click)="fetchingCriteria = 'idRV'"
+                ><span *ngIf="fetchingCriteria === 'idRV'">&#10004;</span> IDRV</a
+              >
+              <a
+                class="dropdown-item"
+                href="javascript: void(0);"
+                (click)="fetchingCriteria = 'idOrganisme'"
+                ><span *ngIf="fetchingCriteria === 'idOrganisme'">&#10004;</span>
+                ID Organisme</a
+              >
+            </div>
+          </div>
+        </div>
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Rechercher par critère"
+          aria-label="Rechercher par critère"
+          aria-describedby="basic-addon2"
+          (keyup)="onWritingCredentials($event)"
+        />
+        <div class="input-group-append">
+          <button class="btn btn-primary" type="button">
+            <i class="fas fa-search"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="newOrchoosing d-flex">
+      <div class="dropdown" ngbDropdown>
+        <button
+          class="btn btn-primary dropdown-toggle"
+          type="button"
+          id="dropdownMenuButton"
+          ngbDropdownToggle
+        >
+          Select Project Type <i class="mdi mdi-chevron-down"></i>
+        </button>
+        <div class="dropdown-menu" ngbDropdownMenu>
+          <a
+            class="dropdown-item"
+            href="javascript: void(0);"
+            (click)="fetchConstructions()"
+            >Constructions</a
+          >
+          <a
+            class="dropdown-item"
+            href="javascript: void(0);"
+            (click)="fetchMorcellements()"
+            >Morcellements</a
+          >
+          <a
+            class="dropdown-item"
+            href="javascript: void(0);"
+            (click)="fetchLotissements()"
+            >Lotissements</a
+          >
+          <a
+            class="dropdown-item"
+            href="javascript: void(0);"
+            (click)="fetchGroupeHabitations()"
+            >Groupes d'habitation</a
+          >
+        </div>
+      </div>
+      <div>
+        <button
+          class="btn btn-outline-primary ms-3"
+          (click)="showNewProjectModal(newProject)"
+          *ngIf="permited"
+        >
+          Nouveau Projet
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="arrays"*ngIf="!isEditing"[@enterAnimation]>
+    <div class="constructionArray" *ngIf="projectsType === 'constructions'">
+      <h2 class="projectTitle">Constructions</h2>
+      <table class="table table-responsive">
+        <thead class="table-dark">
+          <tr>
+            <th scope="col">Référence foncière</th>
+            <th scope="col">Type de projet</th>
+            <th scope="col">Topographe</th>
+            <th scope="col">surfaceTerrain du terrain</th>
+            <th scope="col">Maitre Ouvrage</th>
+            <th scope="col">COS</th>
+            <th scope="col">CUS</th>
+            <th scope="col">Date de commission</th>
+            <th scope="col">Etat</th>
+            <th scope="col" *ngIf="permited">Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let element of constructionsArray;let i=index;">
+            <td>{{ element.referenceFonciere }}</td>
+            <td>{{ element.typeProjet }}</td>
+            <td>{{ element.topographe }}</td>
+            <td>{{ element.surfaceTerrain }}</td>
+            <td>{{ element. maitreOuvrageName }}</td>
+            <td>{{ element.cos }}</td>
+            <td>{{ element.cus }}</td>
+            <td>{{ !!element.date_commission?(element.date_commission| date:'mediumDate'):'Pas encore'}}</td>
+            <td class="etat"><span [ngStyle]="{'color': element.approuve==='Ajourné'?'#99999':((element.approuve==='Avis favorable')?'#34c38f':'#f46a6a')}">{{element.approuve==='Pas encore'?'... En attente':((element.approuve==='Avis favorable')?'&#10004; Avis favorable':(element.approuve==='Ajourné'?'Ajourné':'&#10006; Avis défavorable'))}}</span></td>
+            <td class="d-flex" *ngIf="permited">
+              <a class="action-btn action-btn--1"(click)="onStartLocating(element)">
+              <p style="text-align:center">
+                <i class="bx bx-map"></i>
+              </p>
+              </a>
+              <a class="action-btn action-btn--2" (click)="onUpdateProject(element,newProject)">
+                <p style="text-align:center">
+                  <i class="bx  bx-edit-alt"></i>
+                </p>
+                </a>
+
+                <a class="action-btn action-btn--4"(click)="approuverProjet(element)">
+                  <p style="text-align:center">
+                    <i class="bx bx-check"></i>
+                  </p>
+                  </a>
+                <a class="action-btn action-btn--5"(click)="rejeterProjet(element)">
+                  <p style="text-align:center">
+                    <i class="bx bx-x"></i>
+                  </p>
+                  </a>
+                <a class="action-btn bg-info" (click)=" showDateModal(datePickerModal,element)">
+                  <p style="text-align:center">
+                    <i class="bx bx-calendar-event"></i>
+                  </p>
+                  </a>
+                <a class="action-btn action-btn--3"(click)="showAlert(element,deleteModal)">
+                  <p style="text-align:center">
+                    <i class="bx bx-trash-alt"></i>
+                  </p>
+                  </a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="morcellementArray" *ngIf="projectsType === 'morcellements'">
+      <h2 class="projectTitle">Morcellements</h2>
+      <table class="table">
+        <thead class="table-dark">
+          <tr>
+            <th scope="col">Référence foncière</th>
+            <th scope="col">type de projet</th>
+            <th scope="col">surfaceTerrain du terrain</th>
+            <th scope="col">Maitre Ouvrage</th>
+            <th scope="col">Nombre de lots à morceller</th>
+            <th scope="col">solde</th>
+            <th scope="col">Date de commission</th>
+            <th scope="col">Etat</th>
+            <th scope="col" *ngIf="permited">Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let element of morcellemntsArray">
+            <td>{{ element.referenceFonciere }}</td>
+            <td>{{ element.typeProjet }}</td>
+            <td>{{ element.topographe }}</td>
+            <td>{{ element.maitreOuvrageName }}</td>
+            <td>{{ element.nbrLotsAMorceller }}</td>
+            <td>{{ element.solde }}</td>
+            <td>{{ !!element.date_commission?(element.date_commission| date:'mediumDate'):'Pas encore'}}</td>
+            <td class="etat"><span [ngStyle]="{'color': element.approuve==='Ajourné'?'#99999':((element.approuve==='Avis favorable')?'#34c38f':'#f46a6a')}">{{element.approuve==='Pas encore'?'... En attente':((element.approuve==='Avis favorable')?'&#10004; Avis favorable':(element.approuve==='Ajourné'?'Ajourné':'&#10006; Avis défavorable'))}}</span></td>
+            <td class="d-flex" *ngIf="permited">
+              <a class="action-btn action-btn--1"(click)="onStartLocating(element)">
+                <p style="text-align:center">
+                  <i class="bx bx-map"></i>
+                </p>
+                </a>
+                <a class="action-btn action-btn--2"(click)="onUpdateProject(element,newProject)">
+                  <p style="text-align:center">
+                    <i class="bx  bx-edit-alt"></i>
+                  </p>
+                  </a>
+
+                  <a class="action-btn action-btn--4"(click)="approuverProjet(element)">
+                    <p style="text-align:center">
+                      <i class="bx bx-check"></i>
+                    </p>
+                    </a>
+                  <a class="action-btn action-btn--5"(click)="rejeterProjet(element)">
+                    <p style="text-align:center">
+                      <i class="bx bx-x"></i>
+                    </p>
+                    </a>
+                <a class="action-btn bg-info" (click)=" showDateModal(datePickerModal,element)">
+                  <p style="text-align:center">
+                    <i class="bx bx-calendar-event"></i>
+                  </p>
+                  </a>
+                  <a class="action-btn action-btn--3"(click)="showAlert(element,deleteModal)">
+                    <p style="text-align:center">
+                      <i class="bx bx-trash-alt"></i>
+                    </p>
+                    </a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="lotissementArray" *ngIf="projectsType === 'lotissements'">
+      <h2 class="projectTitle">Lotissements</h2>
+      <table class="table">
+        <thead class="table-dark">
+          <tr>
+            <th scope="col">Référence foncière</th>
+            <th scope="col">type de projet</th>
+            <th scope="col">surfaceTerrain du terrain</th>
+            <th scope="col">Maitre Ouvrage</th>
+            <th scope="col">CUS</th>
+            <th scope="col">Nombre de lots</th>
+            <th scope="col">Programme</th>
+            <th scope="col">Date de commission</th>
+            <th scope="col">Etat</th>
+            <th scope="col" *ngIf="permited">Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let element of lotissementsArray">
+            <td>{{ element.referenceFonciere}}</td>
+            <td>{{ element.typeProjet }}</td>
+            <td>{{ element.topographe }}</td>
+            <td>{{ element.maitreOuvrageName }}</td>
+            <td>{{ element.cus }}</td>
+            <td>{{ element.nbrLots }}</td>
+            <td>{{ element.programme }}</td>
+            <td>{{ !!element.date_commission?(element.date_commission| date:'mediumDate'):'Pas encore'}}</td>
+            <td class="etat"><span [ngStyle]="{'color': element.approuve==='Ajourné'?'#99999':((element.approuve==='Avis favorable')?'#34c38f':'#f46a6a')}">{{element.approuve==='Pas encore'?'... En attente':((element.approuve==='Avis favorable')?'&#10004; Avis favorable':(element.approuve==='Ajourné'?'Ajourné':'&#10006; Avis défavorable'))}}</span></td>
+            <td class="d-flex" *ngIf="permited">
+              <a class="action-btn action-btn--1"(click)="onStartLocating(element)">
+                <p style="text-align:center">
+                  <i class="bx bx-map"></i>
+                </p>
+                </a>
+
+                <a class="action-btn action-btn--2"(click)="onUpdateProject(element,newProject)">
+                  <p style="text-align:center">
+                    <i class="bx  bx-edit-alt"></i>
+                  </p>
+                  </a>
+
+                  <a class="action-btn action-btn--4"(click)="approuverProjet(element)">
+                    <p style="text-align:center">
+                      <i class="bx bx-check"></i>
+                    </p>
+                    </a>
+                  <a class="action-btn action-btn--5"(click)="rejeterProjet(element)">
+                    <p style="text-align:center">
+                      <i class="bx bx-x"></i>
+                    </p>
+                    </a>
+                    <a class="action-btn bg-info" (click)=" showDateModal(datePickerModal,element)">
+                      <p style="text-align:center">
+                        <i class="bx bx-calendar-event"></i>
+                      </p>
+                      </a>
+                  <a class="action-btn action-btn--3"(click)="showAlert(element,deleteModal)">
+                    <p style="text-align:center">
+                      <i class="bx bx-trash-alt"></i>
+                    </p>
+                    </a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div
+      class="groupeHabitationArray"
+      *ngIf="projectsType === 'groupeHabitations'"
+    >
+      <h2 class="projectTitle">Groupe d'habitations</h2>
+      <table class="table">
+        <thead class="table-dark">
+          <tr>
+            <th scope="col">Référence foncière</th>
+            <th scope="col">type de projet</th>
+            <th scope="col">surfaceTerrain du terrain</th>
+            <th scope="col">Maitre Ouvrage</th>
+            <th scope="col">COS</th>
+            <th scope="col">CUS</th>
+            <th scope="col">Nombre d'immeubles</th>
+            <th scope="col">Nombre d'appartements</th>
+            <th scope="col">Nombre de syndics</th>
+            <th scope="col">Nombre de locaux commerciaux</th>
+            <th scope="col">Programme</th>
+            <th scope="col">Date de commission</th>
+            <th scope="col">Etat</th>
+            <th scope="col" *ngIf="permited">Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let element of groupeHabitationsArray">
+            <td>{{ element.referenceFonciere }}</td>
+            <td>{{ element.typeProjet }}</td>
+            <td>{{ element.topographe }}</td>
+            <td>{{ element.maitreOuvrageName }}</td>
+            <td>{{ element.cos }}</td>
+            <td>{{ element.cus }}</td>
+            <td>{{ element.nbrImmeuble }}</td>
+            <td>{{ element.nbrAppartements }}</td>
+            <td>{{ element.nbrSyndics }}</td>
+            <td>{{ element.nbrLocauxCommerciaux }}</td>
+            <td>{{ element.programme }}</td>
+            <td>{{ !!element.date_commission?(element.date_commission| date:'mediumDate'):'Pas encore'}}</td>
+            <td class="etat"><span [ngStyle]="{'color': element.approuve==='Ajourné'?'#99999':((element.approuve==='Avis favorable')?'#34c38f':'#f46a6a')}">{{element.approuve==='Pas encore'?'... En attente':((element.approuve==='Avis favorable')?'&#10004; Avis favorable':(element.approuve==='Ajourné'?'Ajourné':'&#10006; Avis défavorable'))}}</span></td>
+            <td class="d-flex" *ngIf="permited">
+              <a class="action-btn action-btn--1"(click)="onStartLocating(element)">
+                <p style="text-align:center">
+                  <i class="bx bx-map"></i>
+                </p>
+                </a>
+                <a class="action-btn action-btn--2"(click)="onUpdateProject(element,newProject)">
+                  <p style="text-align:center">
+                    <i class="bx  bx-edit-alt"></i>
+                  </p>
+                  </a>
+
+                  <a class="action-btn action-btn--4"(click)="approuverProjet(element)">
+                    <p style="text-align:center">
+                      <i class="bx bx-check"></i>
+                    </p>
+                    </a>
+                  <a class="action-btn action-btn--5"(click)="rejeterProjet(element)">
+                    <p style="text-align:center">
+                      <i class="bx bx-x"></i>
+                    </p>
+                    </a>
+                    <a class="action-btn bg-info" (click)=" showDateModal(datePickerModal,element)">
+                      <p style="text-align:center">
+                        <i class="bx bx-calendar-event"></i>
+                      </p>
+                      </a>
+                  <a class="action-btn action-btn--3"(click)="showAlert(element,deleteModal)">
+                    <p style="text-align:center">
+                      <i class="bx bx-trash-alt"></i>
+                    </p>
+                    </a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="isEditing"[@enterAnimation]>
+  <div class="d-flex justify-content-end mb-2">
+    <button class="btn btn-primary"(click)="saveLocation()">Enregistrer</button>
+    <button class="btn btn-danger ms-3" (click)="isEditing=false">Annuler</button>
+  </div>
+  <div>
+    <app-geoportail (doneDrawing)="savePolygoneOfProject($event)"></app-geoportail>
+  </div>
+</div>
+
+<div class="modal modalgeotiffModal">
+  <!-- Center Modal -->
+  <ng-template #newProject let-modal>
+    <div class="modal-header">
+      <h5 class="modal-title mt-0">Créer un nouveau projet</h5>
+      <button
+        type="button"
+        class="btn-close"
+        (click)="modal.dismiss('Cross click')"
+        aria-hidden="true"
+      ></button>
+    </div>
+    <div class="modal-body">
+      <div class="mb-3 row">
+        <label class="col-md-2 col-form-label">Type </label>
+        <div class="col-md-10">
+          <select class="form-select" [(ngModel)]="typeProjet">
+            <option value="construction" selected>Constructions</option>
+            <option value="morcellement">Morcellements</option>
+            <option value="lotissement">Lotissements</option>
+            <option value="groupeHabitation">Groupe d'habitations</option>
+          </select>
+        </div>
+      </div>
+      <form
+       [formGroup]="constructionForm"
+        (ngSubmit)="submitConstructionForm()"
+        *ngIf="typeProjet === 'construction'"
+      >
+        <div class="mb-3 row">
+          <label for="example-email-input" class="col-md-2 col-form-label"
+            >Référence foncière</label
+          >
+          <div class="col-md-10">
+            <input
+              class="form-control"
+              type="text"
+              [ngClass]="{
+                'is-invalid':
+                  constructionForm.get('referenceFonciere').touched &&
+                  constructionForm.get('referenceFonciere').errors?.required
+              }"
+              formControlName="referenceFonciere"
+              placeholder="Entrez la référence"
+              required
+              id="example-email-input"
+            />
+            <div
+              class="invalid-feedback"
+              *ngIf="
+              constructionForm.get('referenceFonciere').touched &&  constructionForm.get('referenceFonciere').errors?.required
+              "
+            >
+              Ce champs est requis
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-3 row">
+          <label for="example-email-input" class="col-md-2 col-form-label"
+            >Topographe</label
+          >
+          <div class="col-md-10">
+            <input
+              class="form-control"
+              type="text"
+              [ngClass]="{
+                'is-invalid':  constructionForm.get('topographe').touched &&  constructionForm.get('topographe').errors?.required
+              }"
+              formControlName="topographe"
+              placeholder="Entrez le nom complet du topographe"
+              required
+              id="example-email-input"
+            />
+            <div class="invalid-feedback">Ce champs est requis</div>
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label for="example-email-input" class="col-md-2 col-form-label"
+            >Surface Terrain</label
+          >
+          <div class="col-md-10">
+            <input
+              class="form-control"
+              type="number"
+              [ngClass]="{
+                'is-invalid':
+                constructionForm.get('surfaceTerrain').touched &&  constructionForm.get('surfaceTerrain').errors?.required
+              }"
+              formControlName="surfaceTerrain"
+              placeholder="Entrez la surfaceTerrain en m²"
+              required
+              id="example-email-input"
+            />
+            <div class="invalid-feedback">Ce champs est requis</div>
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label for="example-email-input" class="col-md-2 col-form-label"
+            >Maitre d'ouvrage</label
+          >
+          <div class="col-md-10">
+            <ng2-completer autoMatch='true' formControlName="maitreOuvrageName" inputClass="form-control" (keyup)="onWritingMaitreOuvrage($event)" name='maitreOuvrageName'[datasource]="maitreOuvragesNamesArray" [minSearchLength]="0"></ng2-completer>
+            <div class="invalid-feedback">Ce champs est requis</div>
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label for="example-email-input" class="col-md-2 col-form-label"
+            >COS</label
+          >
+          <div class="col-md-10">
+            <input
+              class="form-control"
+              type="number"
+              required
+              [ngClass]="{ 'is-invalid':  constructionForm.get('cos').touched &&  constructionForm.get('cos').errors?.required }"
+              formControlName="cos"
+              placeholder="Entrez le COS"
+              id="example-email-input"
+            />
+            <div class="invalid-feedback">Ce champs est requis</div>
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label for="example-email-input" class="col-md-2 col-form-label"
+            >CUS</label
+          >
+          <div class="col-md-10">
+            <input
+              class="form-control"
+              type="number"
+              min="1"
+              max="99"
+              [ngClass]="{'is-invalid': constructionForm.get('cus').touched && ( constructionForm.get('cus').errors?.['max'] ||  constructionForm.get('cus').errors?.required)}"
+              required
+              formControlName="cus"
+              placeholder="Entrez le CUS"
+              id="example-email-input"
+            />
+            <div
+              class="invalid-feedback"
+              *ngIf=" constructionForm.get('cus').touched &&  constructionForm.get('cus').errors?.['max']"
+            >
+              Vous devez entrer un nombre entre 1 et 99.
+            </div>
+            <div
+              class="invalid-feedback"
+              *ngIf="constructionForm.get('cus').touched && constructionForm.get('cus').errors?.['required']"
+            >
+              Ce champs est requis
+            </div>
+          </div>
+        </div>
+        <button class="btn btn-primary" [disabled]="constructionForm.invalid">
+          Submit
+        </button>
+      </form>
+      <form
+        action=""
+        *ngIf="typeProjet === 'lotissement'"
+        [formGroup]="lotissementForm"
+        (ngSubmit)="onSubmitLotissementForm()"
+      >
+      <div class="mb-3 row">
+        <label for="example-email-input" class="col-md-2 col-form-label"
+          >Référence foncière</label
+        >
+        <div class="col-md-10">
+          <input
+            class="form-control"
+            type="text"
+            [ngClass]="{
+              'is-invalid':
+                lotissementForm.get('referenceFonciere').touched &&
+                lotissementForm.get('referenceFonciere').errors?.required
+            }"
+            formControlName="referenceFonciere"
+            placeholder="Entrez la référence"
+            required
+            id="example-email-input"
+          />
+          <div
+            class="invalid-feedback"
+            *ngIf="
+            lotissementForm.get('referenceFonciere').touched &&  lotissementForm.get('referenceFonciere').errors?.required
+            "
+          >
+            Ce champs est requis
+          </div>
+        </div>
+      </div>
+
+      <div class="mb-3 row">
+        <label for="example-email-input" class="col-md-2 col-form-label"
+          >Topographe</label
+        >
+        <div class="col-md-10">
+          <input
+            class="form-control"
+            type="text"
+            [ngClass]="{
+              'is-invalid':  lotissementForm.get('topographe').touched &&  lotissementForm.get('topographe').errors?.required
+            }"
+            formControlName="topographe"
+            placeholder="Entrez le nom complet du topographe"
+            required
+            id="example-email-input"
+          />
+          <div class="invalid-feedback">Ce champs est requis</div>
+        </div>
+      </div>
+      <div class="mb-3 row">
+        <label for="example-email-input" class="col-md-2 col-form-label"
+          >Surface Terrain</label
+        >
+        <div class="col-md-10">
+          <input
+            class="form-control"
+            type="number"
+            [ngClass]="{
+              'is-invalid':
+              lotissementForm.get('surfaceTerrain').touched &&  lotissementForm.get('surfaceTerrain').errors?.required
+            }"
+            formControlName="surfaceTerrain"
+            placeholder="Entrez la surfaceTerrain en m²"
+            required
+            id="example-email-input"
+          />
+          <div class="invalid-feedback">Ce champs est requis</div>
+        </div>
+      </div>
+
+        <div class="mb-3 row">
+          <label for="example-email-input" class="col-md-2 col-form-label"
+            >Maitre d'ouvrage</label
+          >
+          <div class="col-md-10">
+            <ng2-completer autoMatch='true'  formControlName="maitreOuvrageName"  inputClass="form-control" (keyup)="onWritingMaitreOuvrage($event)" name='maitreOuvrageName'[datasource]="maitreOuvragesNamesArray" [minSearchLength]="0"></ng2-completer>
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label for="example-email-input" class="col-md-2 col-form-label"
+            >CUS</label
+          >
+          <div class="col-md-10">
+            <input
+              class="form-control"
+              type="number"
+              [ngClass]="{'is-invalid':lotissementForm.get('cus').touched && (lotissementForm.get('cus').errors?.['max'] || lotissementForm.get('cus').errors?.required)}"
+              min="1"
+              max="99"
+              required
+              formControlName="cus"
+              placeholder="Entrez le CUS"
+              id="example-email-input"
+            />
+            <div
+              class="invalid-feedback"
+              *ngIf="lotissementForm.get('cus').touched && lotissementForm.get('cus').errors?.['max']"
+            >
+              Vous devez entrer un nombre entre 1 et 99.
+            </div>
+            <div
+              class="invalid-feedback"
+              *ngIf="lotissementForm.get('cus').touched && lotissementForm.get('cus').errors?.['required']"
+            >
+              Ce champs est requis
+            </div>
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label for="example-email-input" class="col-md-2 col-form-label"
+            >Nombre de lots</label
+          >
+          <div class="col-md-10">
+            <input
+              class="form-control"
+              type="number"
+              [ngClass]="{
+                'is-invalid': lotissementForm.get('nbrLots').touched && lotissementForm.get('nbrLots').errors?.required
+              }"
+              required
+              formControlName="nbrLots"
+              placeholder="Entrez le nombre de lots"
+              id="example-email-input"
+            />
+            <div
+              class="invalid-feedback"
+              *ngIf="lotissementForm.get('nbrLots').touched && lotissementForm.get('nbrLots').errors?.required"
+            >
+              Ce champs est requis
+            </div>
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label for="example-email-input" class="col-md-2 col-form-label"
+            >Programme</label
+          >
+          <div class="col-md-10">
+            <input
+              class="form-control"
+              type="text"
+              [ngClass]="{
+                'is-invalid': lotissementForm.get('programme').touched && lotissementForm.get('programme').errors?.required
+              }"
+              formControlName="programme"
+              placeholder="Entrez le programme"
+              id="example-email-input"
+            />
+            <div
+              class="invalid-feedback"
+              *ngIf="lotissementForm.get('programme').touched && lotissementForm.get('programme').errors?.required"
+            >
+              Ce champs est requis
+            </div>
+          </div>
+        </div>
+        <button class="btn btn-primary" [disabled]="lotissementForm.invalid">
+          Submit
+        </button>
+      </form>
+      <form
+        action=""
+        *ngIf="typeProjet === 'morcellement'"
+        [formGroup]="morcellementForm"
+        (ngSubmit)="onSubmitMorcelelmentForm()"
+      >
+        <div class="mb-3 row">
+          <label for="example-email-input" class="col-md-2 col-form-label"
+            >Référence foncière</label
+          >
+          <div class="col-md-10">
+            <input
+              class="form-control"
+              [ngClass]="{
+                'is-invalid':
+                morcellementForm.get('referenceFonciere').touched &&
+                morcellementForm.get('referenceFonciere').errors?.required
+              }"
+              formControlName="referenceFonciere"
+              type="text"
+              placeholder="Entrez la référence"
+              id="example-email-input"
+            />
+            <div
+              class="invalid-feedback"
+              *ngIf="
+              morcellementForm.get('referenceFonciere').touched && morcellementForm.get('referenceFonciere').errors?.required
+              "
+            >
+              Ce champs est requis
+            </div>
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label for="example-email-input" class="col-md-2 col-form-label"
+            >Topographe</label
+          >
+          <div class="col-md-10">
+            <input
+              class="form-control"
+              type="text"
+              [ngClass]="{
+                'is-invalid': morcellementForm.get('topographe').touched && morcellementForm.get('topographe').errors?.required
+              }"
+              formControlName="topographe"
+              placeholder="Entrez le nom complet du topographe"
+              id="example-email-input"
+            />
+            <div
+              class="invalid-feedback"
+              *ngIf="morcellementForm.get('topographe').touched && morcellementForm.get('topographe').errors?.required"
+            >
+              Ce champs est requis
+            </div>
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label for="example-email-input" class="col-md-2 col-form-label"
+            >Surface Terrain</label
+          >
+          <div class="col-md-10">
+            <input
+              class="form-control"
+              type="number"
+              [ngClass]="{
+                'is-invalid':
+                  morcellementForm.get('surfaceTerrain').touched && morcellementForm.get('surfaceTerrain').errors?.required
+              }"
+              formControlName="surfaceTerrain"
+              placeholder="Entrez la surfaceTerrain en m²"
+              id="example-email-input"
+            />
+            <div
+              class="invalid-feedback"
+              *ngIf= " morcellementForm.get('surfaceTerrain').touched && morcellementForm.get('surfaceTerrain').errors?.required"
+            >
+              Ce champs est requis
+            </div>
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label for="example-email-input" class="col-md-2 col-form-label"
+            >Maitre d'ouvrage</label
+          >
+          <div class="col-md-10">
+            <ng2-completer autoMatch='true'  formControlName="maitreOuvrageName"  inputClass="form-control" (keyup)="onWritingMaitreOuvrage($event)" name='maitreOuvrageName'[datasource]="maitreOuvragesNamesArray" [minSearchLength]="0"></ng2-completer>
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label for="example-email-input" class="col-md-2 col-form-label"
+            >Nombre de lots à morceller</label
+          >
+          <div class="col-md-10">
+            <input
+              class="form-control"
+              type="number"
+              formControlName="nbrLotsAMorceller"
+              placeholder="Entrez le nombre de lots à morceller"
+              id="example-email-input"
+            />
+            <div
+              class="invalid-feedback"
+              *ngIf="morcellementForm.get('nbrLotsAMorceller').touched && morcellementForm.get('nbrLotsAMorceller').errors?.['required']"
+            >
+              Ce champs est requis
+            </div>
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label for="example-email-input" class="col-md-2 col-form-label"
+            >Solde</label
+          >
+          <div class="col-md-10">
+            <input
+              class="form-control"
+              type="number"
+              formControlName="solde"
+              placeholder="Entrez le solde"
+              id="example-email-input"
+            />
+            <div
+              class="invalid-feedback"
+              *ngIf="morcellementForm.get('solde').touched && morcellementForm.get('solde').errors?.['required']"
+            >
+              Ce champs est requis
+            </div>
+          </div>
+        </div>
+        <button class="btn btn-primary" [disabled]="morcellementForm.invalid">
+          Submit
+        </button>
+      </form>
+      <form
+        action=""
+        *ngIf="typeProjet === 'groupeHabitation'"
+        [formGroup]="groupeHabitationsForm"
+        (ngSubmit)="onSubmitGroupeHabitationsForm()"
+      >
+      <div class="mb-3 row">
+        <label for="example-email-input" class="col-md-2 col-form-label"
+          >Référence foncière</label
+        >
+        <div class="col-md-10">
+          <input
+            class="form-control"
+            [ngClass]="{
+              'is-invalid':
+              groupeHabitationsForm.get('referenceFonciere').touched &&
+              groupeHabitationsForm.get('referenceFonciere').errors?.required
+            }"
+            formControlName="referenceFonciere"
+            type="text"
+            placeholder="Entrez la référence"
+            id="example-email-input"
+          />
+          <div
+            class="invalid-feedback"
+            *ngIf="
+            groupeHabitationsForm.get('referenceFonciere').touched && groupeHabitationsForm.get('referenceFonciere').errors?.required
+            "
+          >
+            Ce champs est requis
+          </div>
+        </div>
+      </div>
+      <div class="mb-3 row">
+        <label for="example-email-input" class="col-md-2 col-form-label"
+          >Topographe</label
+        >
+        <div class="col-md-10">
+          <input
+            class="form-control"
+            type="text"
+            [ngClass]="{
+              'is-invalid': groupeHabitationsForm.get('topographe').touched && groupeHabitationsForm.get('topographe').errors?.required
+            }"
+            formControlName="topographe"
+            placeholder="Entrez le nom complet du topographe"
+            id="example-email-input"
+          />
+          <div
+            class="invalid-feedback"
+            *ngIf="groupeHabitationsForm.get('topographe').touched && groupeHabitationsForm.get('topographe').errors?.required"
+          >
+            Ce champs est requis
+          </div>
+        </div>
+      </div>
+      <div class="mb-3 row">
+        <label for="example-email-input" class="col-md-2 col-form-label"
+          >Surface Terrain</label
+        >
+        <div class="col-md-10">
+          <input
+            class="form-control"
+            type="number"
+            [ngClass]="{
+              'is-invalid':
+                groupeHabitationsForm.get('surfaceTerrain').touched && groupeHabitationsForm.get('surfaceTerrain').errors?.required
+            }"
+            formControlName="surfaceTerrain"
+            placeholder="Entrez la surfaceTerrain en m²"
+            id="example-email-input"
+          />
+          <div
+            class="invalid-feedback"
+            *ngIf= " groupeHabitationsForm.get('surfaceTerrain').touched && groupeHabitationsForm.get('surfaceTerrain').errors?.required"
+          >
+            Ce champs est requis
+          </div>
+        </div>
+      </div>
+        <div class="mb-3 row">
+          <label for="example-email-input" class="col-md-2 col-form-label"
+            >Maitre d'ouvrage</label
+          >
+          <div class="col-md-10">
+            <ng2-completer autoMatch='true'  formControlName="maitreOuvrageName"  inputClass="form-control" (keyup)="onWritingMaitreOuvrage($event)" name='maitreOuvrageName'[datasource]="maitreOuvragesNamesArray" [minSearchLength]="0"></ng2-completer>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="mb-3 row">
+              <label for="example-email-input" class="col-md-4 col-form-label"
+                >COS</label
+              >
+              <div class="col-md-6">
+                <input
+                  class="form-control"
+                  type="number"
+                  formControlName="cos"
+                  [ngClass]="{
+                    'is-invalid': groupeHabitationsForm.get('cos').touched && groupeHabitationsForm.get('cos').errors?.required
+                  }"
+                  placeholder="Entrez le COS"
+                  id="example-email-input"
+                />
+                <div
+                  class="invalid-feedback"
+                  *ngIf="groupeHabitationsForm.get('cos').touched && groupeHabitationsForm.get('cos').errors?.required"
+                >
+                  Ce champs est requis
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="mb-3 row">
+              <label for="example-email-input" class="col-md-6 col-form-label"
+                >CUS</label
+              >
+              <div class="col-md-6">
+                <input
+                  class="form-control"
+                  type="number"
+                  formControlName="cus"
+                  [ngClass]="{'is-invalid':groupeHabitationsForm.touched && (groupeHabitationsForm.errors?.required || groupeHabitationsForm.errors?.['min'] || groupeHabitationsForm.errors?.['max'])}"
+                  placeholder="Entrez le CUS"
+                  id="example-email-input"
+                />
+                <div
+                  class="invalid-feedback"
+                  *ngIf="groupeHabitationsForm.touched && groupeHabitationsForm.errors?.required"
+                >
+                  Ce champs est requis.
+                </div>
+                <div
+                  class="invalid-feedback"
+                  *ngIf="groupeHabitationsForm.touched && (groupeHabitationsForm.errors?.['min'] || groupeHabitationsForm.errors?.['max'])"
+                >
+                  Vous devez entrez un nombre entre 1 et 99.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="mb-3 row">
+              <label for="example-email-input" class="col-md-4 col-form-label"
+                >Nbr Immeubles</label
+              >
+              <div class="col-md-6">
+                <input
+                  class="form-control"
+                  type="number"
+                  formControlName="nbrImmeuble"
+                  placeholder="Entrez le nombre d'immeubles"
+                  id="example-email-input"
+                />
+                <div
+                  class="invalid-feedback"
+                  *ngIf="groupeHabitationsForm.get('nbrImmeuble').touched && groupeHabitationsForm.get('nbrImmeuble').errors?.required"
+                >
+                  Ce champs est requis.
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="mb-3 row">
+              <label for="example-email-input" class="col-md-6 col-form-label"
+                >Nbr appartements</label
+              >
+              <div class="col-md-6">
+                <input
+                  class="form-control"
+                  type="number"
+                  [ngClass]="{
+                    'is-invalid':
+                      groupeHabitationsForm.get('nbrAppartements').touched &&
+                      groupeHabitationsForm.get('nbrAppartements').errors?.required
+                  }"
+                  formControlName="nbrAppartements"
+                  placeholder="Entrez le nombre d'appartements"
+                  id="example-email-input"
+                />
+                <div
+                  class="invalid-feedback"
+                  *ngIf="
+                    groupeHabitationsForm.get('nbrAppartements').touched && groupeHabitationsForm.get('nbrAppartements').errors?.required
+                  "
+                >
+                  Ce champs est requis.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="mb-3 row">
+              <label for="example-email-input" class="col-md-4 col-form-label"
+                >Nbr Syndics</label
+              >
+              <div class="col-md-6">
+                <input
+                  class="form-control"
+                  [ngClass]="{
+                    'is-invalid':
+                      groupeHabitationsForm.get('nbrSyndics').touched && groupeHabitationsForm.get('nbrSyndics').errors?.required
+                  }"
+                  formControlName="nbrSyndics"
+                  type="number"
+                  placeholder="Entrez le nombre de syndics"
+                  id="example-email-input"
+                />
+                <div
+                  class="invalid-feedback"
+                  *ngIf="groupeHabitationsForm.get('nbrSyndics').touched && groupeHabitationsForm.get('nbrSyndics').errors?.required"
+                >
+                  Ce champs est requis.
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="mb-3 row">
+              <label for="example-email-input" class="col-md-6 col-form-label"
+                >Nbr Locaux commerciaux</label
+              >
+              <div class="col-md-6">
+                <input
+                  class="form-control"
+                  [ngClass]="{
+                    'is-invalid':
+                      groupeHabitationsForm.get('nbrLocauxCommerciaux').touched &&
+                      groupeHabitationsForm.get('nbrLocauxCommerciaux').errors?.required
+                  }"
+                  formControlName="nbrLocauxCommerciaux"
+                  type="number"
+                  placeholder="Entrez le nombre des locaux commerciaux"
+                  id="example-email-input"
+                />
+                <div class="invalid-feedback">Ce champs est requis.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label for="example-email-input" class="col-md-2 col-form-label"
+            >Programme</label
+          >
+          <div class="col-md-10">
+            <input
+              class="form-control"
+              type="text"
+              [ngClass]="{
+                'is-invalid': groupeHabitationsForm.get('programme').touched && groupeHabitationsForm.get('programme').errors?.required
+              }"
+              formControlName="programme"
+              placeholder="Entrez le programme"
+              id="example-email-input"
+            />
+            <div
+              class="invalid-feedback"
+              *ngIf="groupeHabitationsForm.get('programme').touched && groupeHabitationsForm.get('programme').errors?.required"
+            >
+              Ce champs est requis
+            </div>
+          </div>
+        </div>
+        <button
+          class="btn btn-primary"
+          [disabled]="groupeHabitationsForm.invalid"
+        >
+          Submit
+        </button>
+      </form>
+    </div>
+  </ng-template>
+</div>
+<div class="modal modalgeotiffModal">
+  <!-- Center Modal -->
+  <ng-template #deleteModal let-modal>
+    <div class="modal-header">
+      <h5 class="modal-title mt-0">Êtes vous sure ?</h5>
+      <button
+        type="button"
+        class="btn-close"
+        (click)="modal.dismiss('Cross click')"
+        aria-hidden="true"
+      ></button>
+    </div>
+    <div class="modal-body">
+      Cette action est irréversible, êtes vous sur de vouloir supprimer ce projet ?
+    </div>
+    <div class="modal-footer d-flex">
+      <button type="button" class="btn btn-secondary" (click)="modal.close('Save click')">Annuler</button>
+      <button type="button" class="btn btn-danger ms-2" (click)="deleteProject()">Supprimer</button>
+    </div>
+
+  </ng-template>
+</div>
+
+<div class="modal datePickerModal">
+  <!-- Center Modal -->
+  <ng-template #datePickerModal let-modal>
+    <div class="modal-header">
+      <h5 class="modal-title mt-0">Choisissez la date de commission</h5>
+      <button
+        type="button"
+        class="btn-close"
+        (click)="modal.dismiss('Cross click')"
+        aria-hidden="true"
+      ></button>
+    </div>
+    <div class="modal-body">
+      <input type="date" [(ngModel)]="dateOfChange" class="form-control">
+    </div>
+    <div class="modal-footer d-flex">
+      <button type="button" class="btn btn-secondary" (click)="modal.close('Save click')">Annuler</button>
+      <button type="button" class="btn btn-primary ms-2" (click)="changeDate(true)">Reporter</button>
+      <button type="button" class="btn btn-success ms-2" (click)="changeDate(false)">Enregistrer</button>
+    </div>
+
+  </ng-template>
+</div>
+
+
+

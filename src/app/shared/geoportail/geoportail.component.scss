@@ -1,0 +1,293 @@
+#map{
+  width: 100%;
+  position: relative;
+  padding-top: 2%;
+
+
+}
+.map__tiles-selector{
+  padding : 1.7rem 2.5rem  ;
+  padding-left: 1.8rem;
+  background-color: rgba(#F7F7F7,.9);
+  box-shadow: 0 1rem 2rem rgba(#0000,.2);
+  position: absolute;
+  top :21%;
+  right : 1%;
+  z-index: 1000;
+  border-radius: 15px;
+  ul{
+    list-style: none;
+    li{
+      font-size: .8rem;
+      font-family: 'Raleway';
+      &:not(:last-child){
+        margin-bottom: 1.2rem;
+      }
+    }
+  }
+  .form-check{
+    padding: 0;
+    margin: 0;
+  }
+
+}
+.action-buttons{
+  position: absolute;
+  bottom : 35%;
+  left : 1%;
+  z-index:1000;
+
+
+  .btn-container{
+    transition: all .6s;
+    &:not(:last-child){
+      margin-bottom: 1.5rem;
+    }
+    .btn-text{
+      display: inline-block ;
+      margin-left: .9rem;
+      color : #fff;
+      font-size: .9rem;
+      padding-bottom: .4rem;
+      transform: translateX(-1.5rem);
+      opacity: 0;
+      transition: all .5s;
+    }
+    &1:hover{
+      padding:.2rem;
+      padding-right: .8rem;
+      background-color: #171436;
+      border-radius: 50px;
+      transform: matrix(1,0,0,1,0,0);
+      & > .btn-text1{
+        transform: translateX(0);
+        opacity: 1;
+    }
+    }
+    &2:hover{
+      padding:.2rem;
+      padding-right: .8rem;
+      background-color: #151515;
+      border-radius: 50px;
+      transform: matrix(1,0,0,1,0,0);
+      & > .btn-text2{
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+    &3:hover{
+      padding:.2rem;
+      padding-right: .8rem;
+      background-color: #c72929;
+      border-radius: 50px;
+      transform: matrix(1,0,0,1,0,0);
+      & > .btn-text3{
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+  }
+}
+  .button{
+    width:2.5rem;
+    height : 2.5rem;
+    border-radius: 3rem;
+    border: none !important;
+    padding: .6rem;
+    box-shadow: 0 1rem 1rem rgba(#0000,.2);
+  }
+  .bx{
+    font-size: 1rem;
+  }
+
+
+.modal{
+  .submit-button{
+    background-color: #0000;
+    width: 100%;
+  }
+  .btn{
+    display: inline-block;
+    margin : 0 auto;
+  }
+}
+
+.layerToggler{
+  position: absolute;
+  width : 15rem;
+  bottom :1%;
+  right: 1%;
+  height : 250px;
+  overflow-y: scroll;
+  scrollbar-color: rebeccapurple green;
+  &::-webkit-scrollbar {
+    width: 8px;
+    background-color: #f0f0f0;
+    border-radius: 15px;
+}
+&::-webkit-scrollbar-thumb{
+  background-color: #b9b9b9;
+  border-radius: 15px;
+
+}
+  padding : 2rem;
+  background-color: rgba(#fff,.9);
+  z-index: 1000;
+  border-radius: 15px;
+  box-shadow: .5rem 1rem 1.5rem rgba(#0000,.2);
+}
+.projectsToggler{
+  bottom :31%;
+  right: 1%;
+}
+.geometryProperties{
+  padding-top: 0;
+  border-radius: 10px;
+  opacity: 1;
+  font-family: 'Raleway Regular';
+  font-size: 1.8rem;
+  color : #222222;
+  background-color:#f4f4f4;
+  position: absolute;
+  bottom: 2%;
+  left :50%;
+  transform: translateX(-50%);
+  z-index: 1000000;
+  .header{
+
+    border-bottom: 1px solid #dedede;
+    display : block;
+    padding: .6rem;
+    h6{
+      position: absolute;
+      top : 2%;
+      left : 50%;
+      transform: translateX(-50%);
+      float: left;
+      padding-top: .3rem;
+    }
+    .btn-close{
+      float: left;
+    }
+  }
+  .content{
+    padding: 1rem;
+    margin-top: 0 !important;
+  }
+  .clearfix::after{
+    content: "";
+    clear: both;
+    display: table;
+  }
+}
+@keyframes appear {
+  0%{
+    opacity: 0;
+    transform: scale(0) translateX(-50%);
+  }
+
+
+  100%{
+    opacity: 1;
+    transform: scale(1) translateX(-50%);
+  }
+}
+.polyColor{
+  width : .9rem;
+  height : .9rem;
+  border-radius: 2px;
+  display: inline-block;
+  margin-right: .3rem;
+  padding-top: 10px;
+
+}
+.className{
+  font-size: .75rem;
+}
+.layersButton{
+  position: absolute;
+  z-index: 1001;
+  bottom:30%;
+  right : 1%;
+}
+.projectsButton{
+  bottom:60%;
+  right : 1%;
+}
+.tilesButtons{
+  position: absolute;
+  z-index: 1000;
+  top:50%;
+  right : 1%;
+}
+.globalViewButton{
+  position: absolute;
+  z-index: 1000;
+  top: 20%;
+  right : 1%;
+}
+.manualUploadButtons{
+  position: absolute;
+  z-index: 1000;
+  bottom:15%;
+  right : 1%;
+
+}
+.action_btn{
+  border-radius: 8px;
+  padding: .5rem .7rem;
+  background-color: rgba(#ffff,.8 );
+  border: none;
+  box-shadow: 0 .8rem 1rem rgba(#0000,.3);
+  transition: all .2s;
+  display: inline-block;
+  cursor: pointer;
+  &:hover{
+    transform: translateY(-.2rem);
+    box-shadow:0 1.2rem 1.3rem rgba(#0000,.4) ;
+  }
+  &:active{
+    transform: translateY(0rem);
+    box-shadow:0 1rem 1.4rem rgba(#0000,.6) ;
+  }
+}
+.bx-layer,.tilesbx{
+  font-size: 1.1rem !important;
+  color : #556ee6;
+}
+
+.arrow{
+height:1.2rem;
+cursor: pointer;
+padding:0;
+margin-top: -.3rem;
+  &_btn{
+    font-size: 24px;
+    color : rgb(213, 213, 213);
+    display: inline-block;
+    width:auto;
+
+
+  }
+}
+.btn_drop{
+
+}
+.toggleDiv{
+  margin-left:2.2rem ;
+}
+.geoins{
+  border-radius: 10px;
+  border: 5px solid rgb(255, 255, 255) !important;
+  box-shadow: 0 .6rem 1.2rem rgba(0, 0, 0, 0.205);
+}
+.client{
+  border-radius: 10px;
+  box-shadow: 0 .6rem 1.2rem rgba(0, 0, 0, 0.205);
+}
+.inputFile{
+  visibility:hidden;
+  display: none;
+}
+
+

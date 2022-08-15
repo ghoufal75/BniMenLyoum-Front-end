@@ -1,0 +1,524 @@
+<div class="content">
+  <h2 class="pageTitle">Gestion des comptes</h2>
+  <div class="row mt-4">
+    <div class="col me-3">
+      <div class="cardContainer">
+        <div class="cardHeader">
+          <div class="title bg-primary">
+            <h2>Respnsables Communaux</h2>
+          </div>
+          <div class="nav">
+            <div class="search">
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <div class="dropdown" ngbDropdown>
+                    <button
+                      class="btn btn-outline-secondary dropdown-toggle"
+                      type="button"
+                      id="dropdownMenuButton"
+                      ngbDropdownToggle
+                    >
+                      <i class="bx bx-filter"></i>
+                    </button>
+                    <div class="dropdown-menu" ngbDropdownMenu>
+                      <a
+                        class="dropdown-item"
+                        href="javascript: void(0);"
+
+                        ><span>&#10004;</span> CIN</a
+                      >
+                      <a
+                        class="dropdown-item"
+                        href="javascript: void(0);"
+
+                        ><span>&#10004;</span> RC</a
+                      >
+                      <a
+                        class="dropdown-item"
+                        href="javascript: void(0);"
+
+                        ><span>&#10004;</span> IDRV</a
+                      >
+                      <a
+                        class="dropdown-item"
+                        href="javascript: void(0);"
+                        ><span>&#10004;</span>
+                        ID Organisme</a
+                      >
+                    </div>
+                  </div>
+                </div>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Rechercher par critère"
+                  aria-label="Rechercher par critère"
+                  aria-describedby="basic-addon2"
+                />
+                <div class="input-group-append">
+                  <button class="btn btn-primary" type="button">
+                    <i class="fas fa-search"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div>
+              <button class="btn btn-outline-primary"(click)="showNewUtilisateurModal(newUtilisatuer,'Responsable')">Nouveau compte</button>
+            </div>
+          </div>
+        </div>
+        <div class="cardBody">
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Responsable</th>
+                <th scope="col">Service</th>
+                <th scope="col">Email</th>
+
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor='let element of responsableAccounts' (click)="chooseResponsable(element,newUser,'Responsable')">
+                <td>
+                  <div class="accounts">
+                    <div class="roundedImg"[ngStyle]="{'background-color': getColor()}">
+                      <h6 class="name">{{element.nom[0]}} {{element.prenom[0]}}</h6>
+                    </div>
+                    <div class="nameDiv"><span style="transform: translateY(60%);display:inline-block">{{element.nom}} {{element.prenom}}</span></div>
+                  </div>
+                </td>
+                <td class='pt-4'>{{element.service}}</td>
+                <td class='pt-4'>{{element.email}}</td>
+
+              </tr>
+            </tbody>
+          </table>
+
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="cardContainer">
+        <div class="cardHeader">
+          <div class="title bg-warning">
+            <h2>Utilisateurs</h2>
+          </div>
+          <div class="nav">
+            <div class="search">
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <div class="dropdown" ngbDropdown>
+                    <button
+                      class="btn btn-outline-secondary dropdown-toggle"
+                      type="button"
+                      id="dropdownMenuButton"
+                      ngbDropdownToggle
+                    >
+                      <i class="bx bx-filter"></i>
+                    </button>
+                    <div class="dropdown-menu" ngbDropdownMenu>
+                      <a
+                        class="dropdown-item"
+                        href="javascript: void(0);"
+
+                        ><span>&#10004;</span> CIN</a
+                      >
+                      <a
+                        class="dropdown-item"
+                        href="javascript: void(0);"
+
+                        ><span>&#10004;</span> RC</a
+                      >
+                      <a
+                        class="dropdown-item"
+                        href="javascript: void(0);"
+
+                        ><span>&#10004;</span> IDRV</a
+                      >
+                      <a
+                        class="dropdown-item"
+                        href="javascript: void(0);"
+                        ><span>&#10004;</span>
+                        ID Organisme</a
+                      >
+                    </div>
+                  </div>
+                </div>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Rechercher par critère"
+                  aria-label="Rechercher par critère"
+                  aria-describedby="basic-addon2"
+                />
+                <div class="input-group-append">
+                  <button class="btn btn-warning" type="button">
+                    <i class="fas fa-search"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <div class="cardBody">
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Responsable</th>
+                <th scope="col">Email</th>
+
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor='let element of clientAccounts' (click)="chooseResponsable(element,newUser,'Client')">
+                <td>
+                  <div class="accounts">
+                    <div class="roundedImg" [ngStyle]="{'background-color':getColor()}">
+                      <h6 class="name">{{element.lastName[0]}} {{element.firstName[0]}}</h6>
+                    </div>
+                    <div class="nameDiv"><span style="transform:translateY(60%);display:inline-block">{{element.firstName}} {{element.lastName}}</span></div>
+                  </div>
+                </td>
+                <td class='pt-4'>{{element.email}}</td>
+
+              </tr>
+            </tbody>
+          </table>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row mt-5">
+    <div class="col me-3">
+      <div class="cardContainer">
+        <div class="cardHeader">
+          <div class="title bg-danger">
+            <h2>Entités externes</h2>
+          </div>
+          <div class="nav">
+            <div class="search">
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <div class="dropdown" ngbDropdown>
+                    <button
+                      class="btn btn-outline-secondary dropdown-toggle"
+                      type="button"
+                      id="dropdownMenuButton"
+                      ngbDropdownToggle
+                    >
+                      <i class="bx bx-filter"></i>
+                    </button>
+                    <div class="dropdown-menu" ngbDropdownMenu>
+                      <a
+                        class="dropdown-item"
+                        href="javascript: void(0);"
+
+                        ><span>&#10004;</span> CIN</a
+                      >
+                      <a
+                        class="dropdown-item"
+                        href="javascript: void(0);"
+
+                        ><span>&#10004;</span> RC</a
+                      >
+                      <a
+                        class="dropdown-item"
+                        href="javascript: void(0);"
+
+                        ><span>&#10004;</span> IDRV</a
+                      >
+                      <a
+                        class="dropdown-item"
+                        href="javascript: void(0);"
+                        ><span>&#10004;</span>
+                        ID Organisme</a
+                      >
+                    </div>
+                  </div>
+                </div>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Rechercher par critère"
+                  aria-label="Rechercher par critère"
+                  aria-describedby="basic-addon2"
+                />
+                <div class="input-group-append">
+                  <button class="btn btn-danger" type="button">
+                    <i class="fas fa-search"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div>
+              <button class="btn btn-outline-danger"(click)="showNewUtilisateurModal(newUtilisatuer,'EntiteExterne')">Nouveau compte</button>
+            </div>
+          </div>
+        </div>
+        <div class="cardBody">
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Responsable</th>
+                <th scope="col">Service</th>
+                <th scope="col">Email</th>
+
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor='let element of responsableAccounts'(click)="chooseResponsable(element,newUser,'EntiteExterne')">
+                <td>
+                  <div class="accounts">
+                    <div class="roundedImg"[ngStyle]="{'background-color': getColor()}">
+                      <h6 class="name">{{element.nom[0]}} {{element.prenom[0]}}</h6>
+                    </div>
+                    <div class="nameDiv"><span style="transform: translateY(60%);display:inline-block">{{element.nom}} {{element.prenom}}</span></div>
+                  </div>
+                </td>
+                <td class='pt-4'>{{element.service}}</td>
+                <td class='pt-4'>{{element.email}}</td>
+
+              </tr>
+            </tbody>
+          </table>
+
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="cardContainer">
+        <div class="cardHeader">
+          <div class="title bg-info">
+            <h2>Bureau d'ordre</h2>
+          </div>
+          <div class="nav">
+            <div class="search">
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <div class="dropdown" ngbDropdown>
+                    <button
+                      class="btn btn-outline-secondary dropdown-toggle"
+                      type="button"
+                      id="dropdownMenuButton"
+                      ngbDropdownToggle
+                    >
+                      <i class="bx bx-filter"></i>
+                    </button>
+                    <div class="dropdown-menu" ngbDropdownMenu>
+                      <a
+                        class="dropdown-item"
+                        href="javascript: void(0);"
+
+                        ><span>&#10004;</span> CIN</a
+                      >
+                      <a
+                        class="dropdown-item"
+                        href="javascript: void(0);"
+
+                        ><span>&#10004;</span> RC</a
+                      >
+                      <a
+                        class="dropdown-item"
+                        href="javascript: void(0);"
+
+                        ><span>&#10004;</span> IDRV</a
+                      >
+                      <a
+                        class="dropdown-item"
+                        href="javascript: void(0);"
+                        ><span>&#10004;</span>
+                        ID Organisme</a
+                      >
+                    </div>
+                  </div>
+                </div>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Rechercher par critère"
+                  aria-label="Rechercher par critère"
+                  aria-describedby="basic-addon2"
+                />
+                <div class="input-group-append">
+                  <button class="btn btn-info" type="button">
+                    <i class="fas fa-search"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div>
+              <button class="btn btn-outline-info"(click)="showNewUtilisateurModal(newUtilisatuer,'BureauOrdre')">Nouveau compte</button>
+            </div>
+          </div>
+        </div>
+        <div class="cardBody">
+          <table class="table ">
+            <thead>
+              <tr>
+                <th scope="col">Responsable</th>
+                <th scope="col">Service</th>
+                <th scope="col">Email</th>
+
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor='let element of responsableAccounts'(click)="chooseResponsable(element,newUser,'BureauOrdre')">
+                <td>
+                  <div class="accounts">
+                    <div class="roundedImg" [ngStyle]="{'background-color':getColor()}">
+                      <h6 class="name">{{element.nom[0]}} {{element.prenom[0]}}</h6>
+                    </div>
+                    <div class="nameDiv"><span style="transform:translateY(60%);display:inline-block">{{element.nom}} {{element.prenom}}</span></div>
+                  </div>
+                </td>
+                <td class='pt-4'>{{element.service}}</td>
+                <td class='pt-4'>{{element.email}}</td>
+
+              </tr>
+            </tbody>
+          </table>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal modalgeotiffModal">
+    <!-- Center Modal -->
+    <ng-template #newUser let-modal>
+      <div class="modal-header"[ngClass]="{'bg-primary':infosType==='Responsable','bg-warning':infosType==='Client','bg-danger':infosType==='EntiteExterne','bg-info':infosType==='BureauOrdre'}" >
+        <!-- <h5 class="modal-title mt-0">Créer un nouveau projet</h5> -->
+        <i
+          type="button"
+          class=" bx bx-x text-light ms-auto" style="font-size : 1.3rem !important"
+          aria-hidden="true"
+          (click)="modal.dismiss('Cross click')"
+        ></i>
+      </div>
+      <div class="modal-body p-0 m-0">
+        <div class="responsableAccount account">
+          <div class="account__header "[ngClass]="{'bg-primary':infosType==='Responsable','bg-warning':infosType==='Client','bg-danger':infosType==='EntiteExterne','bg-info':infosType==='BureauOrdre'}">
+          <div class="avatar">
+          <div class="roundedImg--account" [ngStyle]="{'background-color':getColor()}">
+            <h6 class="name" *ngIf="infosType==='Responsable'">{{choosenUser.nom[0]}} {{choosenUser.prenom[0]}}</h6>
+            <h6 class="name" *ngIf="infosType==='Client'">{{choosenUser.lastName[0]}} {{choosenUser.firstName[0]}}</h6>
+          </div>
+        </div>
+      </div>
+          <div class="credentials">
+            <div class="responsableCredentials" *ngIf="infosType==='Responsable'">
+              <h6 class="credentials__name text-primary">{{choosenUser.nom}} {{choosenUser.prenom}}</h6>
+              <ul class="credentials__list">
+                <li><span class="identifier text-primary">Nom</span> : <span class="credentialsData">{{choosenUser.nom}}</span></li>
+                <li><span class="identifier text-primary">Prénom</span> : <span class="credentialsData">{{choosenUser.prenom}}</span></li>
+                <li><span class="identifier text-primary">Service</span> : <span class="credentialsData">{{choosenUser.service}}</span></li>
+                <li><span class="identifier text-primary">Email</span> : <span class="credentialsData">{{choosenUser.email}}</span></li>
+                <li><span class="identifier text-primary">Numéro de téléphone</span> : <span class="credentialsData">{{choosenUser.numeroTelephone}}</span></li>
+              </ul>
+            </div>
+            <div class="clientCredentials" *ngIf="infosType==='Client'">
+              <h6 class="credentials__name text-warning">{{choosenUser.firstName}} {{choosenUser.lastName}}</h6>
+              <ul class="credentials__list">
+                <li><span class="identifier text-warning">Nom</span> : <span class="credentialsData">{{choosenUser.lastName}}</span></li>
+                <li><span class="identifier text-warning">Prénom</span> : <span class="credentialsData">{{choosenUser.firstName}}</span></li>
+                <li><span class="identifier text-warning">Email</span> : <span class="credentialsData">{{choosenUser.email}}</span></li>
+              </ul>
+            </div>
+            <div class="entiteExterneCredentials" *ngIf="infosType==='EntiteExterne'">
+              <h6 class="credentials__name text-danger">{{choosenUser.nom}} {{choosenUser.prenom}}</h6>
+              <ul class="credentials__list">
+                <li><span class="identifier text-danger">Nom</span> : <span class="credentialsData">{{choosenUser.nom}}</span></li>
+                <li><span class="identifier text-danger">Email</span> : <span class="credentialsData">{{choosenUser.prenom}}</span></li>
+                <li><span class="identifier text-danger">Numéro de téléphone</span> : <span class="credentialsData">{{choosenUser.service}}</span></li>
+              </ul>
+            </div>
+            <div class="bureauOrdreCredentials" *ngIf="infosType==='BureauOrdre'">
+              <h6 class="credentials__name text-info">{{choosenUser.nom}} {{choosenUser.prenom}}</h6>
+              <ul class="credentials__list">
+                <li><span class="identifier text-info">Email</span> : <span class="credentialsData">{{choosenUser.prenom}}</span></li>
+                <li><span class="identifier text-info">Numéro de téléphone</span> : <span class="credentialsData">{{choosenUser.service}}</span></li>
+              </ul>
+            </div>
+          </div>
+          <div class="actions mb-3 ms-4">
+            <button class="btn btn-danger ms-2">Supprimer le compte</button>
+          </div>
+
+        </div>
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+    </ng-template>
+  </div>
+  <div class="modal modalgeotiffModal">
+    <!-- Center Modal -->
+    <ng-template #newUtilisatuer let-modal>
+      <div class="modal-header">
+        <h5 class="modal-title mt-0">Créer un nouveau compte</h5>
+        <button
+          type="button"
+          class="btn-close"
+          (click)="modal.dismiss('Cross click')"
+          aria-hidden="true"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <div class="responsableForm"*ngIf="formType==='Responsable'">
+          <form [formGroup]="responsableForm"(ngSubmit)='onSubmitResponsableForm()'>
+            <div class="mb-3">
+              <label for="nom" class="form-label">Nom</label>
+              <input type="text" class="form-control" formControlName="nom" id="nom" placeholder="Entrez le nom">
+            </div>
+            <div class="mb-3">
+              <label for="prenom" class="form-label">Prénom</label>
+              <input type="text" class="form-control" id="prenom" formControlName="prenom" placeholder="Entrez le prenom">
+            </div>
+            <div class="mb-3">
+              <label for="email" class="form-label">Email</label>
+              <input type="email" class="form-control" id="email" formControlName="email" placeholder="Entrez l'email">
+            </div>
+            <div class="mb-3">
+              <label for="telephone" class="form-label">Numéro de téléphone</label>
+              <input type="text" class="form-control" id="telephone" formControlName="numeroTelephone" placeholder="Entrez le numéro de téléphone">
+            </div>
+            <div class="mb-3">
+              <label for="service" class="form-label">Service</label>
+              <input type="text" class="form-control" id="service" formControlName="service" placeholder="Entrez le service">
+            </div><button class="btn btn-primary">Submit</button>
+
+          </form>
+        </div>
+        <div class="entiteExterneForm"*ngIf="formType==='EntiteExterne'">
+          <form [formGroup]="entiteExterneForm"(ngSubmit)='onSubmitEntiteExterneForm()'>
+            <div class="mb-3">
+              <label for="nom" class="form-label">Nom</label>
+              <input type="text" class="form-control" formControlName="nom" id="nom" placeholder="Entrez le nom">
+            </div>
+            <div class="mb-3">
+              <label for="email" class="form-label">Email</label>
+              <input type="email" class="form-control" id="email" formControlName="email" placeholder="Entrez l'email">
+            </div>
+            <div class="mb-3">
+              <label for="telephone" class="form-label">Numéro de téléphone</label>
+              <input type="text" class="form-control" id="telephone" formControlName="telephone" placeholder="Entrez le numéro de téléphone">
+            </div>
+            <button class="btn btn-primary">Submit</button>
+          </form>
+        </div>
+        <div class="bureauOrdreForm"*ngIf="formType==='BureauOrdre'">
+          <form [formGroup]="bureauOrdreForm"(ngSubmit)='onSubmitBureauOrdreForm()'>
+            <div class="mb-3">
+              <label for="email" class="form-label">Email</label>
+              <input type="email" class="form-control" id="email" formControlName="email" placeholder="Entrez l'email">
+            </div><button class="btn btn-primary">Submit</button>
+
+          </form>
+        </div>
+      </div>
+    </ng-template>
+  </div>
+</div>
+
+

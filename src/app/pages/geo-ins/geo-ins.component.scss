@@ -1,0 +1,85 @@
+
+.arrays{
+  margin-top:1%;
+}
+.projectTitle{
+
+  padding-left: .7rem;
+  margin : 4% 0;
+  border-left: 4px solid #556ee6;
+
+  font-family: 'Raleway Light';
+  text-transform: uppercase;
+  color : #556ee6;
+  letter-spacing: .1rem;
+}
+.action-btn{
+  width : 2rem;
+  height: 2rem;
+  border-radius: 100px;
+  color : #ffff;
+  box-shadow: 0 .3rem .5rem rgba(0, 0, 0, 0.212);
+  display: inline-block;
+  transition: all .4s;
+  margin-bottom: .2rem;
+  cursor: pointer;
+  margin-top: -.3rem;
+  &:not(:last-child){
+    margin-right: .8rem;
+  }
+  &--1{
+    background-color: #556ee6 ;
+  }
+  &--2{
+    background-color: #f1b44c;
+  }
+  &--3{
+    background-color: #f35656 ;
+  }
+  &--4{
+    background-color: #34c38f ;
+  }
+  &--5{
+    background-color: #f1734f; ;
+  }
+  &:hover{
+    box-shadow: 0 .5rem .7rem rgba(0, 0, 0, 0.212);
+    transform: translateY(-.1rem);
+  }
+  &:active{
+    box-shadow: 0 .3rem .5rem rgba(0, 0, 0, 0.212);
+    transform: translateY(.1rem);
+  }
+
+  i{
+    text-align: center !important;
+    font-size: 1.1rem;
+    padding-top:.3rem ;
+  }
+}
+.tooltip {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
+}
+
+/* Tooltip text */
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  padding: 5px 0;
+  border-radius: 6px;
+
+  /* Position the tooltip text - see examples below! */
+  position: absolute;
+  z-index: 1;
+}
+.etat{
+  width : 13% !important;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+

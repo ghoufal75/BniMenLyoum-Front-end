@@ -1,0 +1,9 @@
+{
+    "version": 3,
+    "mappings": "",
+    "sources": [
+        "layouts.component.scss"
+    ],
+    "names": [],
+    "file": "layouts.component.css"
+}
