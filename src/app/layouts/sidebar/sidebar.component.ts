@@ -11,6 +11,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { AccountService } from 'src/app/account/auth/account.service';
 import { take, tap } from 'rxjs/operators';
 import { CommunicationService } from 'src/app/pages/services/communication.service';
+import { SocketService } from 'src/app/pages/services/socket.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -33,7 +34,7 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnChanges {
 
   @ViewChild('sideMenu') sideMenu: ElementRef;
 
-  constructor(private communicationService:CommunicationService,private accountService:AccountService,private eventService: EventService, private router: Router, public translate: TranslateService, private http: HttpClient) {
+  constructor(private socketService:SocketService,private accountServie:AccountService,private communicationService:CommunicationService,private accountService:AccountService,private eventService: EventService, private router: Router, public translate: TranslateService, private http: HttpClient) {
     router.events.forEach((event) => {
       if (event instanceof NavigationEnd) {
         this._activateMenuDropdown();
@@ -44,7 +45,6 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnChanges {
 
   ngOnInit() {
     this.communicationService.unreadMessagesNumberSubject.subscribe(data=>{
-      console.log(data);
       this.unredMessages=data;
     });
 
@@ -89,7 +89,10 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnChanges {
       }
     }, 300);
   }
-
+  logout() {
+    this.socketService.disconnect();
+    this.accountServie.logOutAdmin();
+  }
   /**
    * remove active and mm-active class
    */

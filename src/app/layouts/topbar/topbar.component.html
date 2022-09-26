@@ -4,11 +4,11 @@
       <!-- LOGO -->
       <div class="navbar-brand-box">
         <a routerLink="/" class="logo logo-dark">
-          <span class="logo-sm">
+          <!-- <span class="logo-sm">
             <img src="assets/images/logo.svg" alt="" height="22">
-          </span>
+          </span> -->
           <span class="logo-lg">
-            <img src="assets/images/logo-dark.png" alt="" height="17">
+            <img src="assets/logos/logo-app.png" alt="" height="17">
           </span>
         </a>
 
@@ -17,7 +17,7 @@
             <img src="assets/images/logo-light.svg" alt="" height="22">
           </span>
           <span class="logo-lg">
-            <img src="assets/images/logo-light.png" alt="" height="19">
+            <img src="assets/logos/logo-app.png" alt="" height="50">
           </span>
         </a>
       </div>
@@ -317,7 +317,7 @@
         <div class="p-3">
           <div class="row align-items-center">
             <div class="col">
-              <h6 class="m-0">Downloads</h6>
+              <h6 class="m-0">Uploads</h6>
             </div>
             <div class="col-auto">
               <a href="javascript: void(0);" class="small">{{ 'HEADER.NOTIFICATIONS.VIEW_ALL' | translate}}</a>
@@ -367,8 +367,8 @@
 
       <div class="dropdown d-inline-block" ngbDropdown>
         <button type="button" class="btn header-item" ngbDropdownToggle id="page-header-user-dropdown">
-          <img class="rounded-circle header-profile-user" src="assets/images/users/avatar-1.jpg" alt="Header Avatar">
-          <span class="d-none d-xl-inline-block ms-1">Henry</span>
+          <img class="rounded-circle header-profile-user" [src]="imgUrl" alt="Header Avatar">
+          <span class="d-none d-xl-inline-block ms-1">{{firstName}} {{lastName}}</span>
           <i class="mdi mdi-chevron-down d-none d-xl-inline-block"></i>
         </button>
         <div class="dropdown-menu dropdown-menu-end" ngbDropdownMenu>

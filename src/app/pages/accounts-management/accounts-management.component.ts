@@ -16,6 +16,7 @@ enum FormTypes{
 export class AccountsManagementComponent implements OnInit {
   responsableAccounts:any[];
   clientAccounts:any[];
+  entiteExterneAccounts:any[];
   responsableForm:FormGroup;
   entiteExterneForm:FormGroup;
   bureauOrdreForm:FormGroup;
@@ -30,8 +31,10 @@ export class AccountsManagementComponent implements OnInit {
       this.responsableAccounts=data;
     },);
     this.accountsService.getAllClients().subscribe((data:any[])=>{
-      console.log(data);
       this.clientAccounts=data;
+    })
+    this.accountsService.getAllEntiteExterne().subscribe((data:any[])=>{
+      this.entiteExterneAccounts=data;
     })
   }
   initForms(){
@@ -43,10 +46,9 @@ export class AccountsManagementComponent implements OnInit {
       numeroTelephone:new FormControl(null,[Validators.required,Validators.min(111111111),Validators.max(999999999)])
     });
     this.entiteExterneForm=new FormGroup({
-      nom:new FormGroup({
         nom:new FormControl(null,Validators.required),
         email:new FormControl(null,[Validators.required,Validators.email]),
-      })
+        numeroTelephone:new FormControl(null,[Validators.required,Validators.min(111111111),Validators.max(999999999)])
     });
     this.bureauOrdreForm=new FormGroup({
       email:new FormControl(null,[Validators.required,Validators.email]),
@@ -72,14 +74,22 @@ export class AccountsManagementComponent implements OnInit {
   }
   onSubmitResponsableForm(){
     this.accountsService.signUpResponsable(this.responsableForm.value).subscribe(res=>{
+      this.accountsService.getAllResponsables().subscribe((data:any[])=>{
+          this.responsableAccounts=data;
+      })
       this.modalService.dismissAll();
-      console.log(res);
     },err=>{
       this.modalService.dismissAll();
-      console.log(err);
     })
   }
   onSubmitEntiteExterneForm(){
+    const formValue=this.entiteExterneForm.value;
+    this.accountsService.signUpEntiteExterne({nom:formValue['nom'],email:formValue['email'],numeroTelephone:formValue['numeroTelephone']}).subscribe(data=>{
+      this.accountsService.getAllEntiteExterne().subscribe((data:any[])=>{
+        this.entiteExterneAccounts=data;
+      })
+      this.modalService.dismissAll();
+    });
 
   }
   onSubmitBureauOrdreForm(){

@@ -4,6 +4,9 @@
   padding-bottom: 1.5rem !important;
 
 }
+.activated{
+  color : #7e94ff !important;
+}
 .header{
   height : 55vh;
   background: linear-gradient(to right,rgba(22, 34, 91, 0.84),rgba(29, 36, 72, 0.9)),url('../../../assets/images/background-landing.jpg');
@@ -241,7 +244,7 @@
   }
   .dossierCarte{
     padding : 3rem 0rem;
-    width : 70%;
+    width : 80%;
     height : 70vh;
     margin-left : 10rem;
     position: relative;
@@ -310,6 +313,7 @@
     background-size: cover;
     overflow: hidden;
     .formulaire{
+      height : 100% !important;
       background-color: rgba(255, 255, 255, 0.9);
       padding : 2.5rem 3rem;
       padding-bottom: 6rem;
@@ -555,6 +559,7 @@
   height : 100vh;
   padding : 10rem 1rem;
   padding-top: 12rem;
+  z-index: 999999999999999 !important;
   background-color : rgb(29,36,72);
   ul{
     list-style: none;
@@ -686,9 +691,14 @@
     .content{
       margin-left: 10rem !important;
     }
+
+  }
+  .reclamation{
+    height : 60vh !important;
   }
 
 }
+
 @media screen and (max-width : 1160px) {
   .actualImg{
     width : 80% !important;
@@ -771,6 +781,9 @@
     margin-top : 24rem !important;
     width : 300% !important;
   }
+  .dossierCarte{
+    height : 50vh !important;
+  }
 }
 
 
@@ -823,6 +836,13 @@
   }
 
 }
+
+@media screen and (max-width : 1000px) {
+.reclamation{
+  height : 50vh !important;
+  padding: 2rem;
+}
+}
 @media screen and (max-width : 896px) {
   .main{
     padding-top: 10rem !important ;
@@ -871,6 +891,11 @@
   }
   .header{
     height : 45vh;
+  }
+  .dossierCarte{
+    height : 40vh !important;
+    width : 87% !important;
+    margin-left: 15% !important;
   }
 
 }
@@ -941,6 +966,22 @@
     width : 110% !important;
     margin-left : 3rem !important;
     margin-top: 16rem !important;
+  }
+  .suivieDossier{
+    .row{
+      display: flex !important;
+      flex-direction: column-reverse !important ;
+      justify-content: center !important;
+      align-items: center !important;
+    }
+    .dossierCarte{
+      margin: auto !important;
+    }
+    .img-container{
+
+      padding: 0 !important;
+      margin-bottom: 10%;
+    }
   }
   }
 .main__img{
@@ -1069,6 +1110,9 @@
                 .primary-paragraph{
                   width : 100%;
                 }
+                .reclamation{
+                  height : 30vh !important;
+                }
 
                 }
                 @media screen and (max-width : 631px) {
@@ -1114,6 +1158,39 @@
                     }
 
                     }
+                    @media screen and (max-width : 550px){
+                     .reclamation{
+                      height : 40vh !important;
+                      .formulaire{
+                       padding-top: 10% !important;
+                      }
+                     }
+                      }
+                      @media screen and (max-width : 420px){
+                        .reclamation{
+                          padding: 4rem .5rem !important;
+                          // height: 50vh !important;
+                        }
+                         }
+                         @media screen and (max-height : 710px){
+                          .reclamation{
+                            // padding: 4rem .5rem !important;
+                            height: 60vh !important;
+                          }
+                           }
+                    @media screen and (max-width : 512px){
+                    .geoportail{
+                      padding : 5rem 1rem !important;
+                      padding-bottom: 8rem !important;
+                    }
+                    .formulaire{
+                      clip-path: polygon( 0  0 ,90% 0,35% 100%,0 100%) !important;
+                      padding-right: 1rem !important;
+                      width : 100% !important;
+                    }
+                    }
+
+
                     @media screen and (max-width : 506px){
                       .main__content{
                         p{
@@ -1140,6 +1217,7 @@
                         }
                       }
                     }
+
                     @media screen and (max-width : 445px) {
                       .cartes{
                         flex-wrap: wrap;
@@ -1190,6 +1268,28 @@
                   .header{
                     height : 70vh !important;
                   }
+                }
+                @media screen and (max-height : 430px){
+                  .header{
+                    height : 90vh !important;
+                  }
+                }
+                .closeButton{
+                  position: absolute;
+                  top : 3%;
+                  right : 3%;
+
+                }
+                .closeBtn{
+                  background-color: transparent;
+                  border: none;
+                }
+                .closeX{
+                  font-size: 2rem !important;
+                }
+                .text-area{
+                  font-size: .6rem !important;
+                  padding : .5rem !important;
                 }
 
 

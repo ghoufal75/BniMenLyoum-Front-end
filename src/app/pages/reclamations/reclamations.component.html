@@ -1,0 +1,55 @@
+<div class="container">
+  <h2 class="pageTitle">Espace réclamations</h2>
+  <div class="content">
+    <ul class="content__list">
+      <li class="content__element" *ngFor="let reclamation of reclamations.reverse()">
+        <div class="reclamation">
+          <div class="reclamation__header">
+            <h4 class="reclamation__type mb-4 ">Type de réclamation : {{reclamation.type=='equ'?'Équipements et services publics':(reclamation.type=='urba'?'Urbanisme et construction':(reclamation.type=='budg'?'Budget, affaires financières et programmation':(reclamation.type=='coop'?'Coopération et partenariat':'Autre')))}}</h4>
+          </div>
+          <div class="reclamation__body">
+            <h6 class="reclamation__emetter mb-3"><b>Emetteur : </b>{{reclamation.senderId}}</h6>
+            <p class="reclamation__message mb-3"><b>Corps : </b>{{reclamation.message}}</p>
+            <p class="reclamation__sentAt mb-3"><b>Envoyée le : </b> {{reclamation.sentAt | date: 'short'}}</p>
+          </div>
+          <div class="reclamation__footer">
+            <div>
+            <button class="btn btn-danger me-2">Supprimer</button>
+            <button class="btn btn-secondary"(click)='onTransmettre(reclamation,selectEntiteModal)'>Transmettre</button>
+          </div>
+          </div>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>
+<div class="modal">
+  <!-- Center Modal -->
+  <ng-template #selectEntiteModal let-modal>
+    <div class="modal-header">
+      <h5 class="modal-title mt-0">Choisissez l'entité réceptrice</h5>
+      <button
+        type="button"
+        class="btn-close"
+        (click)="modal.dismiss('Cross click')"
+        aria-hidden="true"
+      ></button>
+    </div>
+    <div class="modal-body">
+      <ul>
+        <li class="account" *ngFor="let element of entiteExternesArray" (click)="selectTheContact(element)">
+          <div class="account__img" [ngStyle]="{'background':element?.imageUrl?'url('+element?.imageUrl+')':'black','backgroud-size':'cover','background-repeat':'not-repeat'}">
+            <div class="initials"*ngIf='!element?.imageUrl'>
+              {{element.lastName?element.lastName[0]:element.nom[0]}}
+            </div>
+          </div>
+          <div class="account__name">
+            <h3>  {{element.lastName?element.lastName:element.nom}}</h3>
+
+          </div>
+        </li>
+      </ul>
+    </div>
+
+  </ng-template>
+</div>

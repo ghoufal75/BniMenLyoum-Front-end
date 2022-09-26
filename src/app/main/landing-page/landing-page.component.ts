@@ -1,5 +1,6 @@
 import { trigger, transition, style, animate } from "@angular/animations";
 import {
+  AfterViewInit,
   Component,
   ElementRef,
   HostListener,
@@ -56,7 +57,19 @@ import { MainService } from "../main.service";
     ]),
   ],
 })
-export class LandingPageComponent implements OnInit {
+export class LandingPageComponent implements OnInit, AfterViewInit {
+  currentActive=0;
+  quiSommesNousOffset=null;
+  fonctionnalitesOffset=null;
+  reclamationOffset=null;
+  suivieDossierOffset=null;
+  geoportailOffset=null;
+  @ViewChild('quisommesNous') quiSommesNousEl:ElementRef;
+  @ViewChild('fonctionnalites') fonctionnalitesEl:ElementRef;
+  @ViewChild('suivieDossier') suivieDossierEl:ElementRef;
+  @ViewChild('reclamation')reclamationEl:ElementRef;
+  @ViewChild('geoportail') geoportailEl:ElementRef;
+
   @ViewChild("navbar") nav: ElementRef;
   suivieDossierForm: FormGroup;
   signUpForm: FormGroup;
@@ -83,6 +96,8 @@ export class LandingPageComponent implements OnInit {
     private authService: AuthenticationService
   ) {}
 
+
+
   ngOnInit(): void {
     this.authService.autoLogin();
     this.authService.user.pipe(take(1)).subscribe((user) => {
@@ -92,6 +107,18 @@ export class LandingPageComponent implements OnInit {
     });
     this.initForms();
   }
+  ngAfterViewInit(): void {
+
+      this.fonctionnalitesOffset=this.fonctionnalitesEl.nativeElement.offsetTop;
+      this.reclamationOffset=this.reclamationEl.nativeElement.offsetTop;
+      this. quiSommesNousOffset=this. quiSommesNousEl.nativeElement.offsetTop;
+      this.suivieDossierOffset=this.suivieDossierEl.nativeElement.offsetTop;
+      this.geoportailOffset=this.geoportailEl.nativeElement.offsetTop;
+  }
+
+
+
+
   initForms() {
     const passwordMatchingValidatior: ValidatorFn = (
       control: AbstractControl
@@ -106,9 +133,9 @@ export class LandingPageComponent implements OnInit {
         : { notmatched: true };
     };
     this.suivieDossierForm = new FormGroup({
-      referenceFonciere: new FormControl(null),
+      // referenceFonciere: new FormControl(null),
       nom: new FormControl(null, [Validators.required]),
-      topographe: new FormControl(null, [Validators.required]),
+      // topographe: new FormControl(null, [Validators.required]),
     });
     this.signUpForm = new FormGroup(
       {
@@ -148,22 +175,52 @@ export class LandingPageComponent implements OnInit {
     } else {
       element.classList.remove("navbar-inverse");
     }
+    if (window.pageYOffset+100 >= this.quiSommesNousOffset && window.pageYOffset+100 < this.fonctionnalitesOffset ) {
+      this.currentActive = 1;
+    } else if (window.pageYOffset+100 >= this.fonctionnalitesOffset && window.pageYOffset+100 < this.geoportailOffset) {
+      this.currentActive = 2;
+    } else if (window.pageYOffset+100 >= this.geoportailOffset && window.pageYOffset+100 < this.suivieDossierOffset) {
+      this.currentActive = 3;
+    } else if (window.pageYOffset+100 >= this.suivieDossierOffset && window.pageYOffset+100 < this.reclamationOffset) {
+      this.currentActive = 4;
+    }else if (window.pageYOffset+100 >= this.reclamationOffset) {
+      this.currentActive = 5;
+    } else {
+      this.currentActive = 0;
+    }
   }
 
+  move(currentActive){
+    if(currentActive===1){
+      window.scrollTo(0,this.quiSommesNousOffset);
+    }
+    else if(currentActive===2){
+      window.scrollTo(0,this.fonctionnalitesOffset);
+    }
+    else if(currentActive===3){
+      window.scrollTo(0,this.geoportailOffset);
+    }
+    else if(currentActive===4){
+      window.scrollTo(0,this.suivieDossierOffset);
+    }
+    else if(currentActive===5){
+      window.scrollTo(0,this.reclamationOffset);
+    }
+  }
   onSubmitSuivieDossierForm(modal: any) {
     this.dossierTrouve = null;
     this.avisProjet = null;
     this.keys = [];
-    console.log(this.suivieDossierForm.value);
     this.authService.user
       .pipe(
         take(1),
         exhaustMap((user) => {
           if (!user) {
+
             this.showNotAuthenticatedModal(false, modal);
             return null;
           }
-          return this.mainService.searchProject(this.suivieDossierForm.value);
+          return this.mainService.searchProject(this.suivieDossierForm.get('nom').value);
         })
       )
       .subscribe((res) => {
@@ -224,11 +281,9 @@ export class LandingPageComponent implements OnInit {
           this.showAlert(0,'Vous êtes connectés avec succées');
           this.modalService.dismissAll();
           this.isAuthLoading = false;
-
-          console.log(res);
         },
         (err) => {
-          console.log(err);
+          this.isAuthLoading=false;
         }
       );
   }
@@ -250,6 +305,7 @@ export class LandingPageComponent implements OnInit {
   }
 
   showModal(centerDataModal: any) {
+    this.navIsShown=false;
     this.modalService.open(centerDataModal, {
       size: "lg",
       centered: true,
@@ -288,12 +344,31 @@ export class LandingPageComponent implements OnInit {
     this.alertShown = false;
     this.disconnectAlert = false;
   }
-  onSubmitReclamation() {
+  onSubmitReclamation(modal) {
     const { type, message } = this.reclamationForm.value;
     const dataToSend = { type, message, sentAt: new Date() };
-    this.mainService.sendReclamation(dataToSend).subscribe(res=>{
-      this.reclamationForm.reset();
-      this.showAlert(0,'Votre réclamation a été envoyé avec succées')
-    })
+       this.authService.user
+      .pipe(
+        take(1),
+        exhaustMap((user) => {
+          if (!user) {
+            this.reclamationForm.reset();
+            this.showNotAuthenticatedModal(false, modal);
+            return null;
+          }
+          return  this.mainService.sendReclamation(dataToSend)
+        })
+      )
+      .subscribe((res) => {
+          this.reclamationForm.reset();
+          this.showAlert(0,'Votre réclamation a été envoyé avec succées')
+
+      });
+
+  }
+  getColSize(){
+    if(window.innerWidth<=1000)
+    return true;
+    else return false;
   }
 }

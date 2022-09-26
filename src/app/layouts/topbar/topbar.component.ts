@@ -30,6 +30,9 @@ export class TopbarComponent implements OnInit {
   uploadsArray:any[]=[];
   processing:boolean=false;
   done:boolean=false;
+  imgUrl:string;
+  firstName:string;
+  lastName:string;
 
   constructor(@Inject(DOCUMENT) private document: any, private router: Router, private authService: AuthenticationService,private accountServie:AccountService,
               private authFackservice: AuthfakeauthenticationService,
@@ -37,7 +40,7 @@ export class TopbarComponent implements OnInit {
               public translate: TranslateService,
               public _cookiesService: CookieService,
               private uploadingService:UploadingStateService,
-              private socketService:SocketService) {
+              private socketService:SocketService,private accountService:AccountService) {
   }
 
   listLang = [
@@ -54,10 +57,14 @@ export class TopbarComponent implements OnInit {
   @Output() mobileMenuButtonClicked = new EventEmitter();
 
   ngOnInit() {
+    this.accountService.adminEmitter.subscribe((admin:any)=>{
+      this.firstName=admin.firstName;
+      this.lastName=admin.lastName;
+      this.imgUrl=admin.imgUrl;
+    })
     this.openMobileMenu = false;
     this.element = document.documentElement;
     this.uploadingService.fileOnUploadSubject.subscribe((value:any)=>{
-      console.log(value);
       if(value.done){
         this.processing=false;
         this.done=true;

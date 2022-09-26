@@ -1,7 +1,8 @@
 import { Injectable } from "@angular/core";
 import { Socket } from "ngx-socket-io";
 import { AccountService } from "src/app/account/auth/account.service";
-const API_LINK = "http://localhost:3000";
+import { environment } from "src/environments/environment";
+const API_LINK = environment.api_link;
 
 @Injectable({ providedIn: "root" })
 export class SocketService extends Socket {
@@ -15,7 +16,15 @@ export class SocketService extends Socket {
       if (!admin) {
         this.authService.responsableEmitter.subscribe((responsable: any) => {
           if (!responsable) {
-            return;
+            this.authService.entiteExterneEmitter.subscribe((entiteExterne:any)=>{
+              if(entiteExterne){
+                id=entiteExterne.userID;
+                this.sender = id;
+              }
+              else{
+                return;
+              }
+            })
           } else {
             id = responsable.userID;
             this.sender = id;
@@ -26,15 +35,21 @@ export class SocketService extends Socket {
         this.sender = id;
       }
     });
-    console.log("this is the id of connected user : ", this.sender);
+
     this.ioSocket.io.opts.query = { auth: id };
     this.connect();
+  }
+  onInitialReclamations(){
+    return this.fromEvent('initialsReclamations');
   }
   getConversations() {
     return this.fromEvent("conversations");
   }
   newUser() {
     return this.fromEvent("newUser");
+  }
+  onEntiteExterne(){
+    return this.fromEvent('entiteExterne');
   }
   firstMessage(receiver, objet, message) {
     let sentAt = new Date().toLocaleString();
@@ -52,8 +67,11 @@ export class SocketService extends Socket {
   userDisconnected() {
     return this.fromEvent("userDisconnected");
   }
+  onNewComplaint(){
+    return this.fromEvent('newReclamation');
+  }
   sendMessage(receiver, message, objet, file, filename, fileSrc) {
-    console.log("This is the file to send : ", file);
+
     let sentAt =new Date().toLocaleString();
     if (file) {
       // this.emit('uploadFile',file);
@@ -67,8 +85,6 @@ export class SocketService extends Socket {
       });
       return;
     }
-    console.log("this is the filename : ",filename);
-    console.log("this is the file src : ",fileSrc)
     this.emit(
       "newMessage",
       JSON.stringify({ sender: this.sender, receiver, message, objet, sentAt,filename,fileSrc})
@@ -78,7 +94,6 @@ export class SocketService extends Socket {
     return this.fromEvent("newMessage");
   }
   fetchNewContacts(name: string) {
-    console.log(name);
     this.emit("searchNewContacts", { contactName: name });
   }
   getNewContactResult() {
@@ -97,7 +112,6 @@ export class SocketService extends Socket {
     this.emit(eventName, data);
   }
   onFileShare() {
-    console.log("i'll strat sharing");
     return this.fromEvent("fs-share");
   }
   onFsMeta() {
@@ -105,5 +119,9 @@ export class SocketService extends Socket {
   }
   onFileInfos(){
     return this.fromEvent('fileInfos');
+  }
+
+  onNewReclamation(){
+    return this.fromEvent('newComplaint');
   }
 }

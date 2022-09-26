@@ -1,0 +1,146 @@
+.navbar{
+  padding : .6rem 6rem;
+  transition : all .4s;
+  z-index:999999999999;
+  background-color: rgb(29,36,72);
+  &__logo{
+    .logo{
+      width : 20%;
+    }
+  }
+  &__menu{
+    color : white;
+    ul{
+      list-style: none;
+      li{
+        font-family: Raleway Light !important;
+        display: inline-block;
+        font-size: .9rem !important;
+        padding-top: .8rem;
+        &:not(:last-child){
+          margin-right: 2rem;
+        }
+        a{
+          color : #f4f4f4;
+          cursor: pointer;
+          transition: all .4s;
+          font-family: Raleway Light;
+
+          &:hover{
+            color : #7e94ff;
+          }
+        }
+      }
+    }
+
+  }
+  &__button{
+    display: none;
+  }
+}
+.pageTitle{
+  padding-left: .7rem;
+  margin : 4% 0;
+  border-left: 4px solid #556ee6;
+
+  font-family: 'Raleway Light';
+  text-transform: uppercase;
+  color : #556ee6;
+  letter-spacing: .1rem;
+}
+.content{
+  height : 62vh;
+  border-radius: 20px;
+  box-shadow: 0 .6rem .8rem rgba(0,0,0,.2);
+  padding: 0;
+  &__list{
+    height : 62vh;
+    list-style: none;
+    overflow-y: auto;
+
+    &::-webkit-scrollbar {
+      width: 8px;
+      background-color: #f0f0f0;
+      border-radius: 15px;
+  }
+  &::-webkit-scrollbar-thumb{
+    background-color: #b9b9b9;
+    border-radius: 15px;
+
+  }
+  }
+  &__element{
+    margin : 2rem 2rem;
+
+  }
+  .reclamation{
+    padding : .6rem;
+    border-radius: 10px;
+    box-shadow: 0 .6rem .8rem rgba(0,0,0,.2);
+    &__footer{
+      display: flex;
+      justify-content: flex-end;
+    }
+
+  }
+}
+.account{
+  &__header{
+    position : relative;
+    height : 15vh;
+    border-bottom: 2px solid #ffff !important;
+    .roundedImg--account{
+      width : 5rem;
+      height : 5rem;
+      position : relative;
+      border-radius: 80px;
+      border: 1px solid white;
+      box-shadow: 0 .7rem .7rem rgba(0, 0, 0, 0.18);
+      .name{
+        font-family: .5rem;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%,-50%);
+        color : #ffff;
+      }
+    }
+  }
+}
+.avatar{
+  width : auto;
+  height : auto;
+  position: absolute;
+  top : 55%;
+  left : 50%;
+  transform: translateX(-50%);
+}
+
+.modal-header{
+  border : none !important;
+  }
+.modal-body{
+  border : none;
+}
+.credentials{
+  margin : 2.5rem 0;
+  &__name{
+    text-align: center;
+    font-size: 1rem;
+  }
+  &__list{
+    font-size: .8rem;
+    list-style: none;
+    li{
+      &:not(:last-child){
+        margin-bottom: 1rem;
+      }
+    }
+    .identifier{
+      font-weight: bold;
+    }
+    .credentialsData{
+
+    }
+  }
+}

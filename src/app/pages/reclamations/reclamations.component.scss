@@ -1,0 +1,91 @@
+.pageTitle{
+  padding-left: .7rem;
+  margin : 4% 0;
+  border-left: 4px solid #556ee6;
+
+  font-family: 'Raleway Light';
+  text-transform: uppercase;
+  color : #556ee6;
+  letter-spacing: .1rem;
+}
+.content{
+  height : 62vh;
+  border-radius: 20px;
+  box-shadow: 0 .6rem .8rem rgba(0,0,0,.2);
+  padding: 0;
+  &__list{
+    height : 62vh;
+    list-style: none;
+    overflow-y: auto;
+
+    &::-webkit-scrollbar {
+      width: 8px;
+      background-color: #f0f0f0;
+      border-radius: 15px;
+  }
+  &::-webkit-scrollbar-thumb{
+    background-color: #b9b9b9;
+    border-radius: 15px;
+
+  }
+  }
+  &__element{
+    margin : 2rem 2rem;
+
+  }
+  .reclamation{
+    padding : .6rem;
+    border-radius: 10px;
+    box-shadow: 0 .6rem .8rem rgba(0,0,0,.2);
+    &__footer{
+      display: flex;
+      justify-content: flex-end;
+    }
+
+  }
+}
+.account{
+  cursor: pointer;
+  padding:.6rem 0;
+  display: flex;
+  transition: all .4s;
+  &:not(:last-child){
+    border-bottom: 1px solid #efefef;
+  }
+  &:hover{
+    background-color: #efefef;
+  }
+  &__img{
+    width : 3.5rem;
+    height :3.5rem;
+    position: relative;
+    border-radius: 100px;
+    box-shadow: 0 .7rem 2rem rgba(0, 0, 0, 0.1);
+    .initials{
+      position: absolute;
+      top: 50%;
+      left : 50%;
+      transform: translate(-50%,-50%);
+      color : white;
+      font-size: .6rem;
+      font-family: Raleway Regular;
+
+  }
+  }
+  .badgeContainer{
+    margin-left: auto;
+    .badge{
+      display: inline-block;
+      transform: translateY(100%);
+    }
+  }
+  &__name{
+    font-family: Raleway Light;
+    color : #0000;
+    margin-left: .8rem;
+  h3{
+    font-size: 1.1rem;
+    transform: translateY(60%);
+  }
+  }
+}

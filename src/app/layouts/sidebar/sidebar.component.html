@@ -8,7 +8,7 @@
     <ul class="metismenu list-unstyled" id="side-menu" #sideMenu>
       <!-- {{menuItems}} -->
       <ng-container  *ngFor="let item of menuItems">
-        <div *ngIf="item.label==='Accounts Management'?(permited?true:false):true">
+        <div class='mb-4 ff'*ngIf="item.label==='Accounts Management'?(permited?true:false):true">
           <li class="menu-title" *ngIf="item.isTitle">{{ item.label | translate }}</li>
           <li><span class="badge rounded-pill float-end bg-danger me-3 mt-3"*ngIf="item.label==='Exchange'&& unredMessages!=0">{{unredMessages}}</span></li>
           <li *ngIf="!item.isTitle && !item.isLayout">

@@ -44,7 +44,6 @@ export class VerticalComponent implements OnInit, AfterViewInit {
         } else {
           this.isMap = false;
         }
-        console.log(this.isMap);
       }
     });
 
@@ -144,7 +143,7 @@ export class VerticalComponent implements OnInit, AfterViewInit {
     }
   }
   setPadding() {
-    if (this.router.url==='/map') {
+    if (this.router.url==='/admin/map') {
       return "0";
     }
     else if(this.router.url==='/accountManagement'){

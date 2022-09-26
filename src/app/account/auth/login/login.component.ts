@@ -26,6 +26,7 @@ import { AccountService } from "../account.service";
  */
 export class LoginComponent implements OnInit {
   @Input() permission: boolean = true;
+  @Input() role=null;
   @ViewChild("password") passwordInput: ElementRef;
   @Output() firstTime: EventEmitter<boolean> = new EventEmitter<boolean>();
   loginForm: FormGroup;
@@ -65,29 +66,41 @@ export class LoginComponent implements OnInit {
    * Form submit
    */
   onSubmit() {
-    console.log("submited");
+
     this.submitted = true;
     if (!this.permission) {
-      return this.accountService.loginReponsable(this.loginForm.value).subscribe(
-        (responsable) => {
-          if (responsable.firstConnection) {
+      if(this.role){
+
+        return this.accountService.loginEntieExterne(this.loginForm.value).subscribe((res:any)=>{
+
+          if(res.firstConnection){
             this.firstTime.emit(true);
-          } else {
-            this.router.navigate(["/dashboard"], { relativeTo: this.route });
           }
-        },
-        (err) => {
-          console.log(err);
-        }
-      );
+          else{
+            this.router.navigate(["/dashboardReclamations"], { relativeTo: this.route });
+          }
+        })
+      }
+      else{
+        return this.accountService.loginReponsable(this.loginForm.value).subscribe(
+          (responsable) => {
+            if (responsable.firstConnection) {
+              this.firstTime.emit(true);
+            } else {
+              this.router.navigate(["/admin/map"], { relativeTo: this.route });
+            }
+          },
+          (err) => {
+
+          }
+        );
+      }
     }
     this.accountService.login(this.loginForm.value).subscribe(
       (res) => {
-        console.log("success");
-        this.router.navigate(["/", "dashboard"], { relativeTo: this.route });
+        this.router.navigate(["/",'admin', "map"], { relativeTo: this.route });
       },
       (err) => {
-        console.log("error");
         this.error = err;
       }
     );

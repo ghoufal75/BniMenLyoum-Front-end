@@ -46,7 +46,7 @@ export class LoginResponsableComponent implements OnInit {
   }
   onSubmit() {
     this.accountService.changePassword(this.passwordUpdateForm.get('password').value).subscribe(res=>{
-      this.router.navigate(['/dashboard'],{relativeTo:this.route});
+      this.router.navigate(['/admin/map'],{relativeTo:this.route});
     })
   }
   get f() {

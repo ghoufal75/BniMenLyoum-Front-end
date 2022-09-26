@@ -7,6 +7,7 @@ import {
   HttpClient,
 } from "@angular/common/http";
 
+
 import { environment } from "../environments/environment";
 
 import {
@@ -36,6 +37,7 @@ import { FakeBackendInterceptor } from "./core/helpers/fake-backend";
 import { AuthInterceptor } from "./account/auth/auth.interceptor";
 import { GeoColService } from "./shared/geoportail/geocol.service";
 import { FormsModule } from "@angular/forms";
+
 
 if (environment.defaultauth === "firebase") {
   initFirebaseBackend(environment.firebaseConfig);
@@ -77,7 +79,8 @@ export function createTranslateLoader(http: HttpClient): any {
   ],
   bootstrap: [AppComponent],
   providers: [
-    GeoColService
+    GeoColService,
+
     // { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     // { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
     // {

@@ -101,117 +101,126 @@
     *ngIf="maitreOuvrageType === 'physique'"
   >
     <h2 class="projectTitle">Maitre d'ouvrage physique</h2>
-    <table class="table">
-      <thead class="table-dark">
-        <tr>
-          <th scope="col">CIN</th>
-          <th scope="col">Nom</th>
-          <th scope="col">Prénom</th>
-          <th scope="col">Email</th>
-          <th scope="col">Téléphone</th>
-          <th scope="col">Qualité</th>
-          <th scope="col" *ngIf='permited'>Actions</th>
-        </tr>
-      </thead>
+    <div class="table-responsive">
+      <table class="table">
+        <thead class="table-dark">
+          <tr>
+            <th scope="col">CIN</th>
+            <th scope="col">Nom</th>
+            <th scope="col">Prénom</th>
+            <th scope="col">Email</th>
+            <th scope="col">Téléphone</th>
+            <th scope="col">Qualité</th>
+            <th scope="col" *ngIf='permited'>Actions</th>
+          </tr>
+        </thead>
 
-      <tbody>
-        <tr *ngFor="let element of maitreOuvragePhysiqueArray">
-          <td>{{ element.cin }}</td>
-          <td>{{ element.nom }}</td>
-          <td>{{ element.prenom }}</td>
-          <td>{{ element.email }}</td>
-          <td>{{ element.numeroTelephone }}</td>
-          <td>{{ element.qualite }}</td>
-          <td class="d-flex" *ngIf='permited'>
-            <a class="action-btn action-btn--2"(click)='onUpdateItem(element,newMaitreOuvrage)'>
-              <p style="text-align:center">
-                <i class="bx  bx-edit-alt"></i>
-              </p>
-              </a>
-              <a class="action-btn action-btn--3" (click)='showAlert(element,deleteModal)'>
+        <tbody>
+          <tr *ngFor="let element of maitreOuvragePhysiqueArray">
+            <td>{{ element.cin }}</td>
+            <td>{{ element.nom }}</td>
+            <td>{{ element.prenom }}</td>
+            <td>{{ element.email }}</td>
+            <td>{{ element.numeroTelephone }}</td>
+            <td>{{ element.qualite }}</td>
+            <td class="d-flex" *ngIf='permited'>
+              <a class="action-btn action-btn--2"(click)='onUpdateItem(element,newMaitreOuvrage)'>
                 <p style="text-align:center">
-                  <i class="bx bx-trash-alt"></i>
+                  <i class="bx  bx-edit-alt"></i>
                 </p>
                 </a>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+                <a class="action-btn action-btn--3" (click)='showAlert(element,deleteModal)'>
+                  <p style="text-align:center">
+                    <i class="bx bx-trash-alt"></i>
+                  </p>
+                  </a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
   </div>
   <div class="maitreOuvrageMoralArray" *ngIf="maitreOuvrageType === 'moral'">
     <h2 class="projectTitle">Maitre d'ouvrage moral</h2>
-    <table class="table">
-      <thead class="table-dark">
-        <tr>
-          <th scope="col">IDRV</th>
-          <th scope="col">RC</th>
-          <th scope="col">Nom</th>
-          <th scope="col">Email</th>
-          <th scope="col">Téléphone</th>
-          <th scope="col">Ville</th>
-          <th scope="col" *ngIf='permited'>Actions</th>
+    <div class="table-responsive">
+      <table class="table">
+        <thead class="table-dark">
+          <tr>
+            <th scope="col">IDRV</th>
+            <th scope="col">RC</th>
+            <th scope="col">Nom</th>
+            <th scope="col">Email</th>
+            <th scope="col">Téléphone</th>
+            <th scope="col">Ville</th>
+            <th scope="col" *ngIf='permited'>Actions</th>
 
-        </tr>
-      </thead>
+          </tr>
+        </thead>
 
-      <tbody>
-        <tr *ngFor="let element of maitreOuvrageMoralArray">
-          <td>{{ element.idRV }}</td>
-          <td>{{ element.rc }}</td>
-          <td>{{ element.nom }}</td>
-          <td>{{ element.email }}</td>
-          <td>{{ element.numeroTelephone }}</td>
-          <td>{{ element.ville }}</td>
-          <td class="d-flex" *ngIf='permited'>
-            <a class="action-btn action-btn--2"(click)='onUpdateItem(element,newMaitreOuvrage)'>
-              <p style="text-align:center">
-                <i class="bx  bx-edit-alt"></i>
-              </p>
-              </a>
-              <a class="action-btn action-btn--3" (click)='showAlert(element,deleteModal)'>
+        <tbody>
+          <tr *ngFor="let element of maitreOuvrageMoralArray">
+            <td>{{ element.idRV }}</td>
+            <td>{{ element.rc }}</td>
+            <td>{{ element.nom }}</td>
+            <td>{{ element.email }}</td>
+            <td>{{ element.numeroTelephone }}</td>
+            <td>{{ element.ville }}</td>
+            <td class="d-flex" *ngIf='permited'>
+              <a class="action-btn action-btn--2"(click)='onUpdateItem(element,newMaitreOuvrage)'>
                 <p style="text-align:center">
-                  <i class="bx bx-trash-alt"></i>
+                  <i class="bx  bx-edit-alt"></i>
                 </p>
                 </a>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+                <a class="action-btn action-btn--3" (click)='showAlert(element,deleteModal)'>
+                  <p style="text-align:center">
+                    <i class="bx bx-trash-alt"></i>
+                  </p>
+                  </a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
   </div>
   <div class="organismePublicArray" *ngIf="maitreOuvrageType === 'orgPublic'">
     <h2 class="projectTitle">Organisme Public</h2>
-    <table class="table">
-      <thead class="table-dark">
-        <tr>
-          <th scope="col">ID Organisme</th>
-          <th scope="col">Nom</th>
-          <th scope="col">Email</th>
-          <th scope="col">Téléphone</th>
-          <th scope="col" *ngIf='permited'>Actions</th>
-        </tr>
-      </thead>
+    <div class="table-responsive">
+      <table class="table">
+        <thead class="table-dark">
+          <tr>
+            <th scope="col">ID Organisme</th>
+            <th scope="col">Nom</th>
+            <th scope="col">Email</th>
+            <th scope="col">Téléphone</th>
+            <th scope="col" *ngIf='permited'>Actions</th>
+          </tr>
+        </thead>
 
-      <tbody>
-        <tr *ngFor="let element of organismePublicArray">
-          <td>{{ element.idOrganisme }}</td>
-          <td>{{ element.nom }}</td>
-          <td>{{ element.email }}</td>
-          <td>{{ element.numeroTelephone }}</td>
-          <td class="d-flex" *ngIf='permited'>
-            <a class="action-btn action-btn--2"(click)='onUpdateItem(element,newMaitreOuvrage)'>
-              <p style="text-align:center">
-                <i class="bx  bx-edit-alt"></i>
-              </p>
-              </a>
-              <a class="action-btn action-btn--3"  (click)='showAlert(element,deleteModal)'>
+        <tbody>
+          <tr *ngFor="let element of organismePublicArray">
+            <td>{{ element.idOrganisme }}</td>
+            <td>{{ element.nom }}</td>
+            <td>{{ element.email }}</td>
+            <td>{{ element.numeroTelephone }}</td>
+            <td class="d-flex" *ngIf='permited'>
+              <a class="action-btn action-btn--2"(click)='onUpdateItem(element,newMaitreOuvrage)'>
                 <p style="text-align:center">
-                  <i class="bx bx-trash-alt"></i>
+                  <i class="bx  bx-edit-alt"></i>
                 </p>
                 </a>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+                <a class="action-btn action-btn--3"  (click)='showAlert(element,deleteModal)'>
+                  <p style="text-align:center">
+                    <i class="bx bx-trash-alt"></i>
+                  </p>
+                  </a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
   </div>
 </div>
 <div class="modal modalgeotiffModal">

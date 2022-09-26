@@ -78,9 +78,7 @@ export class SignupComponent implements OnInit {
     this.accountService.signUp(this.signupForm.value).subscribe(res=>{
       this.submitted=true;
       this.successmsg=true;
-      console.log(res);
     },err=>{
-      console.log(err);
     })
   }
 }

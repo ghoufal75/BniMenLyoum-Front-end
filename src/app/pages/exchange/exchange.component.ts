@@ -19,6 +19,8 @@ import {
 } from "../services/communication.service";
 import { SocketService } from "../services/socket.service";
 import { SelectFilterComponent } from "ng2-smart-table/lib/components/filter/filter-types/select-filter.component";
+import { AccountService } from "src/app/account/auth/account.service";
+import { take, tap } from "rxjs/operators";
 @Component({
   selector: "app-exchange",
   templateUrl: "./exchange.component.html",
@@ -61,7 +63,8 @@ export class ExchangeComponent implements OnInit, OnDestroy {
     private socketService: SocketService,
     private completerService: CompleterService,
     private communicationService: CommunicationService,
-    private modalService: NgbModal
+    private modalService: NgbModal,
+    private accountService:AccountService,
   ) {}
 
   ngOnInit(): void {
@@ -353,11 +356,23 @@ export class ExchangeComponent implements OnInit, OnDestroy {
   }
   transferMessage(messageToTransfer: any, modal: any) {
     this.isTransfering = true;
-    if(messageToTransfer.sender===this.sender){
+    let senderContact;
+    let receiverContact;
+    let userCredentials=null;
+    this.accountService.adminEmitter.pipe(take(1)).subscribe(user=>{
+      userCredentials={firstName:user.firstName,lastName:user.lastName}
 
+      console.log("this is from subscription");
+    });
+    if(messageToTransfer.sender===this.sender){
+      senderContact={...userCredentials};
+      receiverContact=this.actualReceiver;
     }
-    let senderContact=this.contacts.find(el=>el._id===messageToTransfer.sender);
-    this.message = 'Monsieur : '+senderContact.firstName+' '+senderContact.lastName+'\n'+messageToTransfer.message;
+    else{
+      senderContact=this.contacts.find(el=>el._id===messageToTransfer.sender);
+      receiverContact={...userCredentials};
+    }
+    this.message = 'Envoyé de la part de Monsieur : '+senderContact.firstName+' '+senderContact.lastName+' à monsieur '+receiverContact.firstName+' '+receiverContact.lastName+' le '+messageToTransfer.sentAt+'\nMessage : '+messageToTransfer.message;
     this.object = messageToTransfer.objet;
     this.transmitedFileSrc = messageToTransfer.fileSrc;
     console.log("this is the file source : ", messageToTransfer.fileSrc)
@@ -503,7 +518,6 @@ export class ExchangeComponent implements OnInit, OnDestroy {
   }
   sendMessage() {
     if (this.file != null && this.file != undefined) {
-      console.log("there is a file ");
       const reader = new FileReader();
       reader.onload = (e) => {
         let buffer = new Uint8Array(<ArrayBufferLike>reader.result);
@@ -523,7 +537,6 @@ export class ExchangeComponent implements OnInit, OnDestroy {
 
       reader.readAsArrayBuffer(this.file);
     } else {
-      console.log("there is noooooooooo a file ");
       this.socketService.sendMessage(
         this.receiverId,
         this.message,
@@ -549,7 +562,6 @@ export class ExchangeComponent implements OnInit, OnDestroy {
     for (let item of this.pipedConversation) {
       if (item == element) {
         if (!item.hasOwnProperty("expand")) {
-          console.log("it dosen't have it");
           item["expand"] = true;
           this.communicationService.getEpanded(element);
         } else {

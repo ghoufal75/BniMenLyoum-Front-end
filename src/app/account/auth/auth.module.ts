@@ -16,9 +16,10 @@ import { AccountService } from './account.service';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthInterceptor } from './auth.interceptor';
 import { LoginResponsableComponent } from './login-responsable/login-responsable.component';
+import { LoginEntiteExterneComponent } from './login-entite-externe/login-entite-externe.component';
 
 @NgModule({
-  declarations: [LoginComponent, SignupComponent, PasswordresetComponent, Recoverpwd2Component, LoginResponsableComponent],
+  declarations: [LoginComponent, SignupComponent, PasswordresetComponent, Recoverpwd2Component, LoginResponsableComponent, LoginEntiteExterneComponent],
   imports: [
     CommonModule,
     ReactiveFormsModule,

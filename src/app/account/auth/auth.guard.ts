@@ -25,13 +25,13 @@ export class GeneralAuthGuard implements CanActivate {
         take(1),
         map((user: Admin) => {
         if (!!user) {
-          console.log("You are connected, this is from the guard");
+
           return true;
         }
       else{
       let response=false;
       this.acocuntService.responsableEmitter.subscribe(res=>{
-        console.log("this is the responsable : ",res);
+
           if(res === null || res=== undefined){
           response=false;
           return;
@@ -40,7 +40,7 @@ export class GeneralAuthGuard implements CanActivate {
           return;
 
         })
-      console.log("this is the response : ",response);
+
       if(response){
 
         return true;

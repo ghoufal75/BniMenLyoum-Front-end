@@ -7,11 +7,12 @@ import { ChatComponent } from './chat/chat.component';
 import { DefaultComponent } from './dashboards/default/default.component';
 import { FilemanagerComponent } from './filemanager/filemanager.component';
 const routes: Routes = [
-  { path: '', redirectTo: 'dashboard' },
+  { path: '', redirectTo: 'map' },
   {path:'map',loadChildren:()=>import('./geo-col/geo-col.module').then((m)=>m.GeoColModule)},
   {path:'geo-ins',loadChildren:()=>import('./geo-ins/geo-ins.module').then((m)=>m.GeoInsModule)},
   {path:"accountManagement",loadChildren:()=>import('./accounts-management/accounts-management.module').then(m=>m.AccountsManagementModule),canActivate:[AdminGuard]},
   {path:"exchange",loadChildren:()=>import('./exchange/exchange.module').then(m=>m.ExchangeModule)},
+  {path:"reclamations",loadChildren:()=>import('./reclamations/reclamations.module').then(m=>m.ReclamationsModule)},
   { path: 'dashboard', component: DefaultComponent },
   { path: 'calendar', component: CalendarComponent },
   { path: 'chat', component: ChatComponent },

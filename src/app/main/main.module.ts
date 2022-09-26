@@ -9,6 +9,7 @@ import { MainService } from "./main.service";
 import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
 import { AuthenticationService } from "./auth.service";
 import { AuthUserInterceptor } from "./AuthUser.interceptor";
+// import { FlexLayoutModule } from '@angular/flex-layout';
 
 @NgModule({
   declarations: [UserGeoportailComponent, LandingPageComponent],
@@ -19,6 +20,7 @@ import { AuthUserInterceptor } from "./AuthUser.interceptor";
     SharedModule,
     HttpClientModule,
     FormsModule,
+    // FlexLayoutModule
   ],
   providers: [
     MainService,

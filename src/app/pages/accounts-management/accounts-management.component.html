@@ -261,23 +261,23 @@
           <table class="table">
             <thead>
               <tr>
-                <th scope="col">Responsable</th>
-                <th scope="col">Service</th>
+                <th scope="col">Nom</th>
+                <th scope="col">Numero de téléphone</th>
                 <th scope="col">Email</th>
 
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor='let element of responsableAccounts'(click)="chooseResponsable(element,newUser,'EntiteExterne')">
+              <tr *ngFor='let element of entiteExterneAccounts'(click)="chooseResponsable(element,newUser,'EntiteExterne')">
                 <td>
                   <div class="accounts">
                     <div class="roundedImg"[ngStyle]="{'background-color': getColor()}">
-                      <h6 class="name">{{element.nom[0]}} {{element.prenom[0]}}</h6>
+                      <h6 class="name">{{element.nom[0]}}</h6>
                     </div>
-                    <div class="nameDiv"><span style="transform: translateY(60%);display:inline-block">{{element.nom}} {{element.prenom}}</span></div>
+                    <div class="nameDiv"><span style="transform: translateY(60%);display:inline-block">{{element.nom}}</span></div>
                   </div>
                 </td>
-                <td class='pt-4'>{{element.service}}</td>
+                <td class='pt-4'>{{element.numeroTelephone}}</td>
                 <td class='pt-4'>{{element.email}}</td>
 
               </tr>
@@ -403,6 +403,7 @@
           <div class="roundedImg--account" [ngStyle]="{'background-color':getColor()}">
             <h6 class="name" *ngIf="infosType==='Responsable'">{{choosenUser.nom[0]}} {{choosenUser.prenom[0]}}</h6>
             <h6 class="name" *ngIf="infosType==='Client'">{{choosenUser.lastName[0]}} {{choosenUser.firstName[0]}}</h6>
+            <h6 class="name" *ngIf="infosType==='EntiteExterne'">{{choosenUser.nom[0]}}</h6>
           </div>
         </div>
       </div>
@@ -426,11 +427,11 @@
               </ul>
             </div>
             <div class="entiteExterneCredentials" *ngIf="infosType==='EntiteExterne'">
-              <h6 class="credentials__name text-danger">{{choosenUser.nom}} {{choosenUser.prenom}}</h6>
+              <h6 class="credentials__name text-danger">{{choosenUser.nom}}</h6>
               <ul class="credentials__list">
                 <li><span class="identifier text-danger">Nom</span> : <span class="credentialsData">{{choosenUser.nom}}</span></li>
-                <li><span class="identifier text-danger">Email</span> : <span class="credentialsData">{{choosenUser.prenom}}</span></li>
-                <li><span class="identifier text-danger">Numéro de téléphone</span> : <span class="credentialsData">{{choosenUser.service}}</span></li>
+                <li><span class="identifier text-danger">Email</span> : <span class="credentialsData">{{choosenUser.email}}</span></li>
+                <li><span class="identifier text-danger">Numéro de téléphone</span> : <span class="credentialsData">{{choosenUser.numeroTelephone}}</span></li>
               </ul>
             </div>
             <div class="bureauOrdreCredentials" *ngIf="infosType==='BureauOrdre'">
@@ -502,7 +503,7 @@
             </div>
             <div class="mb-3">
               <label for="telephone" class="form-label">Numéro de téléphone</label>
-              <input type="text" class="form-control" id="telephone" formControlName="telephone" placeholder="Entrez le numéro de téléphone">
+              <input type="number" class="form-control" id="telephone" formControlName="numeroTelephone" placeholder="Entrez le numéro de téléphone">
             </div>
             <button class="btn btn-primary">Submit</button>
           </form>

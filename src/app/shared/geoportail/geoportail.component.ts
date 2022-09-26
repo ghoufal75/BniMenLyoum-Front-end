@@ -144,6 +144,7 @@ export class GeoportailComponent implements OnInit {
   showProjects=false;
   permited:boolean=false;
   screenSize:string;
+  allowResponsible:boolean=false;
 
   constructor(
     private modalService: NgbModal,
@@ -159,16 +160,19 @@ export class GeoportailComponent implements OnInit {
     // private mediaObserver: MediaObserver
   ) {}
   ngOnInit(): void {
+
     // this.mediaObserver.asObservable().subscribe((data:any)=>{
     //   console.log("This is the size of screen : ",data.mqAlias);
     // })
     this.accountService.connectedRole.subscribe(role=>{
-      console.log("this is the role : ",role);
+
       if(role==='Admin'){
         this.permited=true;
       }
       else{
         this.permited=false;
+        if(role==='Responsable') this.allowResponsible=true;
+
       }
     });
     this.loading = true;
@@ -179,7 +183,7 @@ export class GeoportailComponent implements OnInit {
         console.log(event.url);
       }
     });
-    if (this.route.url == "/map") {
+    if (this.route.url == "/admin/map") {
       this.currentlyAdmin = true;
     }
     else if(this.route.url=="/main/landingPage"){
@@ -189,7 +193,7 @@ export class GeoportailComponent implements OnInit {
     // this.generatePdf();
   }
   generatePdf(imageSrc, logosArray, lambertCoordinates) {
-    console.log("Lambert Coords from GPDF : ", lambertCoordinates);
+
     const legend = [];
     const elements: any = { zones: [], equipements: [], voirie: [] };
     const lambCoords = [
@@ -330,7 +334,6 @@ export class GeoportailComponent implements OnInit {
         ]);
       }
     });
-    console.log(this.minimizedIntersections);
     if (this.minimizedIntersections.length <= 16) {
       this.minimizedIntersections.forEach((elem) => {
         legend.push({
@@ -523,7 +526,7 @@ export class GeoportailComponent implements OnInit {
           url: logosArray[1],
         },
         nord: {
-          url: "https://firebasestorage.googleapis.com/v0/b/geoportailstorage2.appspot.com/o/nord-logo%2Fnord-arrow.png?alt=media&token=9baa404d-0060-4657-bafa-297f4df9d6a4",
+          url: "https://bnimenlyoumbucket.s3.eu-west-3.amazonaws.com/nord-arrow.png",
         },
       },
     };
@@ -628,7 +631,6 @@ export class GeoportailComponent implements OnInit {
     if(this.route.url==='/main/landingPage'){
       this.lambdaAuthService.user.pipe(take(1)).subscribe(user=>{
         if(user===null){
-          console.log("notConnected");
           this.notAthenticated.emit(false);
           isAuthenticated=false;
           return;
@@ -654,7 +656,6 @@ export class GeoportailComponent implements OnInit {
       let poly = L.polygon(data, { color: "blue" });
       this.processBeforeGPDF(poly, coordsArray);
       this.map.fitBounds(poly.getBounds());
-      console.log(data);
     });
   }
   initTile() {
@@ -768,16 +769,20 @@ export class GeoportailComponent implements OnInit {
     });
   }
   ngAfterViewInit(): void {
-    console.log("This is the routee : ",this.route.url)
     this.initMap();
-    if (this.route.url === "/geo-ins/projets") this.isGeoIns = true;
+    if (this.route.url === "/admin/geo-ins/projets") this.isGeoIns = true;
     this.initTile();
     this.initDraw();
     // this.initPrint();
     this.geoColService
       .getAllUrbanismeDocuments()
       .subscribe(async (data: any) => {
-        console.log(data);
+
+        if(data==null || data==undefined || data.length==0){
+          this.loading=false;
+          return;
+
+        }
         this.urbaDocument = {
           nom: data[0].nom,
           reference: data[0].referenceHomologation,
@@ -796,7 +801,6 @@ export class GeoportailComponent implements OnInit {
       if(this.route.url==='/main/landingPage'){
         this.lambdaAuthService.user.pipe(take(1)).subscribe(user=>{
           if(user===null){
-            console.log("notConnected");
             this.notAthenticated.emit(false);
             isAuthenticated=false;
             return;
@@ -811,11 +815,10 @@ export class GeoportailComponent implements OnInit {
           return;
         }
       }
-      if (this.route.url != "/geo-ins/projets") {
+      if (this.route.url != "/admin/geo-ins/projets") {
         me.loading = true;
         let lambertCoordinates = [];
         me.map.removeLayer(e.layer);
-        console.log("hetttt");
 
         // console.log(this.getRawLatLng(e.layer.getLatLngs()));
         this.geoColService
@@ -830,7 +833,7 @@ export class GeoportailComponent implements OnInit {
           e.layer.toGeoJSON(),
           me.layerArray
         );
-        console.log("this is the intersections : ", this.intersections);
+
 
         me.intersections.forEach((element) => {
           if (!me.map.hasLayer(element.layer)) {
@@ -854,9 +857,8 @@ export class GeoportailComponent implements OnInit {
         me.map.addLayer(e.layer);
         let logosArray = [];
         this.geoColService
-          .getLogosByCommune("Fahs Anjra")
+          .getLogosByCommune("Ait Youssef Ou Ali")
           .subscribe((data: any[]) => {
-            console.log(data);
             logosArray = data;
             me.buildImage(logosArray, lambertCoordinates);
           });
@@ -890,9 +892,9 @@ export class GeoportailComponent implements OnInit {
       }
     });
 
-    // if(this.route.url==="/map"){
-    //   this.initGeoTIFF();
-    // }
+    if(this.route.url==="/admin/map"){
+      this.initGeoTIFF();
+    }
 
     this.getAllPorjects();
   }
@@ -904,7 +906,6 @@ export class GeoportailComponent implements OnInit {
   }
   switchTile(index: any) {
     this.map.removeLayer(this.tileLayer);
-    console.log(index);
     this.choosenTile = this.tilesArray[index];
     this.initTile();
   }
@@ -928,7 +929,6 @@ export class GeoportailComponent implements OnInit {
       layer.toGeoJSON(),
       this.layerArray
     );
-    console.log("this is the intersections : ", this.intersections);
 
     this.intersections.forEach((element) => {
       if (!this.map.hasLayer(element.layer)) {
@@ -954,7 +954,6 @@ export class GeoportailComponent implements OnInit {
     this.geoColService
       .getLogosByCommune("Fahs Anjra")
       .subscribe((data: any[]) => {
-        console.log(data);
         logosArray = data;
         this.buildImage(logosArray, lambertCoordinates);
       });
@@ -996,7 +995,6 @@ export class GeoportailComponent implements OnInit {
     formData.append("date_de_prise_de_vue", values["date_de_prise_de_vue"]);
     formData.append("type", this.typeTiff);
     formData.append("file", values["file"]);
-    console.log(this.typeTiff);
     if (values["reference"]) {
       formData.append("reference", values["reference"]);
     }
@@ -1033,7 +1031,6 @@ export class GeoportailComponent implements OnInit {
         this.geoColService
           .getAllUrbanismeDocuments()
           .subscribe((docArray: any) => {
-            console.log("we got it");
             this.iterateAndFetch(docArray);
           });
       },
@@ -1063,6 +1060,7 @@ export class GeoportailComponent implements OnInit {
           const out = [];
           if (f.properties) {
             for (const key of Object.keys(f.properties)) {
+              if(f.properties[key]!=undefined && f.properties[key]!=null && f.properties[key]!="")
               out.push(key + " : " + f.properties[key]);
             }
             l.bindPopup(out.join("<br />"));
@@ -1095,15 +1093,11 @@ export class GeoportailComponent implements OnInit {
     for (let doc of docs) {
       this.geoColService.fetchGeoJSONFiles(doc.src).subscribe(
         (geoJSONData: any[]) => {
-          console.log(geoJSONData);
           this.loading = false;
           const primaryArray = this.mapService.processShapeFile(geoJSONData);
           this.allLayers = primaryArray;
-          console.log(primaryArray);
           for (let elem of primaryArray) {
-            console.log(elem);
             for (let f of elem.layers) {
-              console.log(f);
               if (f.layers[0] === null) {
                 continue;
               }
@@ -1111,7 +1105,7 @@ export class GeoportailComponent implements OnInit {
               geoj.addData(f.layers);
             }
           }
-          console.log(this.layerArray);
+
         },
 
         (err) => {
@@ -1133,6 +1127,16 @@ export class GeoportailComponent implements OnInit {
     }
   }
   toggleLayer(layers: any) {
+    if(layers.length===1){
+      if (this.map.hasLayer(layers[0])) {
+        this.map.removeLayer(layers[0]);
+
+      } else {
+        this.map.addLayer(layers[0]);
+        this.map.fitBounds(layers[0].getBounds());
+      }
+      return;
+    }
     const layersToShow = [];
     for (let element of layers) {
       layersToShow.push(element.layers);
@@ -1142,7 +1146,6 @@ export class GeoportailComponent implements OnInit {
       this.showed_hidden_layers.push(layerGg);
       this.map.addLayer(layerGg);
     } else {
-      console.log("plein");
       for (let el of this.showed_hidden_layers) {
         if (el.getLayers().length === layerGg.getLayers().length) {
           if (this.map.hasLayer(el)) {
@@ -1180,23 +1183,23 @@ export class GeoportailComponent implements OnInit {
     this.distance = 0;
   }
   getMargin() {
-    if (this.route.url == "/map") {
+    if (this.route.url == "/admin/map") {
       return "4rem";
     } else {
       return "0";
     }
   }
   getHeight() {
-    if (this.route.url == "/map") {
+    if (this.route.url == "/admin/map") {
       return "91vh";
     } else if (this.route.url == "/geo-ins/projets") {
       return "80vh";
     } else {
-      return "100vh";
+      if(window.innerWidth <= 512) return "75vh";
+      return "85vh";
     }
   }
   showProjectsBox(){
-    console.log("clicked");
     this.showProjects=!this.showProjects;
   }
 
@@ -1204,16 +1207,18 @@ export class GeoportailComponent implements OnInit {
     var url_to_geotiff_file =
       "https://firebasestorage.googleapis.com/v0/b/geoportailapp-97cc0.appspot.com/o/restitutions%2Fpat.tif?alt=media&token=18d90743-1900-4546-b10a-ce273b4ccb87";
     parse_georaster(url_to_geotiff_file).then((georaster) => {
-      console.log("georaster:", georaster);
+
       var layer = new GeoRasterLayer({
         attribution: "Planet",
         georaster: georaster,
         opacity: 0.9,
         resolution: 128,
       });
-      layer.addTo(this.map);
+      let fileLayersObject = { filename:"Geotiff", fileLayers: [layer] };
+      this.layerArray.push({ ...fileLayersObject, showSub: false });
+      // layer.addTo(this.map);
 
-      this.map.fitBounds(layer.getBounds());
+      // this.map.fitBounds(layer.getBounds());
     });
   }
 
@@ -1228,7 +1233,6 @@ export class GeoportailComponent implements OnInit {
     if(this.route.url==='/main/landingPage'){
       this.lambdaAuthService.user.pipe(take(1)).subscribe(user=>{
         if(user===null){
-          console.log("notConnected");
           this.notAthenticated.emit(false);
           isAuthenticated=false;
           return;
@@ -1252,7 +1256,6 @@ export class GeoportailComponent implements OnInit {
     fileReader.onload = (e) => {
       arrayBuffer = fileReader.result;
       var data = new Uint8Array(arrayBuffer);
-      console.log(data);
       var arr = new Array();
       for (var i = 0; i != data.length; ++i)
         arr[i] = String.fromCharCode(data[i]);
@@ -1261,11 +1264,10 @@ export class GeoportailComponent implements OnInit {
       var first_sheet_name = workbook.SheetNames[0];
       var worksheet = workbook.Sheets[first_sheet_name];
       var arraylist:any = XLSX.utils.sheet_to_json(worksheet, { raw: true });
-      console.log(arraylist);
       for (let el of arraylist) {
         coords.push([+el.X, +el.Y]);
       }
-      console.log("this is the coords : ",coords);
+
       this.modalService.dismissAll();
       this.geoColService.convertToWGS84(coords).subscribe(data=>{
         let poly=L.polygon(data,{color:'red'}).addTo(this.map);

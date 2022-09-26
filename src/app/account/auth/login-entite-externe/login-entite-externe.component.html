@@ -1,0 +1,75 @@
+<app-login [permission]=false [role]="'entiteExterne'" (firstTime)="showPasswordForm($event)"*ngIf='!firstConnection'></app-login>
+<div class="account-pages my-5 pt-sm-5" *ngIf="firstConnection">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-8 col-lg-6 col-xl-5">
+        <div class="card overflow-hidden">
+          <div class="bg-soft bg-primary">
+            <div class="row">
+              <div class="col-7">
+                <div class="text-primary p-4">
+                  <p>Changer votre mot de passe avant de pouvoir continuer.</p>
+                </div>
+              </div>
+              <div class="col-5 align-self-end">
+                <img src="assets/images/profile-img.png" alt="" class="img-fluid">
+              </div>
+            </div>
+          </div>
+          <div class="card-body pt-0">
+            <div>
+              <a routerLink="/">
+                <div class="avatar-md profile-user-wid mb-4">
+                  <span class="avatar-title rounded-circle bg-light">
+                    <img src="assets/images/logo.svg" alt="" class="rounded-circle" height="34">
+                  </span>
+                </div>
+              </a>
+            </div>
+            <div class="p-2">
+              <form class="form-horizontal" [formGroup]="passwordUpdateForm" (ngSubmit)="onSubmit()">
+
+                <!-- <ngb-alert type="danger" *ngIf="error" [dismissible]="false">{{ error }}</ngb-alert> -->
+
+                <div class="mb-3">
+                  <label for="password">Password</label>
+                  <input type="password" formControlName="password" class="form-control" id="password" placeholder="Entrez un nouveau mot de passe"
+                    [ngClass]="{ 'is-invalid': f.password.touched && f.password.errors }" />
+                  <div *ngIf="f.password.touched && f.password.errors" class="invalid-feedback">
+                    <div *ngIf="f.password.touched && f.password.errors.required">Ce champs est requis</div>
+                    <div *ngIf="f.password.touched && (f.password.errors?.minlength || f.password.errors?.maxlength)">Le mot de passe doit contenir au minimum 16 caractères et au maximum 30.</div>
+                  </div>
+                </div>
+
+                <div class="mb-3">
+                  <label for="password">Confirmation</label>
+                  <div class="input-group auth-pass-inputgroup">
+                    <input [type]="showPasswordAsText?'text':'password'" #password class="form-control" formControlName="confirmation" placeholder="Enter password"
+                      [ngClass]="{ 'is-invalid': f.confirmation.touched && f.confirmation.errors }" aria-label="Password"
+                      aria-describedby="password-addon">
+
+                    <button class="btn btn-light ms-0" (click)="showPassword()" type="button" id="password-addon"><i
+                        class="mdi mdi-eye-outline"></i></button>
+                    <div *ngIf="f.confirmation.touched && f.password.errors?.required" class="invalid-feedback">
+                      <span *ngIf="f.confirmation.touched && f.confirmation.errors.required">Ce champs est requie.</span>
+                      <span *ngIf="f.confirmation.touched && f.confirmation.errors?.['mustMatch']">Les deux mots de passes doivent être les mêmes.</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="mt-3 d-grid">
+                  <button class="btn btn-primary" type="submit">Continuer</button>
+                </div>
+              </form>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- end container -->
+</div>
+<!-- end page -->
+

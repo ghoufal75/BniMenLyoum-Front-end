@@ -9,24 +9,60 @@ export class MapService {
     for (let elem of geoJSONData) {
 
       switch (elem.fileName) {
-        case "DOCUMENT D'URBANISME/limite":
+        case "DOCUMENT D'URBANISME/limite" :
           featuresArray.push({
             name : "DOCUMENT D'URBANISME/limite",
             layers:this.fillFeatureArray('Designatio',elem.features)
           })
           break;
+        case "limite" :
+            featuresArray.push({
+              name : "DOCUMENT D'URBANISME/limite",
+              layers:this.fillFeatureArray('Designatio',elem.features)
+            })
+        break;
+        case "D.U wgs84/LIMITE" :
+            featuresArray.push({
+              name : "DOCUMENT D'URBANISME/limite",
+              layers:this.fillFeatureArray('Designatio',elem.features)
+            })
+        break;
         case "DOCUMENT D'URBANISME/borne":
           featuresArray.push({
             name : "DOCUMENT D'URBANISME/borne",
             layers:this.fillFeatureArray('Code_DU',elem.features)
           })
           break;
+          case "borne":
+            featuresArray.push({
+              name : "DOCUMENT D'URBANISME/borne",
+              layers:this.fillFeatureArray('Code_DU',elem.features)
+            })
+            break;
+            case "D.U wgs84/BORNES":
+              featuresArray.push({
+                name : "DOCUMENT D'URBANISME/borne",
+                layers:this.fillFeatureArray('Code_DU',elem.features)
+              })
+              break;
         case "DOCUMENT D'URBANISME/zoning":
           featuresArray.push({
             name:"DOCUMENT D'URBANISME/zoning",
             layers:this.fillFeatureArray("Classe_Zon", elem.features)
           });
           break;
+          case "zoning":
+          featuresArray.push({
+            name:"DOCUMENT D'URBANISME/zoning",
+            layers:this.fillFeatureArray("Classe_Zon", elem.features)
+          });
+          break;
+          case "D.U wgs84/ZONING":
+            featuresArray.push({
+              name:"DOCUMENT D'URBANISME/zoning",
+              layers:this.fillFeatureArray("Classe_Zon", elem.features)
+            });
+            break;
         case "DOCUMENT D'URBANISME/zoning1":
           featuresArray.push({
             name:"DOCUMENT D'URBANISME/zoning1",
@@ -35,12 +71,41 @@ export class MapService {
 
           );
           break;
+          case "zoning1":
+          featuresArray.push({
+            name:"DOCUMENT D'URBANISME/zoning1",
+            layers: this.fillFeatureArray("Classe_Zon", elem.features)
+          }
+
+          );
+          break;
+          case "D.U wgs84/ZON 1":
+            featuresArray.push({
+              name:"DOCUMENT D'URBANISME/zoning1",
+              layers: this.fillFeatureArray("Classe_Zon", elem.features)
+            }
+
+            );
+            break;
+
         case "DOCUMENT D'URBANISME/zoning2":
           featuresArray.push({
             name:"DOCUMENT D'URBANISME/zoning",
             layers:this.fillFeatureArray("Classe_Zon", elem.features)
           });
           break;
+          case "zoning2":
+            featuresArray.push({
+              name:"DOCUMENT D'URBANISME/zoning",
+              layers:this.fillFeatureArray("Classe_Zon", elem.features)
+            });
+            break;
+            case "D.U wgs84/ZON 2":
+              featuresArray.push({
+                name:"DOCUMENT D'URBANISME/zoning",
+                layers:this.fillFeatureArray("Classe_Zon", elem.features)
+              });
+              break;
         case "DOCUMENT D'URBANISME/equipement":
           featuresArray.push({
             name : "DOCUMENT D'URBANISME/equipement",
@@ -49,6 +114,22 @@ export class MapService {
 
           );
           break;
+        case "equipement":
+          featuresArray.push({
+            name : "DOCUMENT D'URBANISME/equipement",
+            layers:this.fillFeatureArray("Classe_Equ", elem.features)
+          }
+
+          );
+        break;
+        case "D.U wgs84/EQUIP":
+          featuresArray.push({
+            name : "DOCUMENT D'URBANISME/equipement",
+            layers:this.fillFeatureArray("Classe_Equ", elem.features)
+          }
+
+          );
+        break;
         case "DOCUMENT D'URBANISME/voie_polygone":
           featuresArray.push({
             name:"DOCUMENT D'URBANISME/voie_polygone",
@@ -57,7 +138,23 @@ export class MapService {
 
           );
           break;
-        case "DOCUMENT D'URBANISME/voie":
+          case "voie_polygone":
+          featuresArray.push({
+            name:"DOCUMENT D'URBANISME/voie_polygone",
+            layers:this.fillFeatureArray("Classe_Voi", elem.features)
+          }
+
+          );
+          break;
+          case "D.U wgs84/VOIES POLY":
+            featuresArray.push({
+              name:"DOCUMENT D'URBANISME/voie_polygone",
+              layers:this.fillFeatureArray("Classe_Voi", elem.features)
+            }
+
+            );
+            break;
+        case "DOCUMENT D'URBANISME/voie" || 'voie':
           featuresArray.push({
             name : "DOCUMENT D'URBANISME/voie",
             layers:    this.fillFeatureArray("Classe_Voi", elem.features)
@@ -66,6 +163,24 @@ export class MapService {
 
           );
           break;
+          case 'voie':
+            featuresArray.push({
+              name : "DOCUMENT D'URBANISME/voie",
+              layers:    this.fillFeatureArray("Classe_Voi", elem.features)
+            }
+
+
+            );
+            break;
+            case 'D.U wgs84/VOIES':
+            featuresArray.push({
+              name : "DOCUMENT D'URBANISME/voie",
+              layers:    this.fillFeatureArray("Classe_Voi", elem.features)
+            }
+
+
+            );
+            break;
         case "DOCUMENT D'URBANISME/zoning_a_risque":
           featuresArray.push({
             name: "DOCUMENT D'URBANISME/zoning_a_risque",
@@ -73,6 +188,22 @@ export class MapService {
           }
 
           );
+          break;
+         case "zoning_a_risque":
+            featuresArray.push({
+              name: "DOCUMENT D'URBANISME/zoning_a_risque",
+              layers:     this.fillFeatureArray("Classe_Zon", elem.features)
+            }
+
+            );
+          break;
+          case "D.U wgs84/ZONING A RISQUE":
+            featuresArray.push({
+              name: "DOCUMENT D'URBANISME/zoning_a_risque",
+              layers:     this.fillFeatureArray("Classe_Zon", elem.features)
+            }
+
+            );
           break;
       }
 

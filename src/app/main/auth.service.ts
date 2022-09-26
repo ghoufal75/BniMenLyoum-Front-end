@@ -2,6 +2,7 @@ import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable, Subject, throwError, BehaviorSubject } from "rxjs";
 import { catchError,take,tap } from "rxjs/operators";
+import {environment} from "../../environments/environment";
 interface UserModel{
   firstName:string;
   lastName:string;
@@ -30,13 +31,12 @@ interface authModel{
 @Injectable({providedIn:'root'})
 export class AuthenticationService {
   user:BehaviorSubject<User>=new BehaviorSubject(null);
-  readonly baseAuthUrl="http://localhost:3000/authentication/"
+  readonly baseAuthUrl=environment.api_link+"/authentication/"
   constructor(private http: HttpClient) {}
   signUp(user:UserModel){
   return  this.http.post(`${this.baseAuthUrl}lambdauser/signup`,user).pipe(catchError(this.handleErrors));
   }
   private handleErrors(error:HttpErrorResponse):Observable<any>{
-    console.log(error);
     let errorMessage="Une erreur inconnue s'est produite."
     if(error.error.message && error.error.message.length != 0){
       switch(error.error.message[0]){

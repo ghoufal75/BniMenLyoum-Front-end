@@ -82,7 +82,7 @@ export class GeoInsComponent implements OnInit {
 
   ngOnInit(): void {
     this.accountService.connectedRole.subscribe(role=>{
-      if(role==="Admin"){
+      if(role==="Responsable"){
         this.permited=true;
       }
       else{
@@ -139,27 +139,22 @@ export class GeoInsComponent implements OnInit {
 
   }
   fetchConstructions() {
-    console.log("fetching constructions");
     this.geoInsService.getConstructions().subscribe((data) => {
-      console.log(data);
+
       this.constructionsArray = data;
       this.projectsType = ProjectTypes.constructions;
       this.isLoading=false;
     });
   }
   fetchMorcellements() {
-    console.log("fetching morcellements");
     this.geoInsService.getMorcellements().subscribe((data) => {
-      console.log(data);
       this.morcellemntsArray = data;
       this.projectsType = ProjectTypes.morcellements;
       this.isLoading=false;
     });
   }
   fetchLotissements() {
-    console.log("fetching lotissements");
     this.geoInsService.getLotissements().subscribe((data) => {
-      console.log(data);
       this.lotissementsArray = data;
       this.projectsType = ProjectTypes.lotissements;
       this.isLoading=false;
@@ -167,9 +162,7 @@ export class GeoInsComponent implements OnInit {
   }
 
   fetchGroupeHabitations() {
-    console.log("fetching groupe");
     this.geoInsService.getGroupeHabitations().subscribe((data) => {
-      console.log(data);
       this.groupeHabitationsArray = data;
       this.projectsType = ProjectTypes.groupesHabitaiton;
       this.isLoading=false;
@@ -205,7 +198,6 @@ export class GeoInsComponent implements OnInit {
         this.constructionForm.get('maitreOuvrageName').value
       );
         this.constructionForm.get('maitreOuvrageName').setValue(this.tableauMaitreOuvrage[typeIndex].nom);
-        console.log("This is it's name : ",this.tableauMaitreOuvrage[typeIndex].nom);
 
     }
     else{
@@ -214,7 +206,6 @@ export class GeoInsComponent implements OnInit {
     this.constructionForm.value.typeProjet = "DC";
     if(this.eiditingExistingProject){
       this.geoInsService.updateConstruction(this.constructionForm.value,this.elementToEdit._id).subscribe(res=>{
-        console.log(res);
         this.fetchConstructions();
         this.eiditingExistingProject=false;
         this.elementToEdit=null;
@@ -226,7 +217,6 @@ export class GeoInsComponent implements OnInit {
     }
     this.geoInsService.addConstructions(this.constructionForm.value).subscribe(
       (data) => {
-        console.log(data);
         this.fetchConstructions();
         this.modalService.dismissAll();
       },
@@ -244,7 +234,6 @@ export class GeoInsComponent implements OnInit {
         this.lotissementForm.get('maitreOuvrageName').value
       );
         this.lotissementForm.get('maitreOuvrageName').setValue(this.tableauMaitreOuvrage[typeIndex].nom);
-        console.log("This is it's name : ",this.tableauMaitreOuvrage[typeIndex].nom);
 
     }
     else{
@@ -253,7 +242,6 @@ export class GeoInsComponent implements OnInit {
     this.lotissementForm.value.typeProjet = "DL";
     if(this.eiditingExistingProject){
       this.geoInsService.updateLotissement(this.lotissementForm.value,this.elementToEdit._id).subscribe(res=>{
-        console.log(res);
         this.fetchLotissements();
         this.modalService.dismissAll();
         this.eiditingExistingProject=false;
@@ -261,18 +249,16 @@ export class GeoInsComponent implements OnInit {
         this.maitreOuvragesNamesArray=[];
         this.maitreOuvragesTypesArray=[];
         this.tableauMaitreOuvrage=[];
-      },err=>console.log(err));
+      },err=>err);
       return;
     }
     this.geoInsService.addLotissements(this.lotissementForm.value).subscribe(
       (data) => {
-        console.log(data);
         this.fetchLotissements();
         this.modalService.dismissAll();
         this.isLoading = false;
       },
       (err) => {
-        console.log(err);
         this.isLoading = false;
         this.modalService.dismissAll();
       }
@@ -285,7 +271,6 @@ export class GeoInsComponent implements OnInit {
         this.morcellementForm.get('maitreOuvrageName').value
       );
         this.morcellementForm.get('maitreOuvrageName').setValue(this.tableauMaitreOuvrage[typeIndex].nom);
-        console.log("This is it's name : ",this.tableauMaitreOuvrage[typeIndex].nom);
 
     }
     else{
@@ -294,7 +279,7 @@ export class GeoInsComponent implements OnInit {
     this.morcellementForm.value.typeProjet = "DM";
     if(this.eiditingExistingProject){
       this.geoInsService.updateMorcellement(this.morcellementForm.value,this.elementToEdit._id).subscribe(res=>{
-        console.log(res);
+
         this.fetchMorcellements();
         this.modalService.dismissAll();
         this.eiditingExistingProject=false;
@@ -307,7 +292,7 @@ export class GeoInsComponent implements OnInit {
     }
     this.geoInsService.addMorcellements(this.morcellementForm.value).subscribe(
       (data) => {
-        console.log(data);
+
         this.fetchMorcellements();
         this.modalService.dismissAll();
         this.isLoading = false;
@@ -326,7 +311,7 @@ export class GeoInsComponent implements OnInit {
         this.groupeHabitationsForm.get('maitreOuvrageName').value
       );
         this.groupeHabitationsForm.get('maitreOuvrageName').setValue(this.tableauMaitreOuvrage[typeIndex].nom);
-        console.log("This is it's name : ",this.tableauMaitreOuvrage[typeIndex].nom);
+
 
     }
     else{
@@ -348,7 +333,7 @@ export class GeoInsComponent implements OnInit {
     }
     this.geoInsService.addGroupeHabitations(this.groupeHabitationsForm.value).subscribe(
       (data) => {
-        console.log(data);
+
         this.fetchGroupeHabitations();
         this.modalService.dismissAll();
         this.isLoading = false;
@@ -382,7 +367,7 @@ export class GeoInsComponent implements OnInit {
     this.geoInsService
       .fetchProjectsWithMaitreOuvrage(event.target.value, this.fetchingCriteria)
       .subscribe((data) => {
-        console.log(data);
+
         switch (this.projectsType) {
           case ProjectTypes.constructions:
             this.constructionsArray = data;
@@ -425,7 +410,7 @@ export class GeoInsComponent implements OnInit {
 
 
 
-        console.log(this.maitreOuvragesNamesArray);
+
       });
   }
   onStartLocating(element: any) {
@@ -509,7 +494,7 @@ export class GeoInsComponent implements OnInit {
     let element=this.elementToDelete;
     this.isLoading=true;
     this.geoInsService.deleteProject(element).subscribe(data=>{
-      console.log(data);
+
       switch(this.projectsType){
         case ProjectTypes.constructions:
           this.fetchConstructions();
@@ -537,7 +522,7 @@ export class GeoInsComponent implements OnInit {
   }
   approuverProjet(projet:any){
     this.geoInsService.approuverProjet(projet).subscribe(data=>{
-      console.log(data);
+
       switch(this.projectsType){
         case ProjectTypes.constructions:
           this.fetchConstructions();

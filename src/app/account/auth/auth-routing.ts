@@ -9,6 +9,7 @@ import { PasswordresetComponent } from './passwordreset/passwordreset.component'
 
 import { Recoverpwd2Component } from './recoverpwd2/recoverpwd2.component';
 import { LoginResponsableComponent } from './login-responsable/login-responsable.component';
+import { LoginEntiteExterneComponent } from './login-entite-externe/login-entite-externe.component';
 
 const routes: Routes = [
     {
@@ -23,6 +24,10 @@ const routes: Routes = [
      path : 'loginResponsable',
      component:LoginResponsableComponent,
     },
+    {
+      path : 'loginEntiteExterne',
+      component:LoginEntiteExterneComponent,
+     },
 
     {
         path: 'reset-password',

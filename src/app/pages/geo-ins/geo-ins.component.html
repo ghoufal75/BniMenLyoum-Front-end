@@ -1,5 +1,5 @@
 <app-map-loader *ngIf="isLoading"></app-map-loader>
-<div *ngIf="!isEditing"[@enterAnimation]>
+<div *ngIf="!isEditing"[@enterAnimation] class="container">
   <div class="filreing&choosing d-flex justify-content-between"*ngIf="!isEditing"[@enterAnimation]>
     <div class="search">
       <div class="input-group mb-3">
@@ -108,277 +108,288 @@
   <div class="arrays"*ngIf="!isEditing"[@enterAnimation]>
     <div class="constructionArray" *ngIf="projectsType === 'constructions'">
       <h2 class="projectTitle">Constructions</h2>
-      <table class="table table-responsive">
-        <thead class="table-dark">
-          <tr>
-            <th scope="col">Référence foncière</th>
-            <th scope="col">Type de projet</th>
-            <th scope="col">Topographe</th>
-            <th scope="col">surfaceTerrain du terrain</th>
-            <th scope="col">Maitre Ouvrage</th>
-            <th scope="col">COS</th>
-            <th scope="col">CUS</th>
-            <th scope="col">Date de commission</th>
-            <th scope="col">Etat</th>
-            <th scope="col" *ngIf="permited">Actions</th>
-          </tr>
-        </thead>
+      <div class="table-responsive">
+        <table class="table table-responsive">
+          <thead class="table-dark">
+            <tr>
+              <th scope="col">Référence foncière</th>
+              <th scope="col">Type de projet</th>
+              <th scope="col">Topographe</th>
+              <th scope="col">surfaceTerrain du terrain</th>
+              <th scope="col">Maitre Ouvrage</th>
+              <th scope="col">COS</th>
+              <th scope="col">CUS</th>
+              <th scope="col">Date de commission</th>
+              <th scope="col">Etat</th>
+              <th scope="col" *ngIf="permited">Actions</th>
+            </tr>
+          </thead>
 
-        <tbody>
-          <tr *ngFor="let element of constructionsArray;let i=index;">
-            <td>{{ element.referenceFonciere }}</td>
-            <td>{{ element.typeProjet }}</td>
-            <td>{{ element.topographe }}</td>
-            <td>{{ element.surfaceTerrain }}</td>
-            <td>{{ element. maitreOuvrageName }}</td>
-            <td>{{ element.cos }}</td>
-            <td>{{ element.cus }}</td>
-            <td>{{ !!element.date_commission?(element.date_commission| date:'mediumDate'):'Pas encore'}}</td>
-            <td class="etat"><span [ngStyle]="{'color': element.approuve==='Ajourné'?'#99999':((element.approuve==='Avis favorable')?'#34c38f':'#f46a6a')}">{{element.approuve==='Pas encore'?'... En attente':((element.approuve==='Avis favorable')?'&#10004; Avis favorable':(element.approuve==='Ajourné'?'Ajourné':'&#10006; Avis défavorable'))}}</span></td>
-            <td class="d-flex" *ngIf="permited">
-              <a class="action-btn action-btn--1"(click)="onStartLocating(element)">
-              <p style="text-align:center">
-                <i class="bx bx-map"></i>
-              </p>
-              </a>
-              <a class="action-btn action-btn--2" (click)="onUpdateProject(element,newProject)">
+          <tbody>
+            <tr *ngFor="let element of constructionsArray;let i=index;">
+              <td>{{ element.referenceFonciere }}</td>
+              <td>{{ element.typeProjet }}</td>
+              <td>{{ element.topographe }}</td>
+              <td>{{ element.surfaceTerrain }}</td>
+              <td>{{ element. maitreOuvrageName }}</td>
+              <td>{{ element.cos }}</td>
+              <td>{{ element.cus }}</td>
+              <td>{{ !!element.date_commission?(element.date_commission| date:'mediumDate'):'Pas encore'}}</td>
+              <td class="etat"><span [ngStyle]="{'color': element.approuve==='Ajourné'?'#99999':((element.approuve==='Avis favorable')?'#34c38f':'#f46a6a')}">{{element.approuve==='Pas encore'?'... En attente':((element.approuve==='Avis favorable')?'&#10004; Avis favorable':(element.approuve==='Ajourné'?'Ajourné':'&#10006; Avis défavorable'))}}</span></td>
+              <td class="d-flex" *ngIf="permited">
+                <a class="action-btn action-btn--1"(click)="onStartLocating(element)">
                 <p style="text-align:center">
-                  <i class="bx  bx-edit-alt"></i>
+                  <i class="bx bx-map"></i>
                 </p>
                 </a>
+                <a class="action-btn action-btn--2" (click)="onUpdateProject(element,newProject)">
+                  <p style="text-align:center">
+                    <i class="bx  bx-edit-alt"></i>
+                  </p>
+                  </a>
 
-                <a class="action-btn action-btn--4"(click)="approuverProjet(element)">
-                  <p style="text-align:center">
-                    <i class="bx bx-check"></i>
-                  </p>
-                  </a>
-                <a class="action-btn action-btn--5"(click)="rejeterProjet(element)">
-                  <p style="text-align:center">
-                    <i class="bx bx-x"></i>
-                  </p>
-                  </a>
-                <a class="action-btn bg-info" (click)=" showDateModal(datePickerModal,element)">
-                  <p style="text-align:center">
-                    <i class="bx bx-calendar-event"></i>
-                  </p>
-                  </a>
-                <a class="action-btn action-btn--3"(click)="showAlert(element,deleteModal)">
-                  <p style="text-align:center">
-                    <i class="bx bx-trash-alt"></i>
-                  </p>
-                  </a>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+                  <a class="action-btn action-btn--4"(click)="approuverProjet(element)">
+                    <p style="text-align:center">
+                      <i class="bx bx-check"></i>
+                    </p>
+                    </a>
+                  <a class="action-btn action-btn--5"(click)="rejeterProjet(element)">
+                    <p style="text-align:center">
+                      <i class="bx bx-x"></i>
+                    </p>
+                    </a>
+                  <a class="action-btn bg-info" (click)=" showDateModal(datePickerModal,element)">
+                    <p style="text-align:center">
+                      <i class="bx bx-calendar-event"></i>
+                    </p>
+                    </a>
+                  <a class="action-btn action-btn--3"(click)="showAlert(element,deleteModal)">
+                    <p style="text-align:center">
+                      <i class="bx bx-trash-alt"></i>
+                    </p>
+                    </a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
     </div>
     <div class="morcellementArray" *ngIf="projectsType === 'morcellements'">
       <h2 class="projectTitle">Morcellements</h2>
-      <table class="table">
-        <thead class="table-dark">
-          <tr>
-            <th scope="col">Référence foncière</th>
-            <th scope="col">type de projet</th>
-            <th scope="col">surfaceTerrain du terrain</th>
-            <th scope="col">Maitre Ouvrage</th>
-            <th scope="col">Nombre de lots à morceller</th>
-            <th scope="col">solde</th>
-            <th scope="col">Date de commission</th>
-            <th scope="col">Etat</th>
-            <th scope="col" *ngIf="permited">Actions</th>
-          </tr>
-        </thead>
+      <div class="table-responsive">
+        <table class="table">
+          <thead class="table-dark">
+            <tr>
+              <th scope="col">Référence foncière</th>
+              <th scope="col">type de projet</th>
+              <th scope="col">surfaceTerrain du terrain</th>
+              <th scope="col">Maitre Ouvrage</th>
+              <th scope="col">Nombre de lots à morceller</th>
+              <th scope="col">solde</th>
+              <th scope="col">Date de commission</th>
+              <th scope="col">Etat</th>
+              <th scope="col" *ngIf="permited">Actions</th>
+            </tr>
+          </thead>
 
-        <tbody>
-          <tr *ngFor="let element of morcellemntsArray">
-            <td>{{ element.referenceFonciere }}</td>
-            <td>{{ element.typeProjet }}</td>
-            <td>{{ element.topographe }}</td>
-            <td>{{ element.maitreOuvrageName }}</td>
-            <td>{{ element.nbrLotsAMorceller }}</td>
-            <td>{{ element.solde }}</td>
-            <td>{{ !!element.date_commission?(element.date_commission| date:'mediumDate'):'Pas encore'}}</td>
-            <td class="etat"><span [ngStyle]="{'color': element.approuve==='Ajourné'?'#99999':((element.approuve==='Avis favorable')?'#34c38f':'#f46a6a')}">{{element.approuve==='Pas encore'?'... En attente':((element.approuve==='Avis favorable')?'&#10004; Avis favorable':(element.approuve==='Ajourné'?'Ajourné':'&#10006; Avis défavorable'))}}</span></td>
-            <td class="d-flex" *ngIf="permited">
-              <a class="action-btn action-btn--1"(click)="onStartLocating(element)">
-                <p style="text-align:center">
-                  <i class="bx bx-map"></i>
-                </p>
-                </a>
-                <a class="action-btn action-btn--2"(click)="onUpdateProject(element,newProject)">
+          <tbody>
+            <tr *ngFor="let element of morcellemntsArray">
+              <td>{{ element.referenceFonciere }}</td>
+              <td>{{ element.typeProjet }}</td>
+              <td>{{ element.topographe }}</td>
+              <td>{{ element.maitreOuvrageName }}</td>
+              <td>{{ element.nbrLotsAMorceller }}</td>
+              <td>{{ element.solde }}</td>
+              <td>{{ !!element.date_commission?(element.date_commission| date:'mediumDate'):'Pas encore'}}</td>
+              <td class="etat"><span [ngStyle]="{'color': element.approuve==='Ajourné'?'#99999':((element.approuve==='Avis favorable')?'#34c38f':'#f46a6a')}">{{element.approuve==='Pas encore'?'... En attente':((element.approuve==='Avis favorable')?'&#10004; Avis favorable':(element.approuve==='Ajourné'?'Ajourné':'&#10006; Avis défavorable'))}}</span></td>
+              <td class="d-flex" *ngIf="permited">
+                <a class="action-btn action-btn--1"(click)="onStartLocating(element)">
                   <p style="text-align:center">
-                    <i class="bx  bx-edit-alt"></i>
+                    <i class="bx bx-map"></i>
                   </p>
                   </a>
+                  <a class="action-btn action-btn--2"(click)="onUpdateProject(element,newProject)">
+                    <p style="text-align:center">
+                      <i class="bx  bx-edit-alt"></i>
+                    </p>
+                    </a>
 
-                  <a class="action-btn action-btn--4"(click)="approuverProjet(element)">
+                    <a class="action-btn action-btn--4"(click)="approuverProjet(element)">
+                      <p style="text-align:center">
+                        <i class="bx bx-check"></i>
+                      </p>
+                      </a>
+                    <a class="action-btn action-btn--5"(click)="rejeterProjet(element)">
+                      <p style="text-align:center">
+                        <i class="bx bx-x"></i>
+                      </p>
+                      </a>
+                  <a class="action-btn bg-info" (click)=" showDateModal(datePickerModal,element)">
                     <p style="text-align:center">
-                      <i class="bx bx-check"></i>
+                      <i class="bx bx-calendar-event"></i>
                     </p>
                     </a>
-                  <a class="action-btn action-btn--5"(click)="rejeterProjet(element)">
-                    <p style="text-align:center">
-                      <i class="bx bx-x"></i>
-                    </p>
-                    </a>
-                <a class="action-btn bg-info" (click)=" showDateModal(datePickerModal,element)">
-                  <p style="text-align:center">
-                    <i class="bx bx-calendar-event"></i>
-                  </p>
-                  </a>
-                  <a class="action-btn action-btn--3"(click)="showAlert(element,deleteModal)">
-                    <p style="text-align:center">
-                      <i class="bx bx-trash-alt"></i>
-                    </p>
-                    </a>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+                    <a class="action-btn action-btn--3"(click)="showAlert(element,deleteModal)">
+                      <p style="text-align:center">
+                        <i class="bx bx-trash-alt"></i>
+                      </p>
+                      </a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
     </div>
     <div class="lotissementArray" *ngIf="projectsType === 'lotissements'">
       <h2 class="projectTitle">Lotissements</h2>
-      <table class="table">
-        <thead class="table-dark">
-          <tr>
-            <th scope="col">Référence foncière</th>
-            <th scope="col">type de projet</th>
-            <th scope="col">surfaceTerrain du terrain</th>
-            <th scope="col">Maitre Ouvrage</th>
-            <th scope="col">CUS</th>
-            <th scope="col">Nombre de lots</th>
-            <th scope="col">Programme</th>
-            <th scope="col">Date de commission</th>
-            <th scope="col">Etat</th>
-            <th scope="col" *ngIf="permited">Actions</th>
-          </tr>
-        </thead>
+      <div class="table-responsive">
+        <table class="table">
+          <thead class="table-dark">
+            <tr>
+              <th scope="col">Référence foncière</th>
+              <th scope="col">type de projet</th>
+              <th scope="col">surfaceTerrain du terrain</th>
+              <th scope="col">Maitre Ouvrage</th>
+              <th scope="col">CUS</th>
+              <th scope="col">Nombre de lots</th>
+              <th scope="col">Programme</th>
+              <th scope="col">Date de commission</th>
+              <th scope="col">Etat</th>
+              <th scope="col" *ngIf="permited">Actions</th>
+            </tr>
+          </thead>
 
-        <tbody>
-          <tr *ngFor="let element of lotissementsArray">
-            <td>{{ element.referenceFonciere}}</td>
-            <td>{{ element.typeProjet }}</td>
-            <td>{{ element.topographe }}</td>
-            <td>{{ element.maitreOuvrageName }}</td>
-            <td>{{ element.cus }}</td>
-            <td>{{ element.nbrLots }}</td>
-            <td>{{ element.programme }}</td>
-            <td>{{ !!element.date_commission?(element.date_commission| date:'mediumDate'):'Pas encore'}}</td>
-            <td class="etat"><span [ngStyle]="{'color': element.approuve==='Ajourné'?'#99999':((element.approuve==='Avis favorable')?'#34c38f':'#f46a6a')}">{{element.approuve==='Pas encore'?'... En attente':((element.approuve==='Avis favorable')?'&#10004; Avis favorable':(element.approuve==='Ajourné'?'Ajourné':'&#10006; Avis défavorable'))}}</span></td>
-            <td class="d-flex" *ngIf="permited">
-              <a class="action-btn action-btn--1"(click)="onStartLocating(element)">
-                <p style="text-align:center">
-                  <i class="bx bx-map"></i>
-                </p>
-                </a>
-
-                <a class="action-btn action-btn--2"(click)="onUpdateProject(element,newProject)">
+          <tbody>
+            <tr *ngFor="let element of lotissementsArray">
+              <td>{{ element.referenceFonciere}}</td>
+              <td>{{ element.typeProjet }}</td>
+              <td>{{ element.topographe }}</td>
+              <td>{{ element.maitreOuvrageName }}</td>
+              <td>{{ element.cus }}</td>
+              <td>{{ element.nbrLots }}</td>
+              <td>{{ element.programme }}</td>
+              <td>{{ !!element.date_commission?(element.date_commission| date:'mediumDate'):'Pas encore'}}</td>
+              <td class="etat"><span [ngStyle]="{'color': element.approuve==='Ajourné'?'#99999':((element.approuve==='Avis favorable')?'#34c38f':'#f46a6a')}">{{element.approuve==='Pas encore'?'... En attente':((element.approuve==='Avis favorable')?'&#10004; Avis favorable':(element.approuve==='Ajourné'?'Ajourné':'&#10006; Avis défavorable'))}}</span></td>
+              <td class="d-flex" *ngIf="permited">
+                <a class="action-btn action-btn--1"(click)="onStartLocating(element)">
                   <p style="text-align:center">
-                    <i class="bx  bx-edit-alt"></i>
+                    <i class="bx bx-map"></i>
                   </p>
                   </a>
 
-                  <a class="action-btn action-btn--4"(click)="approuverProjet(element)">
+                  <a class="action-btn action-btn--2"(click)="onUpdateProject(element,newProject)">
                     <p style="text-align:center">
-                      <i class="bx bx-check"></i>
+                      <i class="bx  bx-edit-alt"></i>
                     </p>
                     </a>
-                  <a class="action-btn action-btn--5"(click)="rejeterProjet(element)">
-                    <p style="text-align:center">
-                      <i class="bx bx-x"></i>
-                    </p>
-                    </a>
-                    <a class="action-btn bg-info" (click)=" showDateModal(datePickerModal,element)">
+
+                    <a class="action-btn action-btn--4"(click)="approuverProjet(element)">
                       <p style="text-align:center">
-                        <i class="bx bx-calendar-event"></i>
+                        <i class="bx bx-check"></i>
                       </p>
                       </a>
-                  <a class="action-btn action-btn--3"(click)="showAlert(element,deleteModal)">
-                    <p style="text-align:center">
-                      <i class="bx bx-trash-alt"></i>
-                    </p>
-                    </a>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+                    <a class="action-btn action-btn--5"(click)="rejeterProjet(element)">
+                      <p style="text-align:center">
+                        <i class="bx bx-x"></i>
+                      </p>
+                      </a>
+                      <a class="action-btn bg-info" (click)=" showDateModal(datePickerModal,element)">
+                        <p style="text-align:center">
+                          <i class="bx bx-calendar-event"></i>
+                        </p>
+                        </a>
+                    <a class="action-btn action-btn--3"(click)="showAlert(element,deleteModal)">
+                      <p style="text-align:center">
+                        <i class="bx bx-trash-alt"></i>
+                      </p>
+                      </a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
     </div>
-    <div
-      class="groupeHabitationArray"
-      *ngIf="projectsType === 'groupeHabitations'"
+
+    <div class="groupeHabitationArray" *ngIf="projectsType === 'groupeHabitations'"
     >
       <h2 class="projectTitle">Groupe d'habitations</h2>
-      <table class="table">
-        <thead class="table-dark">
-          <tr>
-            <th scope="col">Référence foncière</th>
-            <th scope="col">type de projet</th>
-            <th scope="col">surfaceTerrain du terrain</th>
-            <th scope="col">Maitre Ouvrage</th>
-            <th scope="col">COS</th>
-            <th scope="col">CUS</th>
-            <th scope="col">Nombre d'immeubles</th>
-            <th scope="col">Nombre d'appartements</th>
-            <th scope="col">Nombre de syndics</th>
-            <th scope="col">Nombre de locaux commerciaux</th>
-            <th scope="col">Programme</th>
-            <th scope="col">Date de commission</th>
-            <th scope="col">Etat</th>
-            <th scope="col" *ngIf="permited">Actions</th>
-          </tr>
-        </thead>
+      <div class="table-responsive">
+        <table class="table ">
+          <thead class="table-dark">
+            <tr>
+              <th scope="col">Référence foncière</th>
+              <th scope="col">type de projet</th>
+              <th scope="col">surfaceTerrain du terrain</th>
+              <th scope="col">Maitre Ouvrage</th>
+              <th scope="col">COS</th>
+              <th scope="col">CUS</th>
+              <th scope="col">Nombre d'immeubles</th>
+              <th scope="col">Nombre d'appartements</th>
+              <th scope="col">Nombre de syndics</th>
+              <th scope="col">Nombre de locaux commerciaux</th>
+              <th scope="col">Programme</th>
+              <th scope="col">Date de commission</th>
+              <th scope="col">Etat</th>
+              <th scope="col" *ngIf="permited">Actions</th>
+            </tr>
+          </thead>
 
-        <tbody>
-          <tr *ngFor="let element of groupeHabitationsArray">
-            <td>{{ element.referenceFonciere }}</td>
-            <td>{{ element.typeProjet }}</td>
-            <td>{{ element.topographe }}</td>
-            <td>{{ element.maitreOuvrageName }}</td>
-            <td>{{ element.cos }}</td>
-            <td>{{ element.cus }}</td>
-            <td>{{ element.nbrImmeuble }}</td>
-            <td>{{ element.nbrAppartements }}</td>
-            <td>{{ element.nbrSyndics }}</td>
-            <td>{{ element.nbrLocauxCommerciaux }}</td>
-            <td>{{ element.programme }}</td>
-            <td>{{ !!element.date_commission?(element.date_commission| date:'mediumDate'):'Pas encore'}}</td>
-            <td class="etat"><span [ngStyle]="{'color': element.approuve==='Ajourné'?'#99999':((element.approuve==='Avis favorable')?'#34c38f':'#f46a6a')}">{{element.approuve==='Pas encore'?'... En attente':((element.approuve==='Avis favorable')?'&#10004; Avis favorable':(element.approuve==='Ajourné'?'Ajourné':'&#10006; Avis défavorable'))}}</span></td>
-            <td class="d-flex" *ngIf="permited">
-              <a class="action-btn action-btn--1"(click)="onStartLocating(element)">
-                <p style="text-align:center">
-                  <i class="bx bx-map"></i>
-                </p>
-                </a>
-                <a class="action-btn action-btn--2"(click)="onUpdateProject(element,newProject)">
+          <tbody>
+            <tr *ngFor="let element of groupeHabitationsArray">
+              <td>{{ element.referenceFonciere }}</td>
+              <td>{{ element.typeProjet }}</td>
+              <td>{{ element.topographe }}</td>
+              <td>{{ element.maitreOuvrageName }}</td>
+              <td>{{ element.cos }}</td>
+              <td>{{ element.cus }}</td>
+              <td>{{ element.nbrImmeuble }}</td>
+              <td>{{ element.nbrAppartements }}</td>
+              <td>{{ element.nbrSyndics }}</td>
+              <td>{{ element.nbrLocauxCommerciaux }}</td>
+              <td>{{ element.programme }}</td>
+              <td>{{ !!element.date_commission?(element.date_commission| date:'mediumDate'):'Pas encore'}}</td>
+              <td class="etat"><span [ngStyle]="{'color': element.approuve==='Ajourné'?'#99999':((element.approuve==='Avis favorable')?'#34c38f':'#f46a6a')}">{{element.approuve==='Pas encore'?'... En attente':((element.approuve==='Avis favorable')?'&#10004; Avis favorable':(element.approuve==='Ajourné'?'Ajourné':'&#10006; Avis défavorable'))}}</span></td>
+              <td class="d-flex" *ngIf="permited">
+                <a class="action-btn action-btn--1"(click)="onStartLocating(element)">
                   <p style="text-align:center">
-                    <i class="bx  bx-edit-alt"></i>
+                    <i class="bx bx-map"></i>
                   </p>
                   </a>
+                  <a class="action-btn action-btn--2"(click)="onUpdateProject(element,newProject)">
+                    <p style="text-align:center">
+                      <i class="bx  bx-edit-alt"></i>
+                    </p>
+                    </a>
 
-                  <a class="action-btn action-btn--4"(click)="approuverProjet(element)">
-                    <p style="text-align:center">
-                      <i class="bx bx-check"></i>
-                    </p>
-                    </a>
-                  <a class="action-btn action-btn--5"(click)="rejeterProjet(element)">
-                    <p style="text-align:center">
-                      <i class="bx bx-x"></i>
-                    </p>
-                    </a>
-                    <a class="action-btn bg-info" (click)=" showDateModal(datePickerModal,element)">
+                    <a class="action-btn action-btn--4"(click)="approuverProjet(element)">
                       <p style="text-align:center">
-                        <i class="bx bx-calendar-event"></i>
+                        <i class="bx bx-check"></i>
                       </p>
                       </a>
-                  <a class="action-btn action-btn--3"(click)="showAlert(element,deleteModal)">
-                    <p style="text-align:center">
-                      <i class="bx bx-trash-alt"></i>
-                    </p>
-                    </a>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+                    <a class="action-btn action-btn--5"(click)="rejeterProjet(element)">
+                      <p style="text-align:center">
+                        <i class="bx bx-x"></i>
+                      </p>
+                      </a>
+                      <a class="action-btn bg-info" (click)=" showDateModal(datePickerModal,element)">
+                        <p style="text-align:center">
+                          <i class="bx bx-calendar-event"></i>
+                        </p>
+                        </a>
+                    <a class="action-btn action-btn--3"(click)="showAlert(element,deleteModal)">
+                      <p style="text-align:center">
+                        <i class="bx bx-trash-alt"></i>
+                      </p>
+                      </a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
     </div>
   </div>
 </div>

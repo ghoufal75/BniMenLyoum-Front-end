@@ -11,6 +11,7 @@ export class AppComponent implements OnInit  {
   ngOnInit() {
     this.accountService.autoLogin();
     this.accountService.autoLoginResponsable();
+    this.accountService.autoLoginEntiteExterne();
     // document.getElementsByTagName("html")[0].setAttribute("dir", "rtl");
   }
 }

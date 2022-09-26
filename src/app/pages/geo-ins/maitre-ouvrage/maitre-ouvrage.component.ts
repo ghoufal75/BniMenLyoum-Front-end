@@ -38,7 +38,7 @@ export class MaitreOuvrageComponent implements OnInit {
 
   ngOnInit(): void {
     this.accountService.connectedRole.subscribe(role=>{
-      if(role==='Admin'){
+      if(role==='Responsable'){
         this.permited=true;
       }
       else{
@@ -127,7 +127,7 @@ export class MaitreOuvrageComponent implements OnInit {
     }
     this.geoInsService.addMaitreOuvragePhysique(this.physiqueForm.value).subscribe(
       (data) => {
-        console.log(data);
+
         this.fetchMaitrePhysique();
         this.closeModal();
         this.isLoading = false;
@@ -160,7 +160,7 @@ export class MaitreOuvrageComponent implements OnInit {
     }
     this.geoInsService.addMaitreOuvrageMoral(this.moralForm.value).subscribe(
       (data) => {
-        console.log(data);
+
         this.fetchMaitreMoral();
         this.closeModal();
         this.isLoading = false;
@@ -193,7 +193,7 @@ export class MaitreOuvrageComponent implements OnInit {
     }
     this.geoInsService.addOrganismePublic(this.orgForm.value).subscribe(
       (data) => {
-        console.log(data);
+
         this.fetchOrganismePublic();
         this.closeModal();
         this.isLoading = false;
@@ -300,7 +300,7 @@ export class MaitreOuvrageComponent implements OnInit {
     let element=this.elementToDelete;
     this.isLoading=true;
     this.geoInsService.deleteMaitreOuvrage(element._id).subscribe(data=>{
-      console.log(data);
+
       switch(this.maitreOuvrageType){
         case MaitreOuvrageTypes.physique:
           this.fetchMaitrePhysique();

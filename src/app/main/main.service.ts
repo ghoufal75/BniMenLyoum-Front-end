@@ -1,5 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
+import { environment } from "src/environments/environment";
 export interface SearchModel {
   nom: string;
   topographe: string;
@@ -8,12 +9,12 @@ export interface SearchModel {
 @Injectable()
 export class MainService {
   constructor(private http: HttpClient) {}
-  searchProject(data: SearchModel) {
+  searchProject(data: string) {
     return this.http.get(
-      `http://localhost:3000/geo-ins/singleProject/${data.nom}/${data.topographe}/${data.referenceFonciere}`
+      environment.api_link+`/geo-ins/project/${data}`
     );
   }
   sendReclamation(data) {
-    return this.http.post("http://localhost:3000/reclamations", data);
+    return this.http.post(environment.api_link+"/reclamations", data);
   }
 }

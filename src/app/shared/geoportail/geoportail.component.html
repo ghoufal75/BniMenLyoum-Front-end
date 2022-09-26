@@ -380,7 +380,7 @@
       ><i class="bx bx-layer"></i
     ></a>
   </div>
-  <div class="layersButton projectsButton">
+  <div class="layersButton projectsButton"*ngIf="permited || allowResponsible">
     <a class="action_btn layerButton" (click)="showProjectsBox()"
       ><i class="bx bx-briefcase-alt-2 text-primary"></i
     ></a>
@@ -400,8 +400,7 @@
       ><i class="bx bx-upload tilesbx"></i
     ></a>
   </div>
-  <div
-    class="layerToggler"
+  <div class="layerToggler"
     [@appear]
     *ngIf="layerArray.length != 0 && showLayers"
   >
@@ -499,7 +498,7 @@
 
 
 
-  <div class="action-buttons" *ngIf="currentlyAdmin && permited">
+  <div class="action-buttons" *ngIf="currentlyAdmin && (permited)">
     <div class="btn-container btn-container1">
       <button
         type="button button2"

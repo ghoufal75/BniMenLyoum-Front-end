@@ -1,0 +1,19 @@
+Purposes of the project :
+ - Protect dashboard route with authentication.
+ - persist the state even after reloading the page.
+
+
+----------------------------------------------------------------------
+
+Trivial Rxjs Operators :
+Tap : Execute code that dosen't even touch the data.
+Map : Alter // Modify the observable data that was received. 
+Take : Let you subscribe immeditaly to the observable, do something with the data and unsebscribe for you.
+exhaustMap : 
+
+----------------------------------------------------------------------
+// To check later
+switchMap : .........
+
+
+ 

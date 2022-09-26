@@ -1,7 +1,11 @@
 import { HostListener, Injectable } from "@angular/core";
-import { BehaviorSubject, Subject } from "rxjs";
+import { BehaviorSubject, Subject, Subscription } from "rxjs";
 import { SocketService } from "./socket.service";
 import { saveAs } from "file-saver";
+import { Reclamation } from "src/app/models/reclamation.model";
+import { HttpClient } from "@angular/common/http";
+import { AnyARecord } from "dns";
+import { environment } from "src/environments/environment";
 export interface Contact {
   firstName: string;
   lastName: string;
@@ -16,21 +20,27 @@ export interface Conversation {
 }
 @Injectable({ providedIn: "root" })
 export class CommunicationService {
+  userSUbject: Subject<any> = new Subject<any>();
   progressSubject: Subject<any> = new Subject<any>();
   objectPipedConversation: any;
   objectPipedFormat: BehaviorSubject<any[]> = new BehaviorSubject(null);
   chunk: any;
   buffer: any;
   actualReceiver: any;
+  singleReclamation: Subject<any> = new Subject<any>();
+  reclamationsEntiteSubject: Subject<any[]> = new Subject<any[]>();
   actualReceiverSubject: Subject<any> = new Subject<any>();
   total_buffer_size: any;
   buffer_size: any;
+  sender_transmission = null;
+  subscription: Subscription = new Subscription();
   unreadMessagesNumberSubject: BehaviorSubject<number> =
     new BehaviorSubject<number>(0);
   conversationsSubject: BehaviorSubject<Conversation[]> = new BehaviorSubject<
     Conversation[]
   >(null);
   fileShare = null;
+  initialBuffer = null;
   contactsSubject: BehaviorSubject<Contact[]> = new BehaviorSubject<Contact[]>(
     null
   );
@@ -57,12 +67,19 @@ export class CommunicationService {
   messageIdentifier: Date;
   firstMessage: boolean = false;
   receiverId: string;
+  entiteExterneSUbject: Subject<any[]> = new Subject<any[]>();
   senderFile: any = [];
-  constructor(private socketService: SocketService) {
+  reclamationArray: any = [];
+  reclamationsSubject: Subject<Reclamation[]> = new Subject<Reclamation[]>();
+  constructor(private socketService: SocketService, private http: HttpClient) {
     this.initializing = true;
     this.socketService.connectToServer();
+    this.onInitialReclamations();
     this.onGetInitialConversations();
+    this.onNewCOmplaint();
+    this.onEntiteExternes();
     this.newUserJoined();
+    this.OnNewReclamation();
     this.onGetAccounts();
     this.onNewContacts();
     this.onNewMessage();
@@ -71,17 +88,63 @@ export class CommunicationService {
     this.onFileInfos();
     this.saveConversations();
   }
+  onNewCOmplaint() {
+    this.socketService.onNewComplaint().subscribe((data) => {
+      this.singleReclamation.next(data);
+    });
+  }
+  getAllEntitesExternes() {
+    this.socketService.emit("getEntitesExternes");
+  }
+  onEntiteExternes() {
+    this.socketService.onEntiteExterne().subscribe((data: any) => {
+      this.entiteExterneSUbject.next(data.entiteExterne);
+    });
+  }
 
   // Get unred messages
   getUnredMessages() {
     let counter: number = 0;
-    console.log(this.sender);
     for (const element of this.conversations) {
       for (let message of element.messages) {
         if (message.receiver === this.sender && !message.read) counter++;
       }
     }
     this.unreadMessagesNumberSubject.next(counter);
+  }
+  // Forward Reclamation
+  forwardReclamation(reclamation, receiver) {
+    this.socketService.emit("forwardReclamation", {
+      reclamation,
+      receiver: receiver._id,
+    });
+  }
+
+  // Getting inital Reclamations
+  getInitialReclamations() {
+    this.http.get(environment.api_link+"/reclamations").subscribe(
+      (reclamations: Reclamation[]) => {
+        this.reclamationArray = reclamations;
+        this.reclamationsSubject.next(this.reclamationArray);
+      },
+      (err) => {
+        console.log("This is the error : ", err);
+      }
+    );
+  }
+  onInitialReclamations() {
+    this.socketService.onInitialReclamations().subscribe((data: any) => {
+      this.reclamationsEntiteSubject.next(data.reclamations);
+    });
+  }
+  // on new reclamation
+  OnNewReclamation() {
+    this.socketService
+      .onNewReclamation()
+      .subscribe((reclamation: Reclamation) => {
+        this.reclamationArray.push(reclamation);
+        this.reclamationsSubject.next(this.reclamationArray);
+      });
   }
 
   // Listening to user joine
@@ -132,7 +195,7 @@ export class CommunicationService {
       this.socketService.getAccounts(receiverIds);
       console.log(res);
       localStorage.setItem("initialConversations", JSON.stringify(res));
-      console.log(JSON.parse(localStorage.getItem("initialConversations")));
+
       this.conversations = res;
       this.conversationsSubject.next(this.conversations);
       this.getUnredMessages();
@@ -204,7 +267,8 @@ export class CommunicationService {
   // }
   shareFile(metadata, buffer, message, objet) {
     this.buffer = buffer;
-    const timeOfSending = new Date().toLocaleString();
+    this.initialBuffer = buffer.slice();
+    let timeOfSending = new Date().toLocaleString();
     this.total_buffer_size = metadata.total_buffer_size;
     this.buffer_size = metadata.buffer_size;
     if (
@@ -257,10 +321,9 @@ export class CommunicationService {
     });
 
     this.socketService.onFileShare().subscribe((data) => {
-      console.log("start sharing the file");
       if (this.buffer.length == this.total_buffer_size) {
         this.chunk = buffer.slice(0, this.buffer_size);
-        buffer = buffer.slice(this.buffer_size, buffer.length);
+        buffer = buffer.slice(this.buffer_size, this.buffer.length);
       }
 
       if (this.chunk.length != 0) {
@@ -276,7 +339,6 @@ export class CommunicationService {
           .find((element) => element.receiver === this.receiverId)
           .messages.map((element) => {
             if (element.sentAt == timeOfSending) {
-              console.log("it wow same");
               return {
                 ...element,
                 progress: Math.trunc(
@@ -295,6 +357,8 @@ export class CommunicationService {
           this.pipeToObjects();
           this.getPipedConversation();
         }
+        this.sender_transmission =
+          this.sender_transmission + this.chunk.byteLength;
         this.chunk = this.buffer.slice(
           this.chunk.length,
           this.chunk.length + this.buffer_size
@@ -303,24 +367,8 @@ export class CommunicationService {
           this.chunk.length,
           this.total_buffer_size
         );
-        // if(this.buffer.length<=this.buffer_size){
-        //   this.conversations.find(element=>element.receiver===this.receiverId).messages=this.conversations.find(element=>element.receiver===this.receiverId).messages.map(element=>{
-        //     if(element.sentAt==timeOfSending){
-        //       return{...element,progress:undefined,file:buffer,filename:metadata.filename}
-        //     }
-        //     return element;
-        //   });
-        //   if(this.actualConversation==this.conversations.find(element=>element.receiver===this.receiverId)){
-        //     this.pipeToObjects();
-        //     this.getPipedConversation();
-        //   }
-        // }
-        console.log("this is the new buffer length : ", this.buffer.length);
+        // HEEEEEEEEEEEEERRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRREEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
         if (this.buffer.length < this.buffer_size) {
-          console.log("the file is sent all of it");
-          this.chunk = null;
-          this.buffer = null;
-          this.total_buffer_size = 0;
           this.conversations.find(
             (element) => element.receiver === this.receiverId
           ).messages = this.conversations
@@ -330,50 +378,104 @@ export class CommunicationService {
                 return {
                   ...element,
                   progress: undefined,
-                  file: this.senderFile,
+                  file: buffer,
                   filename: metadata.filename,
                 };
               }
               return element;
             });
-          if (this.actualConversation.receiver === this.receiverId) {
-            this.actualConversation.messages = this.conversations.find(
+          if (
+            this.actualConversation ==
+            this.conversations.find(
               (element) => element.receiver === this.receiverId
-            ).messages;
+            )
+          ) {
             this.pipeToObjects();
             this.getPipedConversation();
           }
+          this.buffer = null;
+          this.buffer_size = 0;
+          this.total_buffer_size = 0;
+          this.chunk = null;
+          timeOfSending = null;
         }
+
+        // if(===){
+        //   console.log("finish");
+        // }
+        // if (this.sender_transmission===this.total_buffer_size) {
+        //   console.log("this is the transmited file length : ",this.sender_transmission);
+        //   console.log("this is the total file size : ",this.total_buffer_size);
+        //   console.log("the file is sent all of it");
+        //   this.chunk = null;
+        //   this.buffer = null;
+        //   this.total_buffer_size = 0;
+        //   this.conversations.find(
+        //     (element) => element.receiver === this.receiverId
+        //   ).messages = this.conversations
+        //     .find((element) => element.receiver === this.receiverId)
+        //     .messages.map((element) => {
+        //       if (element.sentAt == timeOfSending) {
+        //         console.log("found god damn")
+        //         let obj= {
+        //           ...element,
+        //           progress: undefined,
+        //           file: this.senderFile,
+        //           filename: metadata.filename,
+        //         };
+        //         delete obj['progress'];
+        //         element=obj;
+        //       }
+        //       return element;
+        //     });
+        //   if (this.actualConversation.receiver === this.receiverId) {
+        //     this.actualConversation.messages = this.conversations.find(
+        //       (element) => element.receiver === this.receiverId
+        //     ).messages;
+        //     this.pipeToObjects();
+        //     this.getPipedConversation();
+        //   }
+        // }
       }
     });
   }
   onFileInfos() {
     this.socketService.onFileInfos().subscribe((data: any) => {
-      console.log("file infos arrived : ", data);
-      console.log(
-        "here is it gooooo : ",
-
-        this.conversations.find((el) => el.receiver === data.receiver)
-      );
-      if(data.receiver===this.sender){
-        this.conversations.find(el=>el.receiver==data.sender).messages=this.conversations.find(el=>el.receiver==data.sender).messages.map((el) => {
-          if (el.sentAt == data.sentAt) {
-            return {
-              ...el,
-              file: undefined,
-              fileSrc: data.fileSrc,
-              filename: data.filename,
-            };
-          }
-          return el;
-        });
-        return
+      if (data.receiver === this.sender) {
+        this.conversations.find((el) => el.receiver == data.sender).messages =
+          this.conversations
+            .find((el) => {
+              if (el.receiver == data.sender) {
+                return true;
+              }
+            })
+            .messages.map((el) => {
+              if (el.sentAt == data.sentAt) {
+                return {
+                  ...el,
+                  file: undefined,
+                  fileSrc: data.fileSrc,
+                  filename: data.filename,
+                  progress: undefined,
+                };
+              }
+              return el;
+            });
+        this.conversationsSubject.next(this.conversations);
+        if (this.actualConversation.receiver === data.sender) {
+          this.actualConversation.messages = this.conversations.find(
+            (el) => el.receiver === data.sender
+          ).messages;
+          this.actualConversationSubject.next(this.actualConversation);
+          this.pipeToObjects();
+          this.getPipedConversation();
+        }
+        return;
       }
-      this.conversations.find((el) => el.receiver == data.receiver).messages =
+      this.conversations.find((el) => el.receiver == data.sender).messages =
         this.conversations
           .find((el) => {
-            if (el.receiver === data.receiver) {
-              console.log("found igoo");
+            if (el.receiver === data.sender) {
               return true;
             }
           })
@@ -384,6 +486,7 @@ export class CommunicationService {
                 file: undefined,
                 fileSrc: data.fileSrc,
                 filename: data.filename,
+                progress: undefined,
               };
             }
             return el;
@@ -393,20 +496,18 @@ export class CommunicationService {
         this.actualConversation.messages = this.conversations.find(
           (el) => el.receiver === data.receiver
         ).messages;
-        this.pipeToObjects();
         this.actualConversationSubject.next(this.actualConversation);
+        this.pipeToObjects();
         this.getPipedConversation();
       }
     });
   }
   onFsMeta() {
-    this.socketService.onFsMeta().subscribe((data: any) => {
-      console.log("got");
-      console.log("this is the metada : ", data);
+   this.socketService.onFsMeta().subscribe((data: any) => {
       this.fileShare = {};
       this.fileShare.metadata = data.metadata;
-      this.fileShare.transmited = 0;
-      this.fileShare.buffer = [];
+      this.fileShare["transmited"] = 0;
+      this.fileShare["buffer"] = [];
       this.messageIdentifier = data.sentAt;
       if (
         this.conversations.find(
@@ -424,7 +525,8 @@ export class CommunicationService {
             message: data.message,
             objet: data.objet,
             progress: 0,
-            read: false,
+            read:
+              this.actualConversation.receiver == data.sender ? true : false,
             sentAt: data.sentAt,
           });
         this.conversationsSubject.next(this.conversations);
@@ -436,7 +538,6 @@ export class CommunicationService {
           this.conversations.find((elem) => elem.receiver === data.sender) ===
             null
         ) {
-          console.log("happenning 0");
           messages.push({
             sender: data.sender,
             receiver: data.receiver,
@@ -497,8 +598,7 @@ export class CommunicationService {
         this.getPipedConversation();
       }
       this.socketService.emitFilesEvents("fs-start", { receiver: data.sender });
-      this.socketService.fromEvent("fs-share").subscribe((data: any) => {
-        console.log("this is the data that got shared : ", data);
+      this.subscription =  this.socketService.fromEvent("fs-share").subscribe((data: any) => {
         this.fileShare.buffer.push(data.buffer);
         this.fileShare.transmited += data.buffer.byteLength;
         this.conversations.find(
@@ -524,11 +624,7 @@ export class CommunicationService {
         if (
           this.fileShare.transmited == this.fileShare.metadata.total_buffer_size
         ) {
-          console.log("this is the buffer : ", this.fileShare.buffer.length);
-          console.log(
-            "this is the file length : ",
-            this.fileShare.buffer.length
-          );
+
           this.socketService.emit("finishTransmitting", {
             buffer: this.fileShare.buffer,
           });
@@ -541,10 +637,7 @@ export class CommunicationService {
                 element.progress &&
                 element.sentAt == this.messageIdentifier
               ) {
-                console.log(
-                  "this is the buffer from receiver bruh : ",
-                  this.fileShare.buffer
-                );
+
                 return {
                   ...element,
                   file: this.fileShare.buffer,
@@ -554,7 +647,10 @@ export class CommunicationService {
               }
               return element;
             });
+
           this.fileShare = null;
+          this.messageIdentifier = null;
+          this.subscription.unsubscribe();
         } else {
           this.socketService.emitFilesEvents("fs-start", {
             receiver: data.sender,
@@ -573,11 +669,11 @@ export class CommunicationService {
   }
   onNewMessage() {
     this.socketService.newMessage().subscribe((data: string) => {
-      console.log("a new msg here");
+
       this.isReceiver = false;
       let result = JSON.parse(data);
-      console.log("mssssssssssss : ", result);
-      console.log(result.file);
+
+
       // result.message=result.message.replace(/[\r\n]/gm, "<br>")
       const messages = [];
       //the receiver of the message receives it
@@ -726,7 +822,7 @@ export class CommunicationService {
           return;
         }
         // Not the first Time sending a message to that receiver
-        console.log("broo there is a new msg");
+
         this.conversations = this.conversations.map((element) => {
           if (element.receiver === result.receiver) {
             element.messages.push({
@@ -747,11 +843,6 @@ export class CommunicationService {
         });
         this.conversationsSubject.next(this.conversations);
         // console.log("this is actuallllll :::::::::", this.actualConversation);
-        console.log("this is the sender : ", result.receiver);
-        console.log(
-          "this is the actual conv receiver : ",
-          this.actualConversation.receiver
-        );
         if (this.actualConversation.receiver === result.receiver) {
           this.actualConversation = this.conversations.find(
             (element) => element.receiver === result.receiver
@@ -808,7 +899,6 @@ export class CommunicationService {
   // onReadingMessages
   readMeessages(conversation) {
     let messages_to_read = [];
-    console.log("this is the conv before reading it : ", conversation);
     if (!conversation.messages || conversation.messages.length == 0) {
       return conversation;
     }
@@ -819,13 +909,13 @@ export class CommunicationService {
       }
       return element;
     });
-    console.log("this is the unred messages : ", messages_to_read);
+
     this.socketService.emit("readMessages", {
       sender: this.sender,
       receiver: this.receiverId,
       messages: messages_to_read,
     });
-    console.log("this is the conversation after reading it : ", conversation);
+
 
     return conversation;
   }
@@ -873,7 +963,6 @@ export class CommunicationService {
     let contact = null;
     if (index != -1) {
       contact = this.newContactsArray[index];
-      console.log("this is the contact");
       this.actualReceiver = contact;
       this.actualReceiverSubject.next(this.actualReceiver);
       this.receiverId = contact["_id"];
@@ -886,23 +975,25 @@ export class CommunicationService {
     };
     // console.log("actual after selection : ", this.actualConversation);
     this.conversations.push(this.actualConversation);
-    console.log(this.conversations);
     const convs = JSON.parse(localStorage.getItem("initialConversations"));
-    console.log(convs);
     convs.push({ ...this.actualConversation });
     localStorage.setItem("initialConversations", JSON.stringify(convs));
     this.contacts.push(contact);
     this.contactsSubject.next(this.contacts);
     this.conversationsSubject.next(this.conversations);
     this.actualConversationSubject.next(this.actualConversation);
+    this.pipeToObjects();
+    this.getPipedConversation();
   }
   pipeToObjects() {
     let newConversation = [];
     if (
       !this.actualConversation.messages ||
       this.actualConversation.messages.length == 0
-    )
-      return newConversation;
+    ) {
+      this.objectPipedConversation = [];
+      return;
+    }
     for (let message of this.actualConversation.messages) {
       let messageObject = newConversation.find((element) =>
         element.hasOwnProperty(message.objet)
@@ -937,5 +1028,25 @@ export class CommunicationService {
         Object.keys(element)[0].match(new RegExp(`^${value}`)) != null
     );
     this.objectPipedFormat.next(newSearchRes);
+  }
+  getInitialReclamationsEntiteExterne() {
+    this.socketService.emit("reclamationEntiteExterne", {
+      entite: this.socketService.sender,
+    });
+  }
+  getSender(id) {
+    this.socketService.emit("getUser", { id });
+    this.socketService.fromEvent("onUser").subscribe((user) => {
+      this.userSUbject.next(user);
+    });
+  }
+  deleteReclamation(reclamation: any) {
+    this.socketService.emit("deleteReclamation", reclamation);
+  }
+  onReclamationDeleted() {
+    this.socketService.fromEvent("reclamationDeleted").subscribe((data) => {
+      this.reclamationArray = data;
+      this.reclamationsSubject.next(this.reclamationArray);
+    });
   }
 }

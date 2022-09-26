@@ -6,11 +6,11 @@
     </div>
     <nav class="navbar__menu">
       <ul>
-        <li><a class="menu__link">Qui sommes nous ?</a></li>
-        <li><a class="menu__link">Nos services</a></li>
-        <li><a class="menu__link">Géo-portail</a></li>
-        <li><a class="menu__link">Suivie de dossier</a></li>
-        <li><a class="menu__link">Réclamation</a></li>
+        <li><a class="menu__link"[ngClass]="{'activated': currentActive == 1}"(click)="move(1)">Qui sommes nous ?</a></li>
+        <li><a class="menu__link"[ngClass]="{'activated': currentActive == 2}"(click)="move(2)">Nos services</a></li>
+        <li><a class="menu__link"[ngClass]="{'activated': currentActive == 3}"(click)="move(3)">Géo-portail</a></li>
+        <li><a class="menu__link"[ngClass]="{'activated': currentActive == 4}"(click)="move(4)">Suivie de dossier</a></li>
+        <li><a class="menu__link"[ngClass]="{'activated': currentActive == 5}"(click)="move(5)">Réclamation</a></li>
         <li>
           <a
             class="menu__link btn btn-primary rounded-pill"
@@ -56,42 +56,50 @@
       <img src="../../../assets/images/landingPage-Pic.png" class="actualImg" />
     </div>
   </div>
+  <div class="phone__menu"*ngIf="navIsShown" [@showNav]>
+    <div class="closeButton">
+
+        <button class="closeBtn"(click)="navIsShown=false">
+          <i class="bx bx-x closeX text-light"></i>
+        </button>
+
+    </div>
+    <ul>
+      <li><a class="phone__menu__link">Qui sommes nous ?</a></li>
+      <li><a class="phone__menu__link">Nos services</a></li>
+      <li><a class="phone__menu__link">Géo-portail</a></li>
+      <li><a class="phone__menu__link">Suivie de dossier</a></li>
+      <li><a class="phone__menu__link">Réclamation</a></li>
+      <li>
+        <a
+          class="phone__menu__link btn btn-primary  rounded-pill"
+          style="
+            box-shadow: 0 0.6rem 1.2rem rgba(0, 0, 0, 0.205);
+            padding: 0.6rem 2.5rem !important;
+            font-size: 1.4;
+          "
+          *ngIf="!isAuthenticated"
+          (click)="showModal(auth)"
+          >S'authentifier</a
+        >
+      </li>
+      <li>
+        <a
+          class="menu__link btn btn-primary rounded-pill"
+          style="
+            box-shadow: 0 0.6rem 1.2rem rgba(0, 0, 0, 0.205);
+            padding: 0.6rem 1rem !important;
+          "
+          *ngIf="isAuthenticated"
+          (click)="onLogout()"
+          >Se déconnecter</a
+        >
+      </li>
+    </ul>
+  </div>
 </div>
-<div class="phone__menu"*ngIf="navIsShown" [@showNav]>
-  <ul>
-    <li><a class="phone__menu__link">Qui sommes nous ?</a></li>
-    <li><a class="phone__menu__link">Nos services</a></li>
-    <li><a class="phone__menu__link">Géo-portail</a></li>
-    <li><a class="phone__menu__link">Suivie de dossier</a></li>
-    <li><a class="phone__menu__link">Réclamation</a></li>
-    <li>
-      <a
-        class="phone__menu__link btn btn-primary  rounded-pill"
-        style="
-          box-shadow: 0 0.6rem 1.2rem rgba(0, 0, 0, 0.205);
-          padding: 0.6rem 2.5rem !important;
-          font-size: 1.4;
-        "
-        *ngIf="!isAuthenticated"
-        (click)="showModal(auth)"
-        >S'authentifier</a
-      >
-    </li>
-    <li>
-      <a
-        class="menu__link btn btn-primary rounded-pill"
-        style="
-          box-shadow: 0 0.6rem 1.2rem rgba(0, 0, 0, 0.205);
-          padding: 0.6rem 1rem !important;
-        "
-        *ngIf="isAuthenticated"
-        (click)="onLogout()"
-        >Se déconnecter</a
-      >
-    </li>
-  </ul>
-</div>
-<section class="quisommesNous">
+
+<section class="quisommesNous" id="quisommesNous" #quisommesNous>
   <div class="image">
     <img
       src="../../../assets/images/question.png"
@@ -425,7 +433,7 @@
     </div>
   </ng-template>
 </div>
-<section class="fonctionnalites">
+<section class="fonctionnalites" id="fonctionnalites"#fonctionnalites>
   <h2 class="primary-title__centred">Nos services</h2>
   <div class="cartes">
     <div class="carte first-row">
@@ -481,7 +489,7 @@
     </div>
   </div>
 </section>
-<section class="geoportail">
+<section class="geoportail" id="geoportail"#geoportail>
   <h2 class="primary-title pb-5" style="text-align: center">
     Importez votre parcelle
   </h2>
@@ -489,7 +497,7 @@
     (notAuthenticated)="showNotAuthenticatedModal($event, notAuthenticated)"
   ></app-user-geoportail>
 </section>
-<section class="suivieDossier">
+<section class="suivieDossier"id='suivieDossier'#suivieDossier>
   <div class="content row">
     <div class="col-md-6">
       <h2 class="primary-title pb-5" style="color: rgb(0, 17, 100)">
@@ -499,7 +507,7 @@
         [formGroup]="suivieDossierForm"
         (ngSubmit)="onSubmitSuivieDossierForm(notAuthenticated)"
       >
-        <div class="mb-5">
+        <!-- <div class="mb-5">
           <label for="referenceFonciere" class="form-label"
             >Référence foncière</label
           >
@@ -510,7 +518,7 @@
             id="referenceFonciere"
             aria-describedby="emailHelp"
           />
-        </div>
+        </div> -->
         <div class="mb-5">
           <label for="maitreOuvrage" class="form-label">Maitre d'ouvrge</label>
           <input
@@ -521,7 +529,7 @@
             aria-describedby="emailHelp"
           />
         </div>
-        <div class="mb-3">
+        <!-- <div class="mb-3">
           <label for="topographe" class="form-label">Topographe</label>
           <input
             type="text"
@@ -530,13 +538,13 @@
             id="topographe"
             aria-describedby="emailHelp"
           />
-        </div>
+        </div> -->
         <button class="btn btn-outline-dark rounded-pill mt-5 submit-btn">
           Chercher
         </button>
       </form>
     </div>
-    <div class="col-md-6">
+    <div class="col-md-6 img-container">
       <div class="dossierCarte">
         <div class="overlay" *ngIf="dossierTrouve" [@enterAnimation]>
           <a class="closebtn"></a>
@@ -577,7 +585,7 @@
   </div>
 </section>
 
-<section class="reclamation">
+<section class="reclamation"id="reclamation"#reclamation>
   <div class="content">
     <div class="formulaire">
       <h2 class="primary-title pb-3" style="font-size: 1.6rem">
@@ -586,7 +594,7 @@
       <form
         class="form"
         [formGroup]="reclamationForm"
-        (ngSubmit)="onSubmitReclamation()"
+        (ngSubmit)="onSubmitReclamation(notAuthenticated)"
       >
         <div class="mb-3">
           <select
@@ -613,10 +621,11 @@
         <div>
           <label for="referenceFonciere" class="form-label">Réclamation</label>
           <textarea
+
             name="referenceFonciere"
             id=""
             cols="30"
-            class="form-control"
+            class="text-area form-control"
             rows="10"
             formControlName="message"
             name="message"

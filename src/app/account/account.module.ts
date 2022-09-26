@@ -10,6 +10,6 @@ import { AuthModule } from './auth/auth.module';
     CommonModule,
     AccountRoutingModule,
     AuthModule
-  ]
+  ],
 })
 export class AccountModule { }

@@ -1,0 +1,88 @@
+<div class="navbar">
+  <div class="navbar__logo">
+    <img src="../../assets/logos/logo-app.png" alt="" class="logo">
+  </div>
+  <div class="navbar__menu">
+    <ul>
+      <li>
+        <a
+        class="menu__link btn btn-primary rounded-pill"
+        style="
+          box-shadow: 0 0.6rem 1.2rem rgba(0, 0, 0, 0.205);
+          padding: 0.6rem 1rem !important;
+        "
+        (click)="onLogout()"
+        >Se déconnecter</a
+      >
+      </li>
+    </ul>
+  </div>
+</div>
+<div class="container">
+  <h2 class="pageTitle">Espace réclamations</h2>
+  <div class="content">
+    <ul class="content__list">
+      <li class="content__element" *ngFor="let reclamation of reclamations.reverse()">
+        <div class="reclamation">
+          <div class="reclamation__header">
+            <h4 class="reclamation__type mb-4 ">Type de réclamation : {{reclamation.type=='equ'?'Équipements et services publics':(reclamation.type=='urba'?'Urbanisme et construction':(reclamation.type=='budg'?'Budget, affaires financières et programmation':(reclamation.type=='coop'?'Coopération et partenariat':'Autre')))}}</h4>
+          </div>
+          <div class="reclamation__body">
+
+            <p class="reclamation__message mb-3"><b>Corps : </b>{{reclamation.message}}</p>
+            <p class="reclamation__sentAt mb-3"><b>Envoyée le : </b> {{reclamation.sentAt | date: 'short'}}</p>
+          </div>
+          <div class="reclamation__footer">
+            <div>
+            <button class="btn btn-danger me-2"(click)='deleteReclamation(reclamation)'>Supprimer</button>
+            <button class="btn btn-secondary" (click)="getSender(reclamation.senderId,newUser)">Afficher l'émetteur</button>
+          </div>
+          </div>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>
+<div class="modal modalgeotiffModal">
+  <!-- Center Modal -->
+  <ng-template #newUser let-modal>
+    <div class="modal-header bg-primary">
+      <!-- <h5 class="modal-title mt-0">Créer un nouveau projet</h5> -->
+      <i
+        type="button"
+        class=" bx bx-x text-light ms-auto" style="font-size : 1.3rem !important"
+        aria-hidden="true"
+        (click)="modal.dismiss('Cross click')"
+      ></i>
+    </div>
+    <div class="modal-body p-0 m-0">
+      <div class="responsableAccount account">
+        <div class="account__header bg-primary">
+        <div class="avatar">
+        <div class="roundedImg--account bg-dark" >
+          <h6 class="name">{{user.lastName[0]}} {{user.firstName[0]}}</h6>
+
+        </div>
+      </div>
+    </div>
+        <div class="credentials">
+          <div class="clientCredentials">
+            <h6 class="credentials__name text-primary">{{user.firstName}} {{user.lastName}}</h6>
+            <ul class="credentials__list">
+              <li><span class="identifier text-primary">Nom</span> : <span class="credentialsData">{{user.lastName}}</span></li>
+              <li><span class="identifier text-primary">Prénom</span> : <span class="credentialsData">{{user.firstName}}</span></li>
+              <li><span class="identifier text-primary">Email</span> : <span class="credentialsData">{{user.email}}</span></li>
+            </ul>
+          </div>
+        </div>
+        <div class="actions mb-3 ms-4">
+          <button class="btn btn-danger ms-2">Supprimer le compte</button>
+        </div>
+
+      </div>
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+  </ng-template>
+</div>
