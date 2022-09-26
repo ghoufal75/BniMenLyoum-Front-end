@@ -42,7 +42,7 @@ export class DefaultComponent implements OnInit {
        const horizontal = document.getElementById('layout-horizontal');
        if (horizontal != null) {
          horizontal.setAttribute('checked', 'true');
-         horizontal);
+         console.log(horizontal);
        }
      }
 
