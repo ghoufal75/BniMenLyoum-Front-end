@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkskote=self.webpackChunkskote||[]).push([[592],{81819:(l,_,e)=>{e.d(_,{y:()=>u});var n=e(69808),d=e(28675),t=e(5e3);let u=(()=>{class o{}return o.\u0275fac=function(a){return new(a||o)},o.\u0275mod=t.\u0275\u0275defineNgModule({type:o}),o.\u0275inj=t.\u0275\u0275defineInjector({imports:[[n.CommonModule,d.bz]]}),o})()}}]);

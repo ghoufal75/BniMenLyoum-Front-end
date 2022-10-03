@@ -15,7 +15,7 @@ export const environment = {
     appId: '',
     measurementId: ''
   },
-  api_link:"http://localhost:3000",
+  api_link:"http://54.204.119.87:3000",
 };
 
 

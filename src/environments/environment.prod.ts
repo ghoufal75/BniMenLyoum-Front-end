@@ -10,5 +10,6 @@ export const environment = {
     messagingSenderId: '',
     appId: '',
     measurementId: ''
-  }
+  },
+  api_link:"http://54.204.119.87:3000",
 };
