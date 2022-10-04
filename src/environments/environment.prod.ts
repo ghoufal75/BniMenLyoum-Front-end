@@ -11,5 +11,5 @@ export const environment = {
     appId: '',
     measurementId: ''
   },
-  api_link:"https://nestbackend.ml/",
+  api_link:"https://nestbackend.ml",
 };
