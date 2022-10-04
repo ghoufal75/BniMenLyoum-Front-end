@@ -11,5 +11,5 @@ export const environment = {
     appId: '',
     measurementId: ''
   },
-  api_link:"//54.204.119.87:443",
+  api_link:"https://nestbackend.ml/",
 };
