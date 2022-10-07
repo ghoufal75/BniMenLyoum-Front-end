@@ -51,6 +51,7 @@ import { filter, take, tap } from "rxjs/operators";
 import * as XLSX from "xlsx";
 import { AuthenticationService } from "src/app/main/auth.service";
 import { AccountService } from "src/app/account/auth/account.service";
+import { resolve } from "path";
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 declare var browserPrint: any;
@@ -145,7 +146,8 @@ export class GeoportailComponent implements OnInit {
   permited:boolean=false;
   screenSize:string;
   allowResponsible:boolean=false;
-
+  urbaDocuments=[];
+  initializationPhase:boolean=false;
   constructor(
     private modalService: NgbModal,
     private geoColService: GeoColService,
@@ -175,7 +177,7 @@ export class GeoportailComponent implements OnInit {
 
       }
     });
-    this.loading = true;
+
     this.choosenTile = this.tilesArray[4];
     this.initForms();
     this.route.events.subscribe((event: any) => {
@@ -768,31 +770,13 @@ export class GeoportailComponent implements OnInit {
       // console.log(imageSource);
     });
   }
-  ngAfterViewInit(): void {
+  async ngAfterViewInit() {
     this.initMap();
     if (this.route.url === "/admin/geo-ins/projets") this.isGeoIns = true;
     this.initTile();
     this.initDraw();
     // this.initPrint();
-    this.geoColService
-      .getAllUrbanismeDocuments()
-      .subscribe(async (data: any) => {
 
-        if(data==null || data==undefined || data.length==0){
-          this.loading=false;
-          return;
-
-        }
-        this.urbaDocument = {
-          nom: data[0].nom,
-          reference: data[0].referenceHomologation,
-          localite: data[0].localite,
-        };
-        if (data.length === 0) this.loading = false;
-        else {
-          this.iterateAndFetch(data);
-        }
-      });
     let map = this.map;
     let me = this;
     this.map.on("pm:create", async (e) => {
@@ -891,12 +875,54 @@ export class GeoportailComponent implements OnInit {
         me.distance = totalDistance;
       }
     });
+    await this.fetchUrbaDocs();
 
-    if(this.route.url==="/admin/map"){
-      this.initGeoTIFF();
-    }
 
-    this.getAllPorjects();
+
+    // this.getAllPorjects();
+  }
+  fetchGeotiffs(){
+    this.geoColService.getAllGeotiffs().subscribe((data:any[])=>{
+      this.loading=true;
+      console.log("this is the result from fetching geotiffs : ",data);
+      if(data.length===0) {
+        this.loading=false;
+        return;
+      }
+      this.initGeoTIFF(data);
+    })
+  }
+  async fetchUrbaDocs(){
+    this.initializationPhase=true;
+    this.loading=true;
+    this.geoColService
+    .getAllUrbanismeDocuments()
+    .subscribe(async (data: any) => {
+
+      if(data==null || data==undefined || data.length==0){
+        this.loading=false;
+        return;
+
+      }
+      this.urbaDocuments=data;
+      this.urbaDocument = {
+        nom: data[0].nom,
+        reference: data[0].referenceHomologation,
+        localite: data[0].localite,
+      };
+      if (data.length === 0) this.loading = false;
+      else {
+        console.log("this is the urba : ",data[0]);
+       await this.iterateAndFetch([data[0]]);
+
+
+      }
+    });
+  }
+  onChangeUrba(event:any){
+    console.log(event);
+    // let urbaHomologation=
+    // this.iterateAndFetch([this.urbaDocuments.find(elm=>elm.refrenceHomologation===urbaHomologation)])
   }
   getArea(layer) {
     return L.GeometryUtil.geodesicArea(layer.getLatLngs()[0]);
@@ -1013,7 +1039,7 @@ export class GeoportailComponent implements OnInit {
     //   console.log(err);
     //     })
   }
-  onSubmitShpForm() {
+ onSubmitShpForm() {
     this.loading = true;
     const form = new FormData();
     form.append("nom", this.urbanismeForm.get("nom").value);
@@ -1027,12 +1053,8 @@ export class GeoportailComponent implements OnInit {
     form.append("file", this.urbanismeForm.get("file").value);
 
     this.geoColService.uploadUrbanismeDocument(form).subscribe(
-      (data) => {
-        this.geoColService
-          .getAllUrbanismeDocuments()
-          .subscribe((docArray: any) => {
-            this.iterateAndFetch(docArray);
-          });
+     async (data) => {
+        await this.fetchUrbaDocs();
       },
       (err) => {
         this.loading = false;
@@ -1089,31 +1111,44 @@ export class GeoportailComponent implements OnInit {
 
     return geoJSON;
   }
-  iterateAndFetch(docs: any) {
-    for (let doc of docs) {
-      this.geoColService.fetchGeoJSONFiles(doc.src).subscribe(
-        (geoJSONData: any[]) => {
-          this.loading = false;
-          const primaryArray = this.mapService.processShapeFile(geoJSONData);
-          this.allLayers = primaryArray;
-          for (let elem of primaryArray) {
-            for (let f of elem.layers) {
-              if (f.layers[0] === null) {
-                continue;
+  async iterateAndFetch(docs: any) {
+    console.log("start iterating and ferching");
+    await new Promise((resolve,reject)=>{
+      for (let doc of docs) {
+          this.geoColService.fetchGeoJSONFiles(doc.src).subscribe(
+            (geoJSONData: any[]) => {
+
+              const primaryArray = this.mapService.processShapeFile(geoJSONData);
+              this.allLayers = primaryArray;
+              for (let elem of primaryArray) {
+                for (let f of elem.layers) {
+                  if (f.layers[0] === null) {
+                    continue;
+                  }
+                  let geoj = this.addGeoJSON(elem.name, f.color, f.class);
+                  geoj.addData(f.layers);
+
+                }
               }
-              let geoj = this.addGeoJSON(elem.name, f.color, f.class);
-              geoj.addData(f.layers);
+              resolve("got");
+
+            },
+
+            (err) => {
+              console.log(err);
+
+              this.loading = false;
+
             }
-          }
-
-        },
-
-        (err) => {
-          console.log(err);
-          this.loading = false;
+          );
         }
-      );
-    }
+        })
+      console.log("fully loaded");
+      this.loading = false;
+      if(this.initializationPhase){
+        this.fetchGeotiffs();
+        this.initializationPhase=false;
+      }
 
     // this.geoJSON.addData(elemenToAdd.features);
   }
@@ -1203,23 +1238,23 @@ export class GeoportailComponent implements OnInit {
     this.showProjects=!this.showProjects;
   }
 
-  initGeoTIFF() {
-    var url_to_geotiff_file =
-      "https://firebasestorage.googleapis.com/v0/b/geoportailapp-97cc0.appspot.com/o/restitutions%2Fpat.tif?alt=media&token=18d90743-1900-4546-b10a-ce273b4ccb87";
-    parse_georaster(url_to_geotiff_file).then((georaster) => {
+  initGeoTIFF(geotiffs:any[]) {
+    for(let geo of geotiffs){
+      parse_georaster(geo.src).then((georaster) => {
+        console.log("parsed now");
+        var layer = new GeoRasterLayer({
+          attribution: "Planet",
+          georaster: georaster,
+          opacity: 0.9,
+          resolution: 128,
+        });
+        let fileLayersObject = { filename:geo.nom, fileLayers: [layer] };
+        this.layerArray.push({ ...fileLayersObject, showSub: false });
 
-      var layer = new GeoRasterLayer({
-        attribution: "Planet",
-        georaster: georaster,
-        opacity: 0.9,
-        resolution: 128,
       });
-      let fileLayersObject = { filename:"Geotiff", fileLayers: [layer] };
-      this.layerArray.push({ ...fileLayersObject, showSub: false });
-      // layer.addTo(this.map);
+    }
+    this.loading=false;
 
-      // this.map.fitBounds(layer.getBounds());
-    });
   }
 
   showLayerBox() {

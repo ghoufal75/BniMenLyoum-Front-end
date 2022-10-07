@@ -11,12 +11,17 @@ import { map, tap } from "rxjs/operators";
 import * as turf from "@turf/turf";
 import { catchError } from "rxjs/operators";
 import { environment } from "src/environments/environment";
+import { get } from "http";
 // import * as turf from  '@turf/intersect';
 
-@Injectable()
+@Injectable({providedIn:'root'})
 export class GeoColService {
-  status_notifier: Subject<any> = new Subject<any>();
+  public status_notifier: Subject<any> = new Subject<any>();
+  geotiffs=[];
   constructor(private http: HttpClient) {}
+  getAllGeotiffs(){
+  return  this.http.get(environment.api_link+'/geo-col/geotiffs')
+  }
   uploadUrbanismeDocument(form: FormData): Observable<any> {
     return this.http.post(
       environment.api_link+"/geo-col/ubanismeDocument",
@@ -24,6 +29,7 @@ export class GeoColService {
       { observe: "response" }
     );
   }
+
   getAllUrbanismeDocuments() {
     const token =
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik1vaGFtZWQgR2hvdWZhbCIsInJvbGUiOiJBZG1pbiIsImlhdCI6MTY1MTYxMzI1OCwiZXhwIjoxNjUxNjE2ODU4fQ.GJ6Gr9OulqxLAKjtsXpG99MMdLlYdG0-_z-w7067u3Q";
@@ -37,7 +43,7 @@ export class GeoColService {
     return this.http.get(file);
   }
   fetchGeoTIFF(): Observable<any> {
-    return this.http.get("../../../assets/pat_cog.tif", {
+    return this.http.get("https://bnimenlyoumbucket.s3.eu-west-3.amazonaws.com/PA+KSAR+SGHIR+KSAR+MAJAZ+VARIANTE+HOMOLOGATION+decret2-11-593DU14HIJA1432-11NOV2011_BO_5999DU2MOH.tif", {
       responseType: "arraybuffer",
     });
   }
@@ -121,6 +127,7 @@ export class GeoColService {
       .subscribe((event: any) => {
         if (event.type === HttpEventType.UploadProgress) {
           const progress = Math.round((100 * event.loaded) / event.total);
+          console.log('Progress : ',progress);
           this.status_notifier.next({ filename, progress });
         } else if (event instanceof HttpResponse) {
           this.status_notifier.next({ done: true });

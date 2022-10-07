@@ -10,6 +10,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { UploadingStateService } from './uploading-state.service';
 import { AccountService } from 'src/app/account/auth/account.service';
 import { SocketService } from 'src/app/pages/services/socket.service';
+import { GeoColService } from 'src/app/shared/geoportail/geocol.service';
 
 @Component({
   selector: 'app-topbar',
@@ -40,6 +41,7 @@ export class TopbarComponent implements OnInit {
               public translate: TranslateService,
               public _cookiesService: CookieService,
               private uploadingService:UploadingStateService,
+              private geocolServ:GeoColService,
               private socketService:SocketService,private accountService:AccountService) {
   }
 
@@ -61,6 +63,9 @@ export class TopbarComponent implements OnInit {
       this.firstName=admin.firstName;
       this.lastName=admin.lastName;
       this.imgUrl=admin.imgUrl;
+    })
+    this.geocolServ.status_notifier.subscribe(data=>{
+      console.log("this is the notif : ",data);
     })
     this.openMobileMenu = false;
     this.element = document.documentElement;

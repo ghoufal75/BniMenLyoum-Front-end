@@ -70,21 +70,21 @@ export class SocketService extends Socket {
   onNewComplaint(){
     return this.fromEvent('newReclamation');
   }
-  sendMessage(receiver, message, objet, file, filename, fileSrc) {
+  sendMessage(receiver, message, objet,  filename, fileSrc) {
 
     let sentAt =new Date().toLocaleString();
-    if (file) {
-      // this.emit('uploadFile',file);
-      this.emit("newMessage", {
-        sender: this.sender,
-        receiver,
-        message,
-        objet,
-        sentAt,
-        file: file,
-      });
-      return;
-    }
+    // if (file) {
+    //   // this.emit('uploadFile',file);
+    //   this.emit("newMessage", {
+    //     sender: this.sender,
+    //     receiver,
+    //     message,
+    //     objet,
+    //     sentAt,
+    //     file: file,
+    //   });
+    //   return;
+    // }
     this.emit(
       "newMessage",
       JSON.stringify({ sender: this.sender, receiver, message, objet, sentAt,filename,fileSrc})

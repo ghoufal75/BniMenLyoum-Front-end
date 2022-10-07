@@ -5,6 +5,19 @@
 
 
 }
+.urbaSelector{
+  position: absolute;
+  z-index: 999999999999;
+  top : 3%;
+  left : 50%;
+  transform: translateX(-50%);
+  .select-urba{
+    padding: .6rem !important;
+    border-radius: 20px !important ;
+    box-shadow: 0 1rem 2rem rgba(#0000,.2);
+  }
+
+}
 .map__tiles-selector{
   padding : 1.7rem 2.5rem  ;
   padding-left: 1.8rem;

@@ -264,6 +264,7 @@ export class AccountService {
       );
   }
   private errorHandler(error: HttpErrorResponse | string): Observable<any> {
+    console.log("this is the error : ",error);
     let errorToReturn = "Une erreur inconnue s'est produite.";
     if (error) {
       switch (error) {

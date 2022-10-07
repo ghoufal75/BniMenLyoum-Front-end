@@ -12,6 +12,7 @@
     [@enterAnimation]
     *ngIf="area != '' || distance != 0"
   >
+
     <div class="header clearfix">
       <h6 style="text-align: center">Properties</h6>
       <button
@@ -36,6 +37,11 @@
         {{ area != "" ? "m²" : area == "" && distance != 0 ? "Km" : "m²" }}
       </h6>
     </div>
+  </div>
+  <div class="urbaSelector">
+    <select class="form-select select-urba"(change)="onChangeUrba($event)" aria-label="Default select example">
+      <option [value]="elem.referenceHomologation" *ngFor="let elem of urbaDocuments">{{elem.referenceHomologation}}</option>
+    </select>
   </div>
   <div class="map__tiles-selector" [@appear] *ngIf="showTiles">
     <ul>

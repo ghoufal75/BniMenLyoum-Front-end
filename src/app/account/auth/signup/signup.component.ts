@@ -79,6 +79,7 @@ export class SignupComponent implements OnInit {
       this.submitted=true;
       this.successmsg=true;
     },err=>{
+      console.log("this is the occuring error : ",err)
     })
   }
 }

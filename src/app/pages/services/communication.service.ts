@@ -6,6 +6,10 @@ import { Reclamation } from "src/app/models/reclamation.model";
 import { HttpClient } from "@angular/common/http";
 import { AnyARecord } from "dns";
 import { environment } from "src/environments/environment";
+import * as AWS from 'aws-sdk/global';
+import * as S3 from 'aws-sdk/clients/s3';
+import {v4 as uuid} from "uuid";
+import { resourceLimits } from "worker_threads";
 export interface Contact {
   firstName: string;
   lastName: string;
@@ -25,6 +29,7 @@ export class CommunicationService {
   objectPipedConversation: any;
   objectPipedFormat: BehaviorSubject<any[]> = new BehaviorSubject(null);
   chunk: any;
+  progressEmitter:Subject<number>=new Subject<number>()
   buffer: any;
   actualReceiver: any;
   singleReclamation: Subject<any> = new Subject<any>();
@@ -70,8 +75,16 @@ export class CommunicationService {
   entiteExterneSUbject: Subject<any[]> = new Subject<any[]>();
   senderFile: any = [];
   reclamationArray: any = [];
+  bucket=null;
   reclamationsSubject: Subject<Reclamation[]> = new Subject<Reclamation[]>();
   constructor(private socketService: SocketService, private http: HttpClient) {
+     this.bucket = new S3(
+      {
+          accessKeyId: 'AKIA5D66FPEHARVQYHYL',
+          secretAccessKey: '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',
+          region: 'eu-west-3'
+      }
+  );
     this.initializing = true;
     this.socketService.connectToServer();
     this.onInitialReclamations();
@@ -832,9 +845,12 @@ export class CommunicationService {
               objet: result.objet,
               read: false,
               sentAt: result.sentAt,
-              file:
-                result.file != undefined && result.file != null
-                  ? result.file
+              filename:result.filename != undefined && result.filename != null
+              ? result.filename
+              : null,
+              fileSrc:
+                result.fileSrc != undefined && result.fileSrc != null
+                  ? result.fileSrc
                   : null,
             });
             // console.log("this are the messages : ", element.messages);
@@ -1049,4 +1065,30 @@ export class CommunicationService {
       this.reclamationsSubject.next(this.reclamationArray);
     });
   }
+  async uploadFile(file) {
+    const contentType = file.type;
+
+      const params = {
+          Bucket: 'bnimenlyoumbucket',
+          Key: uuid() + file.name,
+          Body: file,
+      };
+      console.log("start uploading");
+      let result = await this.bucket.upload(params).promise();
+      return result.Location;
+    //   this.bucket.upload(params).on('httpUploadProgress', function (evt) {
+    //     this.
+    //     console.log(evt.loaded + ' of ' + evt.total + ' Bytes');
+    // }).send(function (err, data) {
+    //     if (err) {
+    //         console.log('There was an error uploading your file: ', err);
+    //         return false;
+    //     }
+    //     console.log('Successfully uploaded file.', data);
+    //     return true;
+    // });
+
+//for upload progress
+
+}
 }

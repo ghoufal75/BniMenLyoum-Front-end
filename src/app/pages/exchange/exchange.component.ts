@@ -11,7 +11,7 @@ import { saveAs } from "file-saver";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { CompleterService } from "ng2-completer";
 import { ElementArrayFinder } from "protractor";
-import { textChangeRangeIsUnchanged } from "typescript";
+import { textChangeRangeIsUnchanged, updateAwait } from "typescript";
 import {
   CommunicationService,
   Contact,
@@ -50,6 +50,7 @@ export class ExchangeComponent implements OnInit, OnDestroy {
   actualReceiver: any;
   firstMessage = false;
   sender: string;
+  uploadProgress:Number;
   isReceiver = false;
   initializing = false;
   pipedConversation: any[];
@@ -58,6 +59,8 @@ export class ExchangeComponent implements OnInit, OnDestroy {
   file: any = null;
   transmitedFileName: string = "";
   transmitedFileSrc: string = "";
+  lodingFile=false;
+  @ViewChild('submitBtn',{static:true}) submitBtn:ElementRef;
 
   constructor(
     private socketService: SocketService,
@@ -68,6 +71,14 @@ export class ExchangeComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    this.communicationService.progressEmitter.subscribe((data:string | Number)=>{
+      if (typeof data =='number'){
+        this.uploadProgress=data;
+      }
+      else{
+        this.transmitedFileSrc=<string> data;
+      }
+    })
     // this.initializing = true;
 
     // this.socketService.newUser().subscribe((data: string) => {
@@ -394,9 +405,12 @@ export class ExchangeComponent implements OnInit, OnDestroy {
     }
     this.socketService.fetchNewContacts(event.target.value);
   }
-  onUploadFile(event: any) {
+  async onUploadFile(event: any) {
+    this.lodingFile=true;
     this.file = event.target.files[0];
-
+    this.transmitedFileSrc=await this.communicationService.uploadFile(this.file);
+    this.transmitedFileName=this.file.name;
+    this.lodingFile=false;
   }
 
   getUrl(file) {
@@ -517,37 +531,36 @@ export class ExchangeComponent implements OnInit, OnDestroy {
     this.communicationService.searchByObject(event.target.value);
   }
   sendMessage() {
-    if (this.file != null && this.file != undefined) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        let buffer = new Uint8Array(<ArrayBufferLike>reader.result);
+    // if (this.file != null && this.file != undefined) {
+    //   const reader = new FileReader();
+    //   reader.onload = (e) => {
+    //     let buffer = new Uint8Array(<ArrayBufferLike>reader.result);
 
-        this.communicationService.shareFile(
-          {
-            filename: this.file.name,
-            total_buffer_size: buffer.length,
-            buffer_size: 1024,
-          },
-          buffer,
-          this.message,
-          this.object
-        );
-        this.file = null;
-      };
+    //     this.communicationService.shareFile(
+    //       {
+    //         filename: this.file.name,
+    //         total_buffer_size: buffer.length,
+    //         buffer_size: 1024,
+    //       },
+    //       buffer,
+    //       this.message,
+    //       this.object
+    //     );
+    //     this.file = null;
+    //   };
 
-      reader.readAsArrayBuffer(this.file);
-    } else {
+    //   reader.readAsArrayBuffer(this.file);
+    // } else {
       this.socketService.sendMessage(
         this.receiverId,
         this.message,
         this.object,
-        this.file,
         this.transmitedFileName,
         this.transmitedFileSrc
       );
       this.message = "";
       this.object = "";
-    }
+    // }
     this.modalService.dismissAll();
   }
   respondToObj(element, object) {

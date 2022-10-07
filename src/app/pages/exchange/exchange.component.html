@@ -155,7 +155,7 @@
       ></button>
     </div>
     <div class="modal-body">
-      <div class="transmissionReceiver">
+      <div class="transmissionReceiver" *ngIf="!lodingFile">
         <div class="transmissionReceiver__contacts" *ngIf="isTransfering">
           <div class="searching">
             <div class="search">
@@ -187,7 +187,7 @@
           </div>
         </div>
       </div>
-      <div class="newMessageForm"*ngIf='!isTransfering'>
+      <div class="newMessageForm"*ngIf='!isTransfering && !lodingFile'>
           <form>
             <div class="mb-3">
               <label for="objet" class="form-label">Objet</label>
@@ -202,13 +202,16 @@
             </div>
             <div class="d-flex">
               <button class="btn btn-outline-secondary me-3"(click)='fileInput.click()'>Attacher un fichier</button>
-              <button type="submit" class="btn btn-primary"[disabled]="object=='' || message==''"(click)='sendMessage()'>Envoyer</button>
+              <button #submitBtn type="submit" class="btn btn-primary"[disabled]="object=='' || message==''"(click)='sendMessage()' >Envoyer</button>
               <p class="filename ms-5 mt-3 text-primary"*ngIf='file'>{{file.name}}</p>
               <p class='ms-2 mt-2 pt-1'*ngIf='file'> <span (click)="file=null" class="close__x" ><i class="bx bx-x text-dark "></i>  </span></p>
             </div>
 
 
           </form>
+      </div>
+      <div *ngIf="lodingFile"class="d-flex justify-content-center">
+        <div class="lds-dual-ring"></div>
       </div>
     </div>
 

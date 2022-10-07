@@ -26,7 +26,6 @@ import { AuthInterceptor } from "../account/auth/auth.interceptor";
   ],
   exports: [GeoportailComponent, MapLoaderComponent],
   providers: [
-    GeoColService,
     MapService,
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
   ],
