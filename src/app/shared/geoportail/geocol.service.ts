@@ -12,6 +12,7 @@ import * as turf from "@turf/turf";
 import { catchError } from "rxjs/operators";
 import { environment } from "src/environments/environment";
 import { get } from "http";
+import { element } from "protractor";
 // import * as turf from  '@turf/intersect';
 
 @Injectable({providedIn:'root'})
@@ -51,31 +52,37 @@ export class GeoColService {
     // let geojsonTab=this.convertGeoJSON(geojson);
     const intersectionsArray = [];
     for (let element of shpGeoJSON) {
-      for (let subElement of element.fileLayers) {
-        for (let l of subElement.layers.getLayers()) {
-          // let latlng=this.convertGeoJSON(l.getLatLngs()[0]);
-          // latlng[latlng.length-1]=latlng[0];
-          // let polygone=turf.polygon(latlng);
-          // console.log(latlng);
-          // let polygone2=turf.polygon([geojsonTab])
-          // console.log(l.toGeoJSON())
+      if(element.filename!='F2'){
+        for (let subElement of element.fileLayers) {
+          console.log("here is the element : ",element);
+            for (let l of subElement.layers.getLayers()) {
+              // let latlng=this.convertGeoJSON(l.getLatLngs()[0]);
+              // latlng[latlng.length-1]=latlng[0];
+              // let polygone=turf.polygon(latlng);
+              // console.log(latlng);
+              // let polygone2=turf.polygon([geojsonTab])
+              // console.log(l.toGeoJSON())
 
-          if (
-            l.toGeoJSON().type == "Feature" &&
-            l.toGeoJSON().geometry.type === "Polygon"
-          ) {
-            let intersection = turf.intersect(l.toGeoJSON(), geojson);
-            if (intersection != null) {
-              intersectionsArray.push({
-                layer: l,
-                className: subElement.className,
-                area: turf.area(intersection),
-                color: subElement.color,
-              });
+              if (
+                l.toGeoJSON().type == "Feature" &&
+                l.toGeoJSON().geometry.type === "Polygon"
+              ) {
+                let intersection = turf.intersect(l.toGeoJSON(), geojson);
+                if (intersection != null) {
+                  intersectionsArray.push({
+                    layer: l,
+                    className: subElement.className,
+                    area: turf.area(intersection),
+                    color: subElement.color,
+                  });
+                }
+              }
             }
-          }
+
+
         }
       }
+
     }
     return intersectionsArray;
   }
@@ -113,13 +120,13 @@ export class GeoColService {
   }
   convertCoords(latlngArray: any[]) {
 
-    return this.http.post("http://127.0.0.1:5000/coordsConverter", {
+    return this.http.post(environment.flask_link+"/coordsConverter", {
       coords: [latlngArray],
     });
   }
   uploadGeotiffs(form: FormData, filename: string) {
     this.http
-      .post("http://127.0.0.1:5000/uploadGeoTIFF", form, {
+      .post(environment.flask_link+"/uploadGeoTIFF", form, {
         reportProgress: true,
         responseType: "json",
         observe: "events",
@@ -137,7 +144,7 @@ export class GeoColService {
 
   convertToWGS84(array: any[]) {
     return this.http
-      .post("http://127.0.0.1:5000/revertCoordsConverter", { coords: [array] })
+      .post(environment.flask_link+"/revertCoordsConverter", { coords: [array] })
       .pipe(
         map((data: any) => {
           let polygonCoords = [];

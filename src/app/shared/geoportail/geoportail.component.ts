@@ -195,7 +195,6 @@ export class GeoportailComponent implements OnInit {
     // this.generatePdf();
   }
   generatePdf(imageSrc, logosArray, lambertCoordinates) {
-
     const legend = [];
     const elements: any = { zones: [], equipements: [], voirie: [] };
     const lambCoords = [
@@ -363,14 +362,15 @@ export class GeoportailComponent implements OnInit {
     const currentScaale = this.getRoundedNumber(this.getCurrentScale());
     let logo = document.createElement("img");
     logo.src = logosArray[0];
+    console.log("this si the image link : ",imageSrc);
     const documentDefinition = {
       content: [
         {
           columns: [
-            {
-              image: "logo1",
-              width: 30,
-            },
+            // {
+            //   image: "logo1",
+            //   width: 30,
+            // },
             {
               stack: [
                 {
@@ -395,11 +395,11 @@ export class GeoportailComponent implements OnInit {
                 },
               ],
             },
-            {
-              image: "logo2",
-              width: 37,
-              margin: [0, 5, 0, 0],
-            },
+            // {
+            //   image: "logo2",
+            //   width: 37,
+            //   margin: [0, 5, 0, 0],
+            // },
           ],
           columnGap: 100,
         },
@@ -521,19 +521,19 @@ export class GeoportailComponent implements OnInit {
         },
       ],
       images: {
-        logo1: {
-          url: logosArray[0],
-        },
-        logo2: {
-          url: logosArray[1],
-        },
+        // logo1: {
+        //   url: logosArray[0],
+        // },
+        // logo2: {
+        //   url: logosArray[1],
+        // },
         nord: {
           url: "https://bnimenlyoumbucket.s3.eu-west-3.amazonaws.com/nord-arrow.png",
         },
       },
     };
     this.loading = false;
-    pdfMake.createPdf(documentDefinition).open();
+    pdfMake.createPdf(documentDefinition).open()
   }
   getRoundedNumber(n: number) {
     let quotient;
@@ -771,6 +771,7 @@ export class GeoportailComponent implements OnInit {
     });
   }
   async ngAfterViewInit() {
+  // ngAfterViewInit() {
     this.initMap();
     if (this.route.url === "/admin/geo-ins/projets") this.isGeoIns = true;
     this.initTile();
@@ -780,6 +781,7 @@ export class GeoportailComponent implements OnInit {
     let map = this.map;
     let me = this;
     this.map.on("pm:create", async (e) => {
+      // this.map.on("pm:create",  (e) => {
       let isAuthenticated:boolean;
 
       if(this.route.url==='/main/landingPage'){
@@ -800,7 +802,7 @@ export class GeoportailComponent implements OnInit {
         }
       }
       if (this.route.url != "/admin/geo-ins/projets") {
-        me.loading = true;
+        // me.loading = true;
         let lambertCoordinates = [];
         me.map.removeLayer(e.layer);
 
@@ -876,6 +878,7 @@ export class GeoportailComponent implements OnInit {
       }
     });
     await this.fetchUrbaDocs();
+    // this.fetchUrbaDocs();
 
 
 
@@ -893,11 +896,13 @@ export class GeoportailComponent implements OnInit {
     })
   }
   async fetchUrbaDocs(){
+    // fetchUrbaDocs(){
     this.initializationPhase=true;
     this.loading=true;
     this.geoColService
     .getAllUrbanismeDocuments()
     .subscribe(async (data: any) => {
+      // .subscribe((data: any) => {
 
       if(data==null || data==undefined || data.length==0){
         this.loading=false;
@@ -914,6 +919,7 @@ export class GeoportailComponent implements OnInit {
       else {
         console.log("this is the urba : ",data[0]);
        await this.iterateAndFetch([data[0]]);
+      // this.iterateAndFetch([data[0]]);
 
 
       }
@@ -1054,8 +1060,11 @@ export class GeoportailComponent implements OnInit {
 
     this.geoColService.uploadUrbanismeDocument(form).subscribe(
      async (data) => {
+    // (data) => {
         await this.fetchUrbaDocs();
+        // this.fetchUrbaDocs();
       },
+
       (err) => {
         this.loading = false;
       }
@@ -1111,7 +1120,7 @@ export class GeoportailComponent implements OnInit {
 
     return geoJSON;
   }
-  async iterateAndFetch(docs: any) {
+   async iterateAndFetch(docs: any) {
     console.log("start iterating and ferching");
     await new Promise((resolve,reject)=>{
       for (let doc of docs) {

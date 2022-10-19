@@ -38,7 +38,7 @@
       </h6>
     </div>
   </div>
-  <div class="urbaSelector">
+  <div class="urbaSelector" *ngIf="false">
     <select class="form-select select-urba"(change)="onChangeUrba($event)" aria-label="Default select example">
       <option [value]="elem.referenceHomologation" *ngFor="let elem of urbaDocuments">{{elem.referenceHomologation}}</option>
     </select>

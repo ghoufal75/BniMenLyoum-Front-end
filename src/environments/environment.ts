@@ -15,11 +15,13 @@ export const environment = {
     appId: '',
     measurementId: ''
   },
-  api_link:"http://localhost:3000",
+  api_link:"https://nestbackend.ml",
+  flask_link: "https://nestbackend.ml/flsk"
 };
 
-
-
+//https://nestbackend.ml/flsk
+//https://nestbackend.ml
+//http://127.0.0.1:5000
 /*
  * For easier debugging in development mode, you can import the following file
  * to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.

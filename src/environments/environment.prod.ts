@@ -12,4 +12,5 @@ export const environment = {
     measurementId: ''
   },
   api_link:"https://nestbackend.ml",
+  flask_link: "https://nestbackend.ml/flsk"
 };
