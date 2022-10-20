@@ -336,7 +336,17 @@ export class ExchangeComponent implements OnInit, OnDestroy {
       this.conversations = data;
     });
     this.communicationService.objectPipedFormat.subscribe((data) => {
-      this.pipedConversation = data;
+      console.log("this is the objects : ",data);
+      if(data!=null){
+        data=data.map(elem=>{
+          for(let key of Object.keys(elem)){
+            console.log("this is a message : ",elem[key]);
+            elem[key]=elem[key].reverse();
+          }
+          return elem;
+        });
+        this.pipedConversation = data;
+      }
     });
   }
   @HostListener("window:beforeunload", ["$event"])
@@ -569,6 +579,7 @@ export class ExchangeComponent implements OnInit, OnDestroy {
     this.showModal(element);
   }
   keys(element: any) {
+    console.log("this is the element : ",element);
     return Object.keys(element)[0];
   }
   expandMessages(element) {

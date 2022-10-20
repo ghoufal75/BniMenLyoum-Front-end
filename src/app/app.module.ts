@@ -80,6 +80,7 @@ export function createTranslateLoader(http: HttpClient): any {
   bootstrap: [AppComponent],
   providers: [
     GeoColService,
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
 
     // { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     // { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },

@@ -100,7 +100,7 @@
             </button>
 
             </div>
-            <div *ngFor="let message of reverseArray(element[keys(element)])">
+            <div *ngFor="let message of element[keys(element)]">
               <div class="messageItem clearfix" style="white-space:pre-line;text-align: justify;"[ngClass]="{'mymsg':message.dataType==='myMessage' || message.sender===sender,'lambdaMessage':message.dataType!='myMessage' && message.sender!=sender}" >
 
               <p class="messageContent">{{message.message}}<br><span *ngIf="message.progress" [ngClass]="{'text-dark':message.dataType==='myMessage' || message.sender===sender,'text-light':message.dataType!='myMessage' && message.sender!=sender}">Progress : {{message.progress}} % </span><br>

@@ -54,7 +54,8 @@ export class GeoColService {
     for (let element of shpGeoJSON) {
       if(element.filename!='F2'){
         for (let subElement of element.fileLayers) {
-          console.log("here is the element : ",element);
+          if(subElement!=undefined && subElement.layers!=undefined){
+            console.log("here is the element : ",element);
             for (let l of subElement.layers.getLayers()) {
               // let latlng=this.convertGeoJSON(l.getLatLngs()[0]);
               // latlng[latlng.length-1]=latlng[0];
@@ -78,6 +79,8 @@ export class GeoColService {
                 }
               }
             }
+          }
+
 
 
         }

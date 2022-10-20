@@ -83,6 +83,7 @@ FullCalendarModule.registerPlugins([ // register FullCalendar plugins
     SimplebarAngularModule,
     LightboxModule
   ],
+  providers : [{provide:HTTP_INTERCEPTORS,useClass:AuthInterceptor,multi:true}]
 
 })
 export class PagesModule { }

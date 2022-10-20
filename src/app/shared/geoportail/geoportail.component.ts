@@ -367,10 +367,10 @@ export class GeoportailComponent implements OnInit {
       content: [
         {
           columns: [
-            // {
-            //   image: "logo1",
-            //   width: 30,
-            // },
+            {
+              image: "logo1",
+              width: 30,
+            },
             {
               stack: [
                 {
@@ -395,11 +395,11 @@ export class GeoportailComponent implements OnInit {
                 },
               ],
             },
-            // {
-            //   image: "logo2",
-            //   width: 37,
-            //   margin: [0, 5, 0, 0],
-            // },
+            {
+              image: "logo2",
+              width: 37,
+              margin: [0, 5, 0, 0],
+            },
           ],
           columnGap: 100,
         },
@@ -521,12 +521,12 @@ export class GeoportailComponent implements OnInit {
         },
       ],
       images: {
-        // logo1: {
-        //   url: logosArray[0],
-        // },
-        // logo2: {
-        //   url: logosArray[1],
-        // },
+        logo1: {
+          url: logosArray[0],
+        },
+        logo2: {
+          url: logosArray[1],
+        },
         nord: {
           url: "https://bnimenlyoumbucket.s3.eu-west-3.amazonaws.com/nord-arrow.png",
         },
