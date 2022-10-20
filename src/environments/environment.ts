@@ -15,7 +15,7 @@ export const environment = {
     appId: '',
     measurementId: ''
   },
-  api_link:"http://localhost:3000",
+  api_link:"https://nestbackend.ml",
   flask_link: "https://nestbackend.ml/flsk"
 };
 
