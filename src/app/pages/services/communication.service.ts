@@ -294,7 +294,7 @@ export class CommunicationService {
     ) {
       this.conversations
         .find((element) => element.receiver === this.receiverId)
-        .messages.push({
+        .messages.unshift({
           sender: this.sender,
           receiver: this.receiverId,
           message: message,
@@ -532,7 +532,7 @@ export class CommunicationService {
       ) {
         this.conversations
           .find((element) => element.receiver === data.sender)
-          .messages.push({
+          .messages.unshift({
             sender: data.sender,
             receiver: data.receiver,
             message: data.message,
@@ -551,7 +551,7 @@ export class CommunicationService {
           this.conversations.find((elem) => elem.receiver === data.sender) ===
             null
         ) {
-          messages.push({
+          messages.unshift({
             sender: data.sender,
             receiver: data.receiver,
             message: data.message,
@@ -699,21 +699,14 @@ export class CommunicationService {
             null
         ) {
           console.log("happenning 0");
-          messages.push({
+          messages.unshift({
             sender: result.sender,
             receiver: result.receiver,
             message: result.message,
             objet: result.objet,
             read: false,
             sentAt: result.sentAt,
-            fileSrc:
-              result.fileSrc != undefined && result.fileSrc != null
-                ? result.fileSrc
-                : null,
-            filename:
-              result.filename != undefined && result.filename != null
-                ? result.filename
-                : null,
+            files:result.files
           });
           let conv = {
             id: null,
@@ -745,21 +738,14 @@ export class CommunicationService {
         } else {
           this.conversations = this.conversations.map((element) => {
             if (element.receiver === result.sender) {
-              element.messages.push({
+              element.messages.unshift({
                 sender: result.sender,
                 receiver: result.receiver,
                 message: result.message,
                 objet: result.objet,
                 read: false,
                 sentAt: result.sentAt,
-                fileSrc:
-                  result.fileSrc != undefined && result.fileSrc != null
-                    ? result.fileSrc
-                    : null,
-                filename:
-                  result.filename != undefined && result.filename != null
-                    ? result.filename
-                    : null,
+                files:result.files
               });
             }
             return element;
@@ -798,21 +784,14 @@ export class CommunicationService {
           this.conversations = this.conversations.map((element) => {
             if (element.receiver === result.receiver) {
               element["messages"] = [];
-              element.messages.push({
+              element.messages.unshift({
                 sender: result.sender,
                 receiver: result.receiver,
                 message: result.message,
                 objet: result.objet,
                 read: false,
                 sentAt: result.sentAt,
-                fileSrc:
-                  result.fileSrc != undefined && result.fileSrc != null
-                    ? result.fileSrc
-                    : null,
-                filename:
-                  result.filename != undefined && result.filename != null
-                    ? result.filename
-                    : null,
+                files:result.files,
               });
             }
             return element;
@@ -838,20 +817,14 @@ export class CommunicationService {
 
         this.conversations = this.conversations.map((element) => {
           if (element.receiver === result.receiver) {
-            element.messages.push({
+            element.messages.unshift({
               sender: result.sender,
               receiver: result.receiver,
               message: result.message,
               objet: result.objet,
               read: false,
               sentAt: result.sentAt,
-              filename:result.filename != undefined && result.filename != null
-              ? result.filename
-              : null,
-              fileSrc:
-                result.fileSrc != undefined && result.fileSrc != null
-                  ? result.fileSrc
-                  : null,
+              files:result.files,
             });
             // console.log("this are the messages : ", element.messages);
           }
@@ -1032,6 +1005,7 @@ export class CommunicationService {
     this.objectPipedConversation = newConversation;
   }
   getPipedConversation() {
+
     this.objectPipedFormat.next(this.objectPipedConversation);
   }
   searchByObject(value) {
@@ -1065,8 +1039,10 @@ export class CommunicationService {
       this.reclamationsSubject.next(this.reclamationArray);
     });
   }
-  async uploadFile(file) {
-    const contentType = file.type;
+  async uploadFile(files) {
+    let uploadedFiles=[]
+    for await (let file of files){
+      const contentType = file.type;
 
       const params = {
           Bucket: 'bnimenlyoumbucket',
@@ -1075,7 +1051,10 @@ export class CommunicationService {
       };
       console.log("start uploading");
       let result = await this.bucket.upload(params).promise();
-      return result.Location;
+      uploadedFiles.push({filename:file.name,fileSrc:result.Location});
+    }
+    return uploadedFiles;
+
     //   this.bucket.upload(params).on('httpUploadProgress', function (evt) {
     //     this.
     //     console.log(evt.loaded + ' of ' + evt.total + ' Bytes');

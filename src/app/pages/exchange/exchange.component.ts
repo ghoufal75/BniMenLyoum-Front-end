@@ -57,8 +57,9 @@ export class ExchangeComponent implements OnInit, OnDestroy {
   lastOpenedObjet: any;
   isTransfering: boolean = null;
   file: any = null;
-  transmitedFileName: string = "";
-  transmitedFileSrc: string = "";
+  files=[]
+  transmitedFileNames: string[] = [];
+  transmitedFileSrcs: string[] = [];
   lodingFile=false;
   @ViewChild('submitBtn',{static:true}) submitBtn:ElementRef;
 
@@ -71,14 +72,14 @@ export class ExchangeComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.communicationService.progressEmitter.subscribe((data:string | Number)=>{
-      if (typeof data =='number'){
-        this.uploadProgress=data;
-      }
-      else{
-        this.transmitedFileSrc=<string> data;
-      }
-    })
+    // this.communicationService.progressEmitter.subscribe((data:string | Number)=>{
+    //   if (typeof data =='number'){
+    //     this.uploadProgress=data;
+    //   }
+    //   else{
+    //     this.transmitedFileSrc=<string> data;
+    //   }
+    // })
     // this.initializing = true;
 
     // this.socketService.newUser().subscribe((data: string) => {
@@ -336,17 +337,8 @@ export class ExchangeComponent implements OnInit, OnDestroy {
       this.conversations = data;
     });
     this.communicationService.objectPipedFormat.subscribe((data) => {
-      console.log("this is the objects : ",data);
-      if(data!=null){
-        data=data.map(elem=>{
-          for(let key of Object.keys(elem)){
-            console.log("this is a message : ",elem[key]);
-            elem[key]=elem[key].reverse();
-          }
-          return elem;
-        });
-        this.pipedConversation = data;
-      }
+     this.pipedConversation=data;
+     console.log("this is the piped : ",this.pipedConversation)
     });
   }
   @HostListener("window:beforeunload", ["$event"])
@@ -393,12 +385,12 @@ export class ExchangeComponent implements OnInit, OnDestroy {
       senderContact=this.contacts.find(el=>el._id===messageToTransfer.sender);
       receiverContact={...userCredentials};
     }
-    this.message = 'Envoyé de la part de Monsieur : '+senderContact.firstName+' '+senderContact.lastName+' à monsieur '+receiverContact.firstName+' '+receiverContact.lastName+' le '+messageToTransfer.sentAt+'\nMessage : '+messageToTransfer.message;
-    this.object = messageToTransfer.objet;
-    this.transmitedFileSrc = messageToTransfer.fileSrc;
-    console.log("this is the file source : ", messageToTransfer.fileSrc)
-    this.transmitedFileName = messageToTransfer.filename;
-    this.showModal(modal);
+    // this.message = 'Envoyé de la part de Monsieur : '+senderContact.firstName+' '+senderContact.lastName+' à monsieur '+receiverContact.firstName+' '+receiverContact.lastName+' le '+messageToTransfer.sentAt+'\nMessage : '+messageToTransfer.message;
+    // this.object = messageToTransfer.objet;
+    // this.transmitedFileSrc = messageToTransfer.fileSrc;
+    // console.log("this is the file source : ", messageToTransfer.fileSrc)
+    // this.transmitedFileName = messageToTransfer.filename;
+    // this.showModal(modal);
   }
   getAccounts(conversations: any) {
     let receiversIds = [];
@@ -417,9 +409,7 @@ export class ExchangeComponent implements OnInit, OnDestroy {
   }
   async onUploadFile(event: any) {
     this.lodingFile=true;
-    this.file = event.target.files[0];
-    this.transmitedFileSrc=await this.communicationService.uploadFile(this.file);
-    this.transmitedFileName=this.file.name;
+    this.files=await this.communicationService.uploadFile(event.target.files);
     this.lodingFile=false;
   }
 
@@ -565,11 +555,12 @@ export class ExchangeComponent implements OnInit, OnDestroy {
         this.receiverId,
         this.message,
         this.object,
-        this.transmitedFileName,
-        this.transmitedFileSrc
+        this.files
       );
       this.message = "";
       this.object = "";
+      this.files=[];
+      this.file=null;
     // }
     this.modalService.dismissAll();
   }

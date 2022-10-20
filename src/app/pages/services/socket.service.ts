@@ -70,7 +70,7 @@ export class SocketService extends Socket {
   onNewComplaint(){
     return this.fromEvent('newReclamation');
   }
-  sendMessage(receiver, message, objet,  filename, fileSrc) {
+  sendMessage(receiver, message, objet,  files) {
 
     let sentAt =new Date().toLocaleString();
     // if (file) {
@@ -87,7 +87,7 @@ export class SocketService extends Socket {
     // }
     this.emit(
       "newMessage",
-      JSON.stringify({ sender: this.sender, receiver, message, objet, sentAt,filename,fileSrc})
+      JSON.stringify({ sender: this.sender, receiver, message, objet, sentAt,files})
     );
   }
   newMessage() {
