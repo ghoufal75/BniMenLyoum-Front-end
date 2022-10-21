@@ -1,5 +1,5 @@
 export interface Reclamation{
-  sender : string;
+  senderId : string;
   type : string;
   message : string;
   sentAt : Date;

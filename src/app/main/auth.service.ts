@@ -75,4 +75,20 @@ export class AuthenticationService {
     localStorage.removeItem('connectedUser');
     this.user.next(null);
   }
+  autoLogout(){
+    let expirationDelay=0;
+    this.user.pipe(take(1)).subscribe(user=>{
+      expirationDelay=new Date(user._tokenExpirationDate).getTime() - new Date().getTime();
+    });
+    if(expirationDelay<=0){
+      localStorage.removeItem("connectedUser");
+      this.user.next(null);
+    }
+    else{
+      setTimeout(()=>{
+        localStorage.removeItem("connectedUser");
+        this.user.next(null);
+      },expirationDelay)
+    }
+  }
 }

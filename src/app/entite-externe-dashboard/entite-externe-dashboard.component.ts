@@ -18,20 +18,22 @@ export class EntiteExterneDashboardComponent implements OnInit {
   constructor(private router:Router,private authService:AccountService,private communicationService:CommunicationService,private socketService:SocketService,private modalService:NgbModal) { }
 
   ngOnInit(): void {
-    this.entiteId=this.socketService.sender;
+    this.entiteId=JSON.parse(localStorage.getItem("currentEntiteExterne")).userID;
+    console.log("this si the connected enetity : ",this.entiteId);
     this.communicationService.reclamationsEntiteSubject.subscribe((data:any)=>{
       this.reclamations=data;
 
     this.communicationService.userSUbject.subscribe(user=>{
+      console.log("this is the user : ",user);
       this.user=user;
       this.showModal(this.userModal);
     })
     });
-    this.communicationService.getInitialReclamationsEntiteExterne();
+    this.communicationService.getInitialReclamationsEntiteExterne(this.entiteId);
     this.communicationService.singleReclamation.subscribe((data:any)=>{
-      this.reclamations.push(data);
+      this.reclamations.unshift(data);
     });
-    this.communicationService.getInitialReclamations();
+    // this.communicationService.getInitialReclamations();
 
   }
   showModal(centerDataModal: any) {
@@ -39,14 +41,17 @@ export class EntiteExterneDashboardComponent implements OnInit {
   }
   onLogout(){
     this.authService.logoutEntiteExterne();
+
     this.router.navigateByUrl('/account/loginEntiteExterne');
   }
   getSender(id,modalToShow){
+    this.modalService.dismissAll();
     this.userModal=modalToShow;
     this.communicationService.getSender(id);
   }
   deleteReclamation(reclamation){
     this.communicationService.deleteReclamation(reclamation);
   }
+
 
 }

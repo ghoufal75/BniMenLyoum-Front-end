@@ -10,6 +10,7 @@ import * as AWS from 'aws-sdk/global';
 import * as S3 from 'aws-sdk/clients/s3';
 import {v4 as uuid} from "uuid";
 import { resourceLimits } from "worker_threads";
+import { take } from "rxjs/operators";
 export interface Contact {
   firstName: string;
   lastName: string;
@@ -103,6 +104,7 @@ export class CommunicationService {
   }
   onNewCOmplaint() {
     this.socketService.onNewComplaint().subscribe((data) => {
+      console.log("this is the new complaint : ",data);
       this.singleReclamation.next(data);
     });
   }
@@ -127,6 +129,7 @@ export class CommunicationService {
   }
   // Forward Reclamation
   forwardReclamation(reclamation, receiver) {
+    console.log("this is the receiver : ",receiver);
     this.socketService.emit("forwardReclamation", {
       reclamation,
       receiver: receiver._id,
@@ -155,7 +158,8 @@ export class CommunicationService {
     this.socketService
       .onNewReclamation()
       .subscribe((reclamation: Reclamation) => {
-        this.reclamationArray.push(reclamation);
+        console.log("this is the received reclamation : ",reclamation);
+        this.reclamationArray.unshift(reclamation);
         this.reclamationsSubject.next(this.reclamationArray);
       });
   }
@@ -1019,14 +1023,14 @@ export class CommunicationService {
     );
     this.objectPipedFormat.next(newSearchRes);
   }
-  getInitialReclamationsEntiteExterne() {
+  getInitialReclamationsEntiteExterne(entityId:string) {
     this.socketService.emit("reclamationEntiteExterne", {
-      entite: this.socketService.sender,
+      entite: entityId,
     });
   }
   getSender(id) {
     this.socketService.emit("getUser", { id });
-    this.socketService.fromEvent("onUser").subscribe((user) => {
+    this.socketService.fromEvent("onUser").pipe(take(1)).subscribe((user) => {
       this.userSUbject.next(user);
     });
   }

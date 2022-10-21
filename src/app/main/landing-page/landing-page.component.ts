@@ -104,8 +104,12 @@ export class LandingPageComponent implements OnInit, AfterViewInit {
       if (user) {
         this.isAuthenticated = true;
       }
+      else{
+        this.isAuthenticated=false;
+      }
     });
     this.initForms();
+    this.authService.autoLogout();
   }
   ngAfterViewInit(): void {
 

@@ -2,7 +2,9 @@
   <h2 class="pageTitle">Espace réclamations</h2>
   <div class="content">
     <ul class="content__list">
-      <li class="content__element" *ngFor="let reclamation of reclamations.reverse()">
+      <li class="content__element" *ngFor="let reclamation of reclamations
+
+      ">
         <div class="reclamation">
           <div class="reclamation__header">
             <h4 class="reclamation__type mb-4 ">Type de réclamation : {{reclamation.type=='equ'?'Équipements et services publics':(reclamation.type=='urba'?'Urbanisme et construction':(reclamation.type=='budg'?'Budget, affaires financières et programmation':(reclamation.type=='coop'?'Coopération et partenariat':'Autre')))}}</h4>

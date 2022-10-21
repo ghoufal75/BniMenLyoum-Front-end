@@ -34,7 +34,7 @@ export class ReclamationsComponent implements OnInit {
 
 
   // Subscribing to reclamation Subject
-  onNewReclamations(){
+    onNewReclamations(){
     this.communicationService.reclamationsSubject.subscribe((reclamations:Reclamation[])=>{
       console.log("a new reclamation arrived");
       this.reclamations=reclamations;
