@@ -503,6 +503,9 @@
       <h2 class="primary-title pb-5" style="color: rgb(0, 17, 100)">
         Suivez votre dossier
       </h2>
+      <p class="suivieDossier__paragraph">
+        Vous avez posé votre dossier de construction chez les responsables communaux, il est désormais possible que vous les suivez sans se déplacer. Avec ce service, vous pouvez insérer le nom du moaitre d'ouvrage, et vous aurez en contre partie la déscription de votre projet ainsi que son état actuel en terme d'approbation. Connectez-vous dès maintenant et suivez votre projet.
+      </p>
       <form
         [formGroup]="suivieDossierForm"
         (ngSubmit)="onSubmitSuivieDossierForm(notAuthenticated)"
@@ -539,7 +542,7 @@
             aria-describedby="emailHelp"
           />
         </div> -->
-        <button class="btn btn-outline-dark rounded-pill mt-5 submit-btn">
+        <button class="btn btn-outline-dark rounded-pill mt-2 submit-btn">
           Chercher
         </button>
       </form>
