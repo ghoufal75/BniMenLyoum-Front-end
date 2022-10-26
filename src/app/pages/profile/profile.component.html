@@ -1,0 +1,80 @@
+<div class="profile">
+  <div class="profile__header">
+    <div class="profile__pic" [ngStyle]="{'background-image':' url(' + profile?.imgUrl + ')','background-size':'cover'}"(click)="fileInput.click()">
+      <input type="file" (change)="onUpload($event,enterPassword)" style="display : none"#fileInput>
+      <div class="overlay"></div>
+      <div class="icon">
+        <img src="https://cdn-icons-png.flaticon.com/512/83/83574.png"  class='icon__img'alt="camera__icon">
+      </div>
+    </div>
+    <div class="profile__fullname">
+      <h2><span class="firstName">{{profile.firstName}} </span> <span class="lastName"> {{profile.lastName}}</span></h2>
+    </div>
+  </div>
+
+
+<div class="body">
+  <ul class="credentials__list">
+    <li class="credentials__item" *ngFor="let element of credentials_list">
+      <div class="credential d-flex justify-content-between">
+        <div>
+          {{element.name}}
+        </div>
+        <div class="arrows"(click)='toggleDisplay(element)'[ngStyle]="{'margin-top':!element.displayed?'-1.1rem':'-.5rem'}">
+          <span class="arrow arrow__down"*ngIf='!element.displayed'>&#8964;</span>
+          <span class="arrow arrow__top"*ngIf='element.displayed'>^</span>
+
+        </div>
+      </div>
+      <div class="content " *ngIf="element.displayed">
+        <form (ngSubmit)="onSubmit(enterPassword)" [formGroup]="inputForm" class="mt-0">
+          <div class="mb-3 mt-0" >
+            <label [for]="element.formCtrl"class="form-label">Enter the new {{element.formCtrl}}</label>
+            <input [type]="element.formCtrl=='password'?'password':(element.formCtrl==='numeroTelephone'?'number':'text')"[id]="element.formCtrl" class="form-control" [formControlName]="element.formCtrl">
+          </div>
+          <div class="mb-3" *ngIf="element.formCtrl=='password'">
+            <label [for]="element.formCtrl"class="form-label">Confirm your password</label>
+            <input type="password"[id]="element.formCtrl" class="form-control" formControlName="confirmation">
+          </div>
+          <button class="btn btn-success mt-2" type="submit"[disabled]="inputForm.invalid">Enregistrer</button>
+
+        </form>
+      </div>
+
+    </li>
+  </ul>
+</div>
+</div>
+
+
+
+<div class="modal enterPassword">
+  <!-- Center Modal -->
+  <ng-template #enterPassword let-modal>
+    <div class="modal-body">
+      <div *ngIf="loading"class="d-flex flex-column justify-content-center align-items-center">
+        <h2 class="text-primary text-md mt-1 mt-2">Un moment s'il vous plait ...</h2>
+        <div class="lds-dual-ring"></div>
+      </div>
+      <div class="notConnected" *ngIf="!loading && success=='' && error==''">
+        <h2>Vous devez entrer votre mot de passe pour pouvoir continuer</h2>
+        <p>Cette action nécissite votre Mot de passe</p>
+        <label for="pswd">Mot de passe</label>
+        <input type="password" class="form-control" [(ngModel)]="pswd">
+        <a
+          class="authentifier btn mt-4 "
+          style='background-color : #5590ea;color : white'
+          (click)="file?uploadPic():onSubmit(enterPassword)"
+          >Continuer</a
+        >
+      </div>
+      <div class="alert alert-danger" role="alert"*ngIf="!loading && error!=''">
+        {{error}}
+      </div>
+      <div class="alert alert-success" role="alert"*ngIf="!loading && success!=''">
+        Your data was successfully updated !
+      </div>
+    </div>
+  </ng-template>
+</div>
+

@@ -1,0 +1,158 @@
+.profile{
+  width : 90%;
+  margin : .5rem;
+  height : 80vh;
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 .7rem 2rem rgba(0, 0, 0, 0.1);
+  background-color: #ffff;
+  overflow-y: auto;
+  &__header{
+    display: flex;
+
+  }
+  &__pic{
+    width : 6.25rem;
+    height : 6.25rem;
+    border-radius: 50px;
+    position: relative;
+    cursor: pointer;
+  .overlay{
+    width : 6.25rem;
+    height : 6.25rem;
+    border-radius: 50px;
+    position: absolute;
+    top:0;
+    left: 0;
+    background-color: rgba(255,255,255,.6);
+    display: none;
+    transition: all .6s;
+    z-index: 100;
+  }
+  .icon{
+    width : .9rem;
+    height : .9rem;
+    position: absolute;
+    top:50%;
+    left:50%;
+    z-index:200;
+    transform: translate(-50%,-50%);
+    display: none;
+    transition: all .6s;
+    &__img{
+      width : 100%;
+    }
+  }
+  &:hover{
+    .overlay{
+      display: block;
+    }
+    .icon{
+      display: block;
+    }
+  }
+  }
+
+
+ &__fullname{
+  margin : 1.9rem 1.5rem;
+  font-size: 1rem;
+  font-family: 'Raleway Regular';
+
+  .firstName{
+    text-transform: capitalize;
+
+     font-weight: bold;
+  }
+  .lastName{
+    text-transform: uppercase;
+
+    font-weight: bold;
+  }
+ }
+
+
+}
+.arrows{
+  font-size: 1.6rem;
+  cursor: pointer;
+  font-weight: bolder;
+  color : rgb(208, 208, 208);
+
+  height : auto;
+  padding: 0 !important;
+  .arrow{
+    padding-top : 0 !important;
+    &__top{
+      font-size: 1.2rem;
+
+    }
+
+  }
+}
+.credentials{
+  &__list{
+    list-style : none;
+    padding: 1rem;
+    margin : .6rem 0;
+  }
+
+}
+.credential{
+    font-family: Raleway Regular;
+    font-size: 1rem;
+    padding : .8rem;
+    margin : 1rem;
+    color : black;
+    font-weight: bold;
+    border-bottom: 1px solid rgba(216, 216, 216, 0.79);
+    // &:first-child{
+    //   border-top: 1px solid rgba(216, 216, 216, 0.79);
+    // }
+}
+.content{
+  margin : 0 !important;
+}
+.modal-body{
+  padding : 3rem !important;
+  h2{
+    text-align: center;
+    color : rgb(43, 43, 43);
+    font-size: 1.1rem;
+    font-family: Raleway;
+    text-transform: uppercase;
+    margin-bottom: 3rem;
+  }
+  p{
+    text-align: justify;
+    color : rgb(43, 43, 43);
+    font-size: .8rem;
+    font-family: Raleway;
+    margin-bottom: 2rem;
+  }
+}
+.lds-dual-ring {
+  display: inline-block;
+  width: 80px;
+  height: 80px;
+}
+.lds-dual-ring:after {
+  content: " ";
+  display: block;
+  width: 64px;
+  height: 64px;
+  margin: 8px;
+  border-radius: 50%;
+  border: 6px solid #556ee6;
+  border-color: #556ee6 transparent #556ee6 transparent;
+  animation: lds-dual-ring 1.2s linear infinite;
+}
+@keyframes lds-dual-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+

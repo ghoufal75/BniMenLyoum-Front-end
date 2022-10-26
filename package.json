@@ -53,6 +53,7 @@
     "firebase": "^8.6.8",
     "georaster": "^1.5.6",
     "georaster-layer-for-leaflet": "^3.8.0",
+    "jquery": "^3.6.1",
     "leaflet": "^1.8.0",
     "leaflet-draw": "^1.0.4",
     "leaflet-image": "^0.4.0",

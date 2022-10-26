@@ -9,10 +9,11 @@ import { MainService } from "./main.service";
 import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
 import { AuthenticationService } from "./auth.service";
 import { AuthUserInterceptor } from "./AuthUser.interceptor";
+import { AssilahPageComponent } from './assilah-page/assilah-page.component';
 // import { FlexLayoutModule } from '@angular/flex-layout';
 
 @NgModule({
-  declarations: [UserGeoportailComponent, LandingPageComponent],
+  declarations: [UserGeoportailComponent, LandingPageComponent, AssilahPageComponent],
   imports: [
     CommonModule,
     MainRoutingModule,

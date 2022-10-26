@@ -1,17 +1,28 @@
 <app-map-loader *ngIf="isLoading"></app-map-loader>
 <div class="header">
-  <div class="navbar fixed-top" #navbar (scroll)="onWindowScroll()">
+  <div class=" header__firstNav ">
+    <h2 class="title">La plateforme métier de la commune Assilah</h2>
+  </div>
+  <div class="navbar " #navbar (scroll)="onWindowScroll()">
     <div class="navbar__logo">
-      <img src="assets/logos/logo-app.png" alt="" class="logo" />
+      <img src="assets/logos/Assilah-Logo.jpg.png" alt="" class="logo" />
     </div>
-    <nav class="navbar__menu">
+    <nav class="navbar__menu ">
       <ul>
+        <li>
+          <a
+            class="menu__link"
+            href="https://www.commune-assilah.ma/fr"
+            >Acceuil</a
+          >
+        </li>
+
         <li>
           <a
             class="menu__link"
             [ngClass]="{ activated: currentActive == 1 }"
             (click)="move(1)"
-            >Qui sommes nous ?</a
+            >Géo-portail</a
           >
         </li>
         <li>
@@ -19,7 +30,7 @@
             class="menu__link"
             [ngClass]="{ activated: currentActive == 2 }"
             (click)="move(2)"
-            >Nos services</a
+            >Suivie de dossier</a
           >
         </li>
         <li>
@@ -27,31 +38,18 @@
             class="menu__link"
             [ngClass]="{ activated: currentActive == 3 }"
             (click)="move(3)"
-            >Géo-portail</a
-          >
-        </li>
-        <li>
-          <a
-            class="menu__link"
-            [ngClass]="{ activated: currentActive == 4 }"
-            (click)="move(4)"
-            >Suivie de dossier</a
-          >
-        </li>
-        <li>
-          <a
-            class="menu__link"
-            [ngClass]="{ activated: currentActive == 5 }"
-            (click)="move(5)"
             >Réclamation</a
           >
         </li>
         <li>
           <a
-            class="menu__link btn btn-primary rounded-pill"
+            class="menu__link btn"
             style="
               box-shadow: 0 0.6rem 1.2rem rgba(0, 0, 0, 0.205);
               padding: 0.6rem 1rem !important;
+              font-weight:bold;
+              color:white;
+              background-color: #8DB3EC;
             "
             *ngIf="!isAuthenticated"
             (click)="showModal(auth)"
@@ -79,40 +77,54 @@
       <i class="bx bx-menu-alt-right"></i>
     </button>
   </div>
-  <div class="main">
-    <div class="main__content">
-      <h2 class="main__title">
-        Envie de concrétiser vos projets sur terrain ?
-      </h2>
-      <p class="main__paragraph">
-        Passez de l'abstrait au concret, en délimitant votre parcelle sur carte
-        contenant les projets dérogués en temps actuel.
-      </p>
-      <button class="button button-rounded">Commencer maintenant</button>
-    </div>
-    <div class="main__img">
-      <img src="assets/images/landingPage-Pic3.png" class="actualImg" />
-    </div>
-  </div>
-  <div class="phone__menu" *ngIf="navIsShown" [@showNav]>
+    <div class="phone__menu" *ngIf="navIsShown" [@showNav]>
     <div class="closeButton">
       <button class="closeBtn" (click)="navIsShown = false">
         <i class="bx bx-x closeX text-light"></i>
       </button>
     </div>
     <ul>
-      <li><a class="phone__menu__link">Qui sommes nous ?</a></li>
-      <li><a class="phone__menu__link">Nos services</a></li>
-      <li><a class="phone__menu__link">Géo-portail</a></li>
-      <li><a class="phone__menu__link">Suivie de dossier</a></li>
-      <li><a class="phone__menu__link">Réclamation</a></li>
       <li>
         <a
-          class="phone__menu__link btn btn-primary rounded-pill"
+          class="menu__link"
+          href="https://www.commune-assilah.ma/fr"
+          >Acceuil</a
+        >
+      </li>
+
+      <li>
+        <a
+          class="menu__link"
+          [ngClass]="{ activated: currentActive == 1 }"
+          (click)="move(1)"
+          >Géo-portail</a
+        >
+      </li>
+      <li>
+        <a
+          class="menu__link"
+          [ngClass]="{ activated: currentActive == 2 }"
+          (click)="move(2)"
+          >Suivie de dossier</a
+        >
+      </li>
+      <li>
+        <a
+          class="menu__link"
+          [ngClass]="{ activated: currentActive == 3 }"
+          (click)="move(3)"
+          >Réclamation</a
+        >
+      </li>
+      <li>
+        <a
+          class="menu__link btn"
           style="
             box-shadow: 0 0.6rem 1.2rem rgba(0, 0, 0, 0.205);
-            padding: 0.6rem 2.5rem !important;
-            font-size: 1.4;
+            padding: 0.6rem 1rem !important;
+            font-weight:bold;
+            color:white;
+            background-color: #8DB3EC;
           "
           *ngIf="!isAuthenticated"
           (click)="showModal(auth)"
@@ -134,8 +146,80 @@
     </ul>
   </div>
 </div>
+<section class="actualites">
+  <div class="container">
+    <!-- <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="true">
+      <div class="carousel-indicators">
+        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+      </div>
+      <div class="carousel-inner" style="height : 60vh !important">
+        <div class="carousel-item active"style="height : 60vh !important;">
+          <img src="../../../assets/plan_action.jpg" class="d-block w-100" style="margin : auto !important" alt="...">
+        </div>
+        <div class="carousel-item "style="height : 60vh !important;">
+          <img src="../../../assets/souk.jpg" class="d-block w-100" alt="...">
+        </div>
+        <div class="carousel-item"style="height : 60vh !important;">
+          <img src="../../../assets/jardin.jpg" class="d-block w-100 "  alt="...">
+        </div>
+      </div>
+      <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+      </button>
+    </div> -->
+    <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="false">
+      <div class="carousel-indicators">
+        <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+        <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
+        <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
+      </div>
+      <div class="carousel-inner" style="height : 60vh !important">
+        <div class="carousel-item active" style="height : 60vh !important">
+          <img src="assets/plan_action.jpg" class="d-block w-100" alt="...">
+          <div class="carousel-caption d-none d-md-block">
+            <h5>First slide label</h5>
+            <p>Some representative placeholder content for the first slide.</p>
+          </div>
+        </div>
+        <div class="carousel-item"style="height : 60vh !important">
+          <img src="assets/souk.jpg" class="d-block w-100" alt="...">
+          <div class="carousel-caption d-none d-md-block">
+            <h5>Second slide label</h5>
+            <p>Some representative placeholder content for the second slide.</p>
+          </div>
+        </div>
+        <div class="carousel-item"style="height : 60vh !important">
+          <img src="assets/jardin.jpg" class="d-block w-100" alt="...">
+          <div class="carousel-caption d-none d-md-block">
+            <h5>Third slide label</h5>
+            <p>Some representative placeholder content for the third slide.</p>
+          </div>
+        </div>
+      </div>
+      <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+      </button>
+    </div>
 
-<section class="quisommesNous" id="quisommesNous" #quisommesNous>
+
+
+  </div>
+
+</section>
+
+<!-- <section class="quisommesNous" id="quisommesNous" #quisommesNous>
   <div class="image">
     <img src="assets/images/question.png" alt="" class="question-img" />
   </div>
@@ -151,7 +235,7 @@
       Il vous suffit de filtrer et de consulter.
     </p>
   </div>
-</section>
+</section> -->
 
 <div class="modal auth">
   <!-- Center Modal -->
@@ -159,7 +243,7 @@
     <div class="modal-body">
       <div class="auth__container">
         <div class="auth__img">
-          <img src="assets/logos/logo-app.png" class="auth__logo" />
+          <img src="assets/logos/Assilah-Logo.jpg.png" class="auth__logo" />
           <div class="auth__divers">
             <h2 class="auth__title">Authentifiez vous pour continuer</h2>
             <p class="auth__motivation">
@@ -468,7 +552,8 @@
         <h2>Vous devez vous connecter pour pouvoir continuer</h2>
         <p>Cette action nécissite votre authentification.</p>
         <a
-          class="authentifier btn btn-primary rounded-pill"
+          class="authentifier btn "
+          style='background-color : #8DB3EC;color : white'
           (click)="authNow(auth)"
           >S'authentifier</a
         >
@@ -476,7 +561,7 @@
     </div>
   </ng-template>
 </div>
-<section class="fonctionnalites" id="fonctionnalites" #fonctionnalites>
+<!-- <section class="fonctionnalites" id="fonctionnalites" #fonctionnalites>
   <h2 class="primary-title__centred">Nos services</h2>
   <div class="cartes">
     <div class="carte first-row">
@@ -531,10 +616,10 @@
       </div>
     </div>
   </div>
-</section>
+</section> -->
 <section class="geoportail" id="geoportail" #geoportail>
   <h2 class="primary-title pb-5" style="text-align: center">
-    Importez votre parcelle
+    Géoportail Assilah
   </h2>
   <app-user-geoportail
     (notAuthenticated)="showNotAuthenticatedModal($event, notAuthenticated)"
@@ -543,8 +628,8 @@
 <section class="suivieDossier" id="suivieDossier" #suivieDossier>
   <div class="content row">
     <div class="col-md-6">
-      <h2 class="primary-title pb-5" style="color: rgb(0, 17, 100)">
-        Suivez votre dossier
+      <h2 class="primary-title pb-5" >
+        Suivie de dossier
       </h2>
       <p class="suivieDossier__paragraph">
         Vous avez posé votre dossier de construction chez les responsables
@@ -590,7 +675,7 @@
             aria-describedby="emailHelp"
           />
         </div> -->
-        <button class="btn btn-outline-dark rounded-pill mt-2 submit-btn">
+        <button class="btn btn-outline-dark   m-auto mt-2 submit-btn">
           Chercher
         </button>
       </form>
@@ -690,21 +775,23 @@
             name="message"
           ></textarea>
         </div>
-        <button class="btn btn-primary mt-4 mb-3 rounded-pill">Envoyer</button>
+        <button class="btn  mt-4 mb-3 "style='background-color : #8DB3EC;color : white'>Envoyer</button>
       </form>
     </div>
   </div>
 </section>
 <footer class="footer_content">
-  <img src="assets/logos/logo-app-black.png" class="logo" />
+  <img src="assets/logos/Assilah-Logo.jpg.png" class="logo" />
 
   <div class="links">
     <ul>
-      <li><a class="menu__link">Qui sommes nous ?</a></li>
-      <li><a class="menu__link">Nos services</a></li>
-      <li><a class="menu__link">Géo-portail</a></li>
-      <li><a class="menu__link">Suivie de dossier</a></li>
-      <li><a class="menu__link">Réclamation</a></li>
+      <li><a class="menu__link"href="https://www.commune-assilah.ma/fr">Acceuil</a></li>
+      <li><a class="menu__link"[ngClass]="{ activated: currentActive == 1 }"
+        (click)="move(1)">Géo-portail</a></li>
+      <li><a class="menu__link"  [ngClass]="{ activated: currentActive == 2 }"
+        (click)="move(2)">Suivie de dossier</a></li>
+      <li><a class="menu__link"   [ngClass]="{ activated: currentActive == 3 }"
+        (click)="move(3)">Réclamation</a></li>
     </ul>
   </div>
   <div class="copyrights">

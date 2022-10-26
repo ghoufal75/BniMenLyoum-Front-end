@@ -1,29 +1,15 @@
-import { trigger, transition, style, animate } from "@angular/animations";
-import {
-  AfterViewInit,
-  Component,
-  ElementRef,
-  HostListener,
-  OnInit,
-  ViewChild,
-} from "@angular/core";
-import {
-  AbstractControl,
-  FormControl,
-  FormGroup,
-  ValidationErrors,
-  ValidatorFn,
-  Validators,
-} from "@angular/forms";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { exhaustMap, take } from "rxjs/operators";
-import { AuthenticationService } from "../auth.service";
-import { MainService } from "../main.service";
+import { trigger, transition, style, animate } from '@angular/animations';
+import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
+import { ValidatorFn, AbstractControl, ValidationErrors, FormGroup, FormControl, Validators } from '@angular/forms';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { take, exhaustMap } from 'rxjs/operators';
+import { AuthenticationService } from '../auth.service';
+import { MainService } from '../main.service';
 
 @Component({
-  selector: "app-landing-page",
-  templateUrl: "./landing-page.component.html",
-  styleUrls: ["./landing-page.component.scss"],
+  selector: 'app-assilah-page',
+  templateUrl: './assilah-page.component.html',
+  styleUrls: ['./assilah-page.component.scss'],
   animations: [
     trigger("enterAnimation", [
       transition(":enter", [
@@ -57,7 +43,7 @@ import { MainService } from "../main.service";
     ]),
   ],
 })
-export class LandingPageComponent implements OnInit, AfterViewInit {
+export class AssilahPageComponent implements OnInit {
   currentActive=0;
   quiSommesNousOffset=null;
   fonctionnalitesOffset=null;
@@ -113,10 +99,7 @@ export class LandingPageComponent implements OnInit, AfterViewInit {
     this.authService.autoLogout();
   }
   ngAfterViewInit(): void {
-
-      this.fonctionnalitesOffset=this.fonctionnalitesEl.nativeElement.offsetTop;
       this.reclamationOffset=this.reclamationEl.nativeElement.offsetTop;
-      this. quiSommesNousOffset=this. quiSommesNousEl.nativeElement.offsetTop;
       this.suivieDossierOffset=this.suivieDossierEl.nativeElement.offsetTop;
       this.geoportailOffset=this.geoportailEl.nativeElement.offsetTop;
   }
@@ -180,16 +163,12 @@ export class LandingPageComponent implements OnInit, AfterViewInit {
     } else {
       element.classList.remove("navbar-inverse");
     }
-    if (window.pageYOffset+100 >= this.quiSommesNousOffset && window.pageYOffset+100 < this.fonctionnalitesOffset ) {
+    if (window.pageYOffset >= this.geoportailOffset && window.pageYOffset < this.suivieDossierOffset ) {
       this.currentActive = 1;
-    } else if (window.pageYOffset+100 >= this.fonctionnalitesOffset && window.pageYOffset+100 < this.geoportailOffset) {
+    } else if (window.pageYOffset >= this.suivieDossierOffset && window.pageYOffset < this.reclamationOffset) {
       this.currentActive = 2;
-    } else if (window.pageYOffset+100 >= this.geoportailOffset && window.pageYOffset+100 < this.suivieDossierOffset) {
+    } else if (window.pageYOffset >= this.reclamationOffset) {
       this.currentActive = 3;
-    } else if (window.pageYOffset+100 >= this.suivieDossierOffset && window.pageYOffset+100 < this.reclamationOffset) {
-      this.currentActive = 4;
-    }else if (window.pageYOffset+100 >= this.reclamationOffset) {
-      this.currentActive = 5;
     } else {
       this.currentActive = 0;
     }
@@ -197,18 +176,12 @@ export class LandingPageComponent implements OnInit, AfterViewInit {
 
   move(currentActive){
     if(currentActive===1){
-      window.scrollTo(0,this.quiSommesNousOffset);
-    }
-    else if(currentActive===2){
-      window.scrollTo(0,this.fonctionnalitesOffset);
-    }
-    else if(currentActive===3){
       window.scrollTo(0,this.geoportailOffset);
     }
-    else if(currentActive===4){
+    else if(currentActive===2){
       window.scrollTo(0,this.suivieDossierOffset);
     }
-    else if(currentActive===5){
+    else if(currentActive===3){
       window.scrollTo(0,this.reclamationOffset);
     }
   }

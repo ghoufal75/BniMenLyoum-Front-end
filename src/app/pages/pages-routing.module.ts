@@ -9,6 +9,7 @@ import { FilemanagerComponent } from './filemanager/filemanager.component';
 const routes: Routes = [
   { path: '', redirectTo: 'map' },
   {path:'map',loadChildren:()=>import('./geo-col/geo-col.module').then((m)=>m.GeoColModule)},
+  {path : 'profile',loadChildren:()=>import('./profile/profile.module').then((m)=>m.ProfileModule)},
   {path:'geo-ins',loadChildren:()=>import('./geo-ins/geo-ins.module').then((m)=>m.GeoInsModule)},
   {path:"accountManagement",loadChildren:()=>import('./accounts-management/accounts-management.module').then(m=>m.AccountsManagementModule),canActivate:[AdminGuard]},
   {path:"exchange",loadChildren:()=>import('./exchange/exchange.module').then(m=>m.ExchangeModule)},

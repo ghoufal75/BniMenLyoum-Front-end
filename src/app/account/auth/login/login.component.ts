@@ -79,6 +79,8 @@ export class LoginComponent implements OnInit {
           else{
             this.router.navigate(["/dashboardReclamations"], { relativeTo: this.route });
           }
+        },err=>{
+          this.error = err.error.message;
         })
       }
       else{
@@ -91,7 +93,7 @@ export class LoginComponent implements OnInit {
             }
           },
           (err) => {
-
+            this.error = err.error.message;
           }
         );
       }
@@ -101,7 +103,8 @@ export class LoginComponent implements OnInit {
         this.router.navigate(["/",'admin', "map"], { relativeTo: this.route });
       },
       (err) => {
-        this.error = err;
+        console.log(err);
+        this.error = err.error.message;
       }
     );
   }

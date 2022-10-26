@@ -11,6 +11,7 @@ import { UploadingStateService } from './uploading-state.service';
 import { AccountService } from 'src/app/account/auth/account.service';
 import { SocketService } from 'src/app/pages/services/socket.service';
 import { GeoColService } from 'src/app/shared/geoportail/geocol.service';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-topbar',
@@ -60,10 +61,22 @@ export class TopbarComponent implements OnInit {
 
   ngOnInit() {
     this.accountService.adminEmitter.subscribe((admin:any)=>{
-      this.firstName=admin.firstName;
-      this.lastName=admin.lastName;
-      this.imgUrl=admin.imgUrl;
-    })
+      if(admin){
+        this.firstName=admin.firstName;
+        this.lastName=admin.lastName;
+        this.imgUrl=admin.imgUrl;
+      }
+      else{
+        this.accountService.responsableEmitter.subscribe((responsable:any)=>{
+          if(responsable){
+            this.firstName=responsable.firstName;
+            this.lastName=responsable.lastName;
+            this.imgUrl=responsable.imgUrl;
+          }
+        })
+      }
+
+    });
     this.geocolServ.status_notifier.subscribe(data=>{
       console.log("this is the notif : ",data);
     })

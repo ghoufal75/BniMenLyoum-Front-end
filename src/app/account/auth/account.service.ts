@@ -7,6 +7,7 @@ import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";
 import { BehaviorSubject, Observable, Subject, throwError } from "rxjs";
 import { catchError, tap, take, exhaustMap, switchMap } from "rxjs/operators";
+import { ProfileService } from "src/app/pages/profile/profile.service";
 import { environment } from "src/environments/environment";
 export interface adminModel {
   username?: string;
@@ -62,7 +63,10 @@ export class Responsable {
     public _token: string,
     public firstConnection: boolean,
     public role: string,
-    public userID: string
+    public userID: string,
+    public firstName:string,
+    public lastName:string,
+    public imgUrl:string,
   ) {}
 
   get token() {
@@ -84,7 +88,20 @@ export class AccountService {
     new BehaviorSubject<EntiteExterne>(null);
   private readonly baseUrl = environment.api_link+"/authentication";
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private http: HttpClient, private router: Router,private profileService:ProfileService) {
+    this.profileService.userEmitter.subscribe((user:any)=>{
+      switch(user.role){
+        case "Admin":
+          const currentAdmin=JSON.parse(localStorage.getItem('currentAdmin'));
+          this.adminEmitter.next({...currentAdmin,firstName:user.firstName,lastName:user.lastName,imgUrl:user.imgUrl});
+          break;
+        case "Responsable":
+          const currentResponsable=JSON.parse(localStorage.getItem('currentResponsable'));
+          this.responsableEmitter.next({...currentResponsable,firstName:user.prenom,lastName:user.nom,imgUrl:user.imgUrl});
+          break;
+      }
+    })
+  }
   signUp(user: adminModel) {
     return this.http
       .post(`${this.baseUrl}/admin/signUp`, user)
@@ -92,8 +109,7 @@ export class AccountService {
   }
   login(user: adminModel) {
     return this.http.post(`${this.baseUrl}/admin/login`, user).pipe(
-      catchError(this.errorHandler),
-      tap((data) => {
+      tap((data:any) => {
         return this.handleAuth(
           data["access-token"],
           data.expiresIn,
@@ -126,16 +142,23 @@ export class AccountService {
     expiresIn,
     email,
     firstConnection: boolean,
-    userID: string
+    userID: string,
+    firstName:string,
+    lastName:string,
+    imgUrl:string,
   ) {
     const expiration_date = new Date(new Date().getTime() + expiresIn * 1000);
+    console.log("this is the img Url : ",imgUrl);
     const newResponsable = new Responsable(
       email,
       expiration_date,
       access_token,
       firstConnection,
       "responsable",
-      userID
+      userID,
+      firstName,
+      lastName,
+      imgUrl
     );
     localStorage.setItem("currentResponsable", JSON.stringify(newResponsable));
     this.responsableEmitter.next(newResponsable);
@@ -219,6 +242,9 @@ export class AccountService {
       firstConncetion: boolean;
       role: string;
       userID: string;
+      firstName:string;
+      lastName:string;
+      imgUrl:string;
     } = JSON.parse(localStorage.getItem("currentResponsable"));
     if (!currentResponsable) return;
     const responsable = new Responsable(
@@ -227,7 +253,11 @@ export class AccountService {
       currentResponsable._token,
       currentResponsable.firstConncetion,
       currentResponsable.role,
-      currentResponsable.userID
+      currentResponsable.userID,
+      currentResponsable.firstName,
+      currentResponsable.lastName,
+      currentResponsable.imgUrl
+
     );
     if (!responsable.token) return;
     this.responsableEmitter.next(responsable);
@@ -243,7 +273,10 @@ export class AccountService {
             responsable.expiresIn,
             responsable.email,
             responsable.firstConncetion,
-            responsable.userID
+            responsable.userID,
+            responsable.firstName,
+            responsable.lastName,
+            responsable.imgUrl,
           );
         })
       );

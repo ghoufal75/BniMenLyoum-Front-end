@@ -41,6 +41,7 @@ import { AuthInterceptor } from '../account/auth/auth.interceptor';
 
 
 
+
 FullCalendarModule.registerPlugins([ // register FullCalendar plugins
   dayGridPlugin,
   interactionPlugin,
