@@ -52,6 +52,7 @@ import * as XLSX from "xlsx";
 import { AuthenticationService } from "src/app/main/auth.service";
 import { AccountService } from "src/app/account/auth/account.service";
 import { resolve } from "path";
+import { dataTool } from "echarts";
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 declare var browserPrint: any;
@@ -188,7 +189,7 @@ export class GeoportailComponent implements OnInit {
     if (this.route.url == "/admin/map") {
       this.currentlyAdmin = true;
     }
-    else if(this.route.url=="/main/landingPage"){
+    else if(this.route.url=="/main/landingPage" || this.route.url=="/main/assilahGeoPortail"){
       this.isClient=true;
     }
 
@@ -630,7 +631,7 @@ export class GeoportailComponent implements OnInit {
   }
   onSubmitLambertCoords() {
     let isAuthenticated;
-    if(this.route.url==='/main/landingPage'){
+    if(this.route.url==='/main/landingPage'||this.route.url==='/main/assilahGeoPortail'){
       this.lambdaAuthService.user.pipe(take(1)).subscribe(user=>{
         if(user===null){
           this.notAthenticated.emit(false);
@@ -682,7 +683,7 @@ export class GeoportailComponent implements OnInit {
       editable: true,
       printable: true,
       preferCanvas: true,
-    }).setView([35.25128, -3.93556], 15);
+    }).setView([35.462950, -6.032611], 12);
     this.map.createPane("snapshot-pane");
     this.map.createPane("dont-include");
     this.scale = L.control.scale({ imperial: false, pane: "snapshot-pane" });
@@ -784,7 +785,7 @@ export class GeoportailComponent implements OnInit {
       // this.map.on("pm:create",  (e) => {
       let isAuthenticated:boolean;
 
-      if(this.route.url==='/main/landingPage'){
+      if(this.route.url==='/main/landingPage' || this.route.url==='/main/assilahGeoPortail'){
         this.lambdaAuthService.user.pipe(take(1)).subscribe(user=>{
           if(user===null){
             this.notAthenticated.emit(false);
@@ -905,9 +906,8 @@ export class GeoportailComponent implements OnInit {
       // .subscribe((data: any) => {
 
       if(data==null || data==undefined || data.length==0){
-        this.loading=false;
+        await this.iterateAndFetch([]);
         return;
-
       }
       this.urbaDocuments=data;
       this.urbaDocument = {
@@ -915,14 +915,12 @@ export class GeoportailComponent implements OnInit {
         reference: data[0].referenceHomologation,
         localite: data[0].localite,
       };
-      if (data.length === 0) this.loading = false;
-      else {
+
+
         console.log("this is the urba : ",data[0]);
        await this.iterateAndFetch([data[0]]);
       // this.iterateAndFetch([data[0]]);
 
-
-      }
     });
   }
   onChangeUrba(event:any){
@@ -1123,6 +1121,12 @@ export class GeoportailComponent implements OnInit {
    async iterateAndFetch(docs: any) {
     console.log("start iterating and ferching");
     await new Promise((resolve,reject)=>{
+      console.log(docs);
+      if(docs.length==0 && this.initializationPhase){
+        this.fetchGeotiffs();
+        this.initializationPhase=false;
+        return;
+      }
       for (let doc of docs) {
           this.geoColService.fetchGeoJSONFiles(doc.src).subscribe(
             (geoJSONData: any[]) => {
@@ -1274,7 +1278,7 @@ export class GeoportailComponent implements OnInit {
   }
   addfile(event) {
     let isAuthenticated;
-    if(this.route.url==='/main/landingPage'){
+    if(this.route.url==='/main/landingPage' || this.route.url==='/main/assilahGeoPortail'){
       this.lambdaAuthService.user.pipe(take(1)).subscribe(user=>{
         if(user===null){
           this.notAthenticated.emit(false);
