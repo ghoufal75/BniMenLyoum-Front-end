@@ -882,8 +882,10 @@ export class GeoportailComponent implements OnInit {
     // this.fetchUrbaDocs();
 
 
+    if(this.route.url==='/admin/map'){
+      this.getAllPorjects();
+    }
 
-    // this.getAllPorjects();
   }
   fetchGeotiffs(){
     this.geoColService.getAllGeotiffs().subscribe((data:any[])=>{
@@ -1328,6 +1330,7 @@ export class GeoportailComponent implements OnInit {
   }
   getAllPorjects(){
     this.geoColService.getAllProjects().subscribe((data:any[])=>{
+      console.log("these are the projects : ",data);
       if(data.length!=0){
         for(let element of data){
           if(element.src){

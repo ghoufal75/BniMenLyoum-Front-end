@@ -18,6 +18,7 @@ export class SocketService extends Socket {
           if (!responsable) {
             this.authService.entiteExterneEmitter.subscribe((entiteExterne:any)=>{
               if(entiteExterne){
+                console.log("this is the entiteExterneID :",entiteExterne.userID)
                 id=entiteExterne.userID;
                 this.sender = id;
               }
