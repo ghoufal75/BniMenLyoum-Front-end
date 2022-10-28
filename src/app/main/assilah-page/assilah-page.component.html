@@ -58,11 +58,14 @@
         </li>
         <li>
           <a
-            class="menu__link btn btn-primary rounded-pill"
+            class="menu__link btn "
             style="
-              box-shadow: 0 0.6rem 1.2rem rgba(0, 0, 0, 0.205);
-              padding: 0.6rem 1rem !important;
-            "
+            box-shadow: 0 0.6rem 1.2rem rgba(0, 0, 0, 0.205);
+            padding: 0.6rem 1rem !important;
+            font-weight:bold;
+            color:white;
+            background-color: #8DB3EC;
+          "
             *ngIf="isAuthenticated"
             (click)="onLogout()"
             >Se déconnecter</a
@@ -632,9 +635,9 @@
         Suivie de dossier
       </h2>
       <p class="suivieDossier__paragraph">
-        Vous avez posé votre dossier de construction chez les responsables
-        communaux, il est désormais possible que vous les suivez sans se
-        déplacer. Avec ce service, vous pouvez insérer le nom du moaitre
+        Vous avez déposé votre dossier de construction chez les responsables
+        communaux, il est désormais possible que vous le suiviez sans la nécissité de vous
+        déplacez. Avec ce service, vous pouvez insérer le nom du maitre
         d'ouvrage, et vous aurez en contre partie la déscription de votre projet
         ainsi que son état actuel en terme d'approbation. Connectez-vous dès
         maintenant et suivez votre projet.
